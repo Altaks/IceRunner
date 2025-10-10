@@ -1,10 +1,10 @@
-package fr.altzec
+package fr.altzec.fr.altzec.icerunner
 
 import lombok.Getter
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
-class Main : JavaPlugin () {
+class Main : JavaPlugin() {
 
     @Getter
     private val pluginLogger = Bukkit.getLogger();
