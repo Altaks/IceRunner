@@ -1,5 +1,6 @@
 package fr.altzec.fr.altzec.icerunner
 
+import fr.altzec.fr.altzec.icerunner.triggers.listeners.PlayerJoinQuitListener
 import lombok.Getter
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -11,7 +12,12 @@ class Main : JavaPlugin() {
 
     override fun onEnable() {
         super.onEnable();
-        pluginLogger.info("onEnable function has finished");
+
+        Bukkit.getPluginManager().registerEvents(PlayerJoinQuitListener(), this);
+    }
+
+    override fun onDisable() {
+        super.onDisable();
     }
 
 }
