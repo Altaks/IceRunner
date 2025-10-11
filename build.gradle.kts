@@ -3,12 +3,15 @@ import io.typst.spigradle.lombok
 import io.typst.spigradle.spigot.Load
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
+import io.github.klahap.dotenv.DotEnvBuilder
+import java.util.Objects
 
 plugins {
     id("idea")
     id("org.jetbrains.kotlin.jvm") version "2.2.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.typst.spigradle") version "3.0.5"
+    id("io.github.klahap.dotenv") version "1.1.3"
 }
 
 group = "fr.altzec"
@@ -62,4 +65,13 @@ spigot {
 //            children = mapOf("test.foo" to true)
 //        }
     }
+}
+
+val envVars = DotEnvBuilder.dotEnv {
+    // addSystemEnv()
+    addFile("$rootDir/.env")
+}
+
+tasks.jar {
+    destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")));
 }
