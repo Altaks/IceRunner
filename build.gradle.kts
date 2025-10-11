@@ -4,6 +4,7 @@ import io.typst.spigradle.spigot.Load
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
 import io.github.klahap.dotenv.DotEnvBuilder
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import java.util.Objects
 
 plugins {
@@ -74,4 +75,10 @@ val envVars = DotEnvBuilder.dotEnv {
 
 tasks.jar {
     destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")));
+}
+
+tasks.named<KotlinJvmCompile>("compileKotlin") {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xno-call-assertions", "-Xno-receiver-assertions", "-Xno-param-assertions")
+    }
 }
