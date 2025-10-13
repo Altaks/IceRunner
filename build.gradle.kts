@@ -1,8 +1,8 @@
+import io.github.klahap.dotenv.DotEnvBuilder
 import io.typst.spigradle.lombok
 import io.typst.spigradle.spigot.Load
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
-import io.github.klahap.dotenv.DotEnvBuilder
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
@@ -67,12 +67,13 @@ spigot {
     }
 }
 
-val envVars = DotEnvBuilder.dotEnv {
-    addFileIfExists("$rootDir/.env")
-}
+val envVars =
+    DotEnvBuilder.dotEnv {
+        addFileIfExists("$rootDir/.env")
+    }
 
 tasks.jar {
-    destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")));
+    destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
 }
 
 tasks.named<KotlinJvmCompile>("compileKotlin") {

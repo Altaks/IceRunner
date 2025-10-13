@@ -8,16 +8,15 @@ import org.bukkit.plugin.java.JavaPlugin
 class Main : JavaPlugin() {
 
     @Getter
-    private val pluginLogger = Bukkit.getLogger();
+    private val pluginLogger = Bukkit.getLogger()
 
     override fun onEnable() {
-        super.onEnable();
+        super.onEnable()
 
-        Bukkit.getPluginManager().registerEvents(PlayerJoinQuitListener(), this);
+        Bukkit.getPluginManager().registerEvents(PlayerJoinQuitListener(), this)
     }
 
     override fun onDisable() {
-        super.onDisable();
+        super.onDisable()
     }
-
 }
