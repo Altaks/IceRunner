@@ -29,7 +29,7 @@ dependencies {
 
     compileOnly(spigot(version = "1.21.8"))
 
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("junit:junit:4.13.2")
     testImplementation(kotlin("stdlib-jdk8"))
 }
 
