@@ -1,11 +1,9 @@
-import io.typst.spigradle.jitpack
 import io.typst.spigradle.lombok
 import io.typst.spigradle.spigot.Load
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
 import io.github.klahap.dotenv.DotEnvBuilder
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-import java.util.Objects
 
 plugins {
     id("idea")
@@ -13,6 +11,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.typst.spigradle") version "3.0.5"
     id("io.github.klahap.dotenv") version "1.1.3"
+    id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
 }
 
 group = "fr.altzec"
@@ -69,8 +68,7 @@ spigot {
 }
 
 val envVars = DotEnvBuilder.dotEnv {
-    // addSystemEnv()
-    addFile("$rootDir/.env")
+    addFileIfExists("$rootDir/.env")
 }
 
 tasks.jar {

@@ -1,6 +1,6 @@
-package fr.altzec.fr.altzec.icerunner
+package fr.altzec.icerunner
 
-import fr.altzec.fr.altzec.icerunner.triggers.listeners.PlayerJoinQuitListener
+import fr.altzec.icerunner.triggers.listeners.PlayerJoinQuitListener
 import lombok.Getter
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
