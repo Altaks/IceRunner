@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     id("idea")
-    id("org.jetbrains.kotlin.jvm") version "2.2.10"
+    id("org.jetbrains.kotlin.jvm") version "2.2.20"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.typst.spigradle") version "3.0.5"
     id("io.github.klahap.dotenv") version "1.1.3"
