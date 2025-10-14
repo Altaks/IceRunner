@@ -1,10 +1,8 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.github.klahap.dotenv.DotEnvBuilder
 import io.typst.spigradle.lombok
 import io.typst.spigradle.spigot.Load
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     id("idea")
