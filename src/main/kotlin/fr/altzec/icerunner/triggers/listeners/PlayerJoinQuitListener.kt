@@ -1,4 +1,4 @@
-package fr.altzec.icerunner.triggers.listeners
+package fr.altzec.fr.altzec.icerunner.triggers.listeners
 
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
