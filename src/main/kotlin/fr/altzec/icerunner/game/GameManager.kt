@@ -6,26 +6,23 @@ import org.bukkit.Bukkit
 class GameManager(val main: Main) {
 
     companion object {
-        const val PLAYERS_PER_TEAM = 1;
-        const val AMOUNT_OF_TEAMS = 2;
+        const val PLAYERS_PER_TEAM = 1
+        const val AMOUNT_OF_TEAMS = 2
 
-        const val PLAYERS_REQUIRED_TO_START_GAME = PLAYERS_PER_TEAM * AMOUNT_OF_TEAMS;
+        const val PLAYERS_REQUIRED_TO_START_GAME = PLAYERS_PER_TEAM * AMOUNT_OF_TEAMS
     }
 
-    private var gameState: GameState = GameState.WAITING;
+    private var gameState: GameState = GameState.WAITING
 
     fun startGame() {
-        this.gameState = GameState.STARTING;
-        Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Starting game...");
+        this.gameState = GameState.STARTING
+        Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Starting game...")
     }
 
-    fun hasGameStarted() : Boolean {
-        return this.gameState >= GameState.STARTING;
-    }
+    fun hasGameStarted(): Boolean = this.gameState >= GameState.STARTING
 
     fun endGame() {
-        this.gameState = GameState.FINISHED;
-        Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Game is finished...");
+        this.gameState = GameState.FINISHED
+        Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Game is finished...")
     }
-
 }

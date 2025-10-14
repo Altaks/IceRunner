@@ -5,6 +5,5 @@ enum class GameState {
     WAITING,
     STARTING,
     PLAYING,
-    FINISHED
-
+    FINISHED,
 }

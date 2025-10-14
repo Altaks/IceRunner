@@ -15,9 +15,9 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
     fun onPlayerJoinsServer(event: PlayerJoinEvent) {
         event.joinMessage = "${ChatColor.GRAY}[${ChatColor.GREEN}+${ChatColor.GRAY}] ${ChatColor.GRAY}${event.player.displayName}"
 
-        if(!this.main.gameManager.hasGameStarted()) {
-            if(Bukkit.getOnlinePlayers().size >= GameManager.PLAYERS_REQUIRED_TO_START_GAME) {
-                this.main.gameManager.startGame();
+        if (!this.main.gameManager.hasGameStarted()) {
+            if (Bukkit.getOnlinePlayers().size >= GameManager.PLAYERS_REQUIRED_TO_START_GAME) {
+                this.main.gameManager.startGame()
             } else {
                 Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Il manque ${GameManager.PLAYERS_REQUIRED_TO_START_GAME - Bukkit.getOnlinePlayers().size} joueurs pour débuter la partie !")
             }
