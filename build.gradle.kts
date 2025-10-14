@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.github.klahap.dotenv.DotEnvBuilder
 import io.typst.spigradle.lombok
 import io.typst.spigradle.spigot.Load
@@ -76,8 +77,14 @@ tasks.jar {
     destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
 }
 
+tasks.shadowJar {
+    destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
+}
+
+/*
 tasks.named<KotlinJvmCompile>("compileKotlin") {
     compilerOptions {
         freeCompilerArgs.addAll("-Xno-call-assertions", "-Xno-receiver-assertions", "-Xno-param-assertions")
     }
 }
+*/
