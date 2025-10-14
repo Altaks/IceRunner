@@ -47,13 +47,13 @@ spigot {
     apiVersion = "1.21"
     load = Load.STARTUP
     commands {
-//        create("give") {
-//            aliases = listOf("i")
-//            description = "Give command."
-//            permission = "test.foo"
-//            permissionMessage = "You do not have permission!"
-//            usage = "/<command> [test|stop]"
-//        }
+        create("dev") {
+            aliases = listOf("development")
+            description = "Developer debug command"
+            permission = "dev.debug"
+            permissionMessage = "You do not have permission!"
+            usage = "/dev [startGame|endGame]"
+        }
     }
     permissions {
 //        create("test.foo") {
