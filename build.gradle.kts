@@ -41,7 +41,7 @@ idea {
 }
 
 spigot {
-    authors = listOf("Altaks", "Zecross_")
+    authors = listOf("Altaks", "_Zecross_")
     apiVersion = "1.21"
     load = Load.STARTUP
     commands {
@@ -77,6 +77,11 @@ tasks.jar {
 
 tasks.shadowJar {
     destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
+}
+
+tasks.processResources {
+    from("src/main/resources")
+    into("build/resources/main")
 }
 
 /*

@@ -17,6 +17,9 @@ class GameManager(val main: Main) {
     fun startGame() {
         this.gameState = GameState.STARTING
         Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Starting game...")
+
+        this.main.worldManager.setupGameWorld();
+        this.main.worldManager.teleportPlayersToGameWorld();
     }
 
     fun hasGameStarted(): Boolean = this.gameState >= GameState.STARTING

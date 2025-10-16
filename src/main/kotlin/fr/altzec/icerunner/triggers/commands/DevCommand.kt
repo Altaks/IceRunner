@@ -15,10 +15,9 @@ class DevCommand(val main: Main) : TabExecutor {
         args: Array<out String?>,
     ): List<String?>? {
         if (args.isNotEmpty()) {
-            return listOf("startGame", "endGame")
+            return listOf("startGame", "endGame", "genWorld")
         }
-
-        return listOf<String>()
+        return null;
     }
 
     override fun onCommand(
@@ -31,6 +30,7 @@ class DevCommand(val main: Main) : TabExecutor {
             when (args.first()) {
                 "startGame" -> this.main.gameManager.startGame()
                 "endGame" -> this.main.gameManager.endGame()
+                "genWorld" -> this.main.worldManager.setupGameWorld()
                 else -> {
                     sender.sendMessage("This command sub-argument matches nothing")
                     return false
