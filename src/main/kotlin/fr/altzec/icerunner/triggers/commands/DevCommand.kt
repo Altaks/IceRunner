@@ -17,7 +17,7 @@ class DevCommand(val main: Main) : TabExecutor {
         if (args.isNotEmpty()) {
             return listOf("startGame", "endGame", "genWorld")
         }
-        return null;
+        return null
     }
 
     override fun onCommand(
