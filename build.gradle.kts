@@ -7,7 +7,7 @@ import io.typst.spigradle.spigot.spigotmc
 plugins {
     id("idea")
     id("org.jetbrains.kotlin.jvm") version "2.2.10"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.gradleup.shadow") version "9.2.2"
     id("io.typst.spigradle") version "3.0.5"
     id("io.github.klahap.dotenv") version "1.1.3"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8")) // Maybe you need to apply the plugin 'shadowJar' for shading 'kotlin-stdlib'.
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.0")
     implementation(lombok())
 
     compileOnly(spigot(version = "1.21.8"))
@@ -76,11 +77,14 @@ tasks.jar {
 }
 
 tasks.shadowJar {
+    relocate("com.fasterxml.jackson", "fr.altzec.fasterxml.jackson")
     destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
 }
 
 tasks.processResources {
     from("src/main/resources")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
     into("build/resources/main")
 }
 
