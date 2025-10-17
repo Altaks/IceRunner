@@ -2,6 +2,7 @@ package fr.altzec.fr.altzec.icerunner
 
 import fr.altzec.fr.altzec.icerunner.game.GameManager
 import fr.altzec.fr.altzec.icerunner.triggers.commands.DevCommand
+import fr.altzec.fr.altzec.icerunner.triggers.listeners.DevListener
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.PlayerJoinQuitListener
 import fr.altzec.fr.altzec.icerunner.world.WorldManager
 import org.bukkit.Bukkit
@@ -26,6 +27,7 @@ class Main : JavaPlugin() {
         registerCommand("dev", DevCommand(this))
 
         Bukkit.getPluginManager().registerEvents(PlayerJoinQuitListener(this), this)
+        Bukkit.getPluginManager().registerEvents(DevListener(), this)
     }
 
     override fun onDisable() {

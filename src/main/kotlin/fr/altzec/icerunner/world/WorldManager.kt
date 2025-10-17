@@ -19,7 +19,7 @@ class WorldManager(val main: Main) {
         private const val ICE_RUNNER_WORLD_NAME = "world_ice_runner"
 
         // All the worlds resources variants of the plugin
-        private const val DEFAULT_WORLD_VARIANT_PATH = "worlds/ice_runner_default_world_variant"
+        private const val DEFAULT_WORLD_VARIANT_PATH = "worlds/variants/ice"
     }
 
     /**
