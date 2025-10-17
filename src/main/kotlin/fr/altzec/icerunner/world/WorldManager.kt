@@ -6,6 +6,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.WorldCreator
+import org.bukkit.scheduler.BukkitRunnable
 import java.io.File
 
 /**
@@ -22,6 +23,8 @@ class WorldManager(val main: Main) {
         private const val DEFAULT_WORLD_VARIANT_PATH = "worlds/variants/ice"
     }
 
+    var loadedWorldMetadata: WorldVariantMetadata? = null
+
     /**
      * Generates the IceRunner game world, by copying it from the inside of the JAR to the outside filesystem
      */
@@ -33,7 +36,7 @@ class WorldManager(val main: Main) {
 
     fun teleportPlayersToGameWorld() {
         val gameWorld: World = Bukkit.getWorld(ICE_RUNNER_WORLD_NAME) ?: throw IllegalStateException("World $ICE_RUNNER_WORLD_NAME not found!")
-        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(Location(gameWorld, 0.0, 0.0, 0.0)) }
+        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(Location(gameWorld, 0.0, 100.5 + 1, 0.0)) }
     }
 
     private fun generateGameWorld() {
@@ -46,5 +49,13 @@ class WorldManager(val main: Main) {
     private fun loadGameWorld() {
         // We call `createWorld` with the world name because Bukkit loads the world if it already exists in the server files
         Bukkit.getServer().createWorld(WorldCreator(ICE_RUNNER_WORLD_NAME))
+
+        val worldFolder = Bukkit.getServer().getWorld(ICE_RUNNER_WORLD_NAME)?.worldFolder
+            ?: throw IllegalStateException("Loaded world $ICE_RUNNER_WORLD_NAME but couldn't resolve world folder")
+
+        val metadata = WorldVariantMetadata.loadWorldVariantMetadata(worldFolder)
+
+        this.loadedWorldMetadata = metadata
+        this.main.logger.info(this.loadedWorldMetadata?.toString())
     }
 }

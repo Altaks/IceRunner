@@ -23,11 +23,12 @@ class Main : JavaPlugin() {
 
     override fun onEnable() {
         super.onEnable()
+        saveDefaultConfig()
 
         registerCommand("dev", DevCommand(this))
 
         Bukkit.getPluginManager().registerEvents(PlayerJoinQuitListener(this), this)
-        Bukkit.getPluginManager().registerEvents(DevListener(), this)
+        Bukkit.getPluginManager().registerEvents(DevListener(this), this)
     }
 
     override fun onDisable() {

@@ -1,6 +1,7 @@
 package fr.altzec.fr.altzec.icerunner.game
 
 import fr.altzec.fr.altzec.icerunner.Main
+import fr.altzec.fr.altzec.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
 
 class GameManager(val main: Main) {
@@ -20,6 +21,8 @@ class GameManager(val main: Main) {
 
         this.main.worldManager.setupGameWorld()
         this.main.worldManager.teleportPlayersToGameWorld()
+
+        StartingPhaseTask(this.main).runTaskTimer(this.main, 0, 20)
     }
 
     fun hasGameStarted(): Boolean = this.gameState >= GameState.STARTING
