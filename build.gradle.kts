@@ -6,9 +6,9 @@ import io.typst.spigradle.spigot.spigotmc
 
 plugins {
     id("idea")
-    id("org.jetbrains.kotlin.jvm") version "2.2.10"
+    id("org.jetbrains.kotlin.jvm") version "2.2.20"
     id("com.gradleup.shadow") version "9.2.2"
-    id("io.typst.spigradle") version "3.0.5"
+    id("io.typst.spigradle") version "3.0.6"
     id("io.github.klahap.dotenv") version "1.1.3"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
 }
@@ -30,7 +30,7 @@ dependencies {
 
     compileOnly(spigot(version = "1.21.8"))
 
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("junit:junit:4.13.2")
     testImplementation(kotlin("stdlib-jdk8"))
 }
 
