@@ -14,7 +14,7 @@ class StartingPhaseTask(val main: Main) : BukkitRunnable() {
         private const val STARTING_PHASE_COUNTDOWN_END_VALUE: Int = 0
     }
 
-    var countdown: Int = STARTING_PHASE_COUNTDOWN_START_VALUE;
+    var countdown: Int = STARTING_PHASE_COUNTDOWN_START_VALUE
 
     override fun run() {
         main.worldManager.loadedWorldMetadata?.mapCenterGlassCoordinates?.forEach { location ->
@@ -25,17 +25,19 @@ class StartingPhaseTask(val main: Main) : BukkitRunnable() {
                     Material.RED_STAINED_GLASS -> Material.LIGHT_BLUE_STAINED_GLASS
                     Material.LIGHT_BLUE_STAINED_GLASS -> Material.RED_STAINED_GLASS
                     else -> block.type
-                }, false)
+                },
+                false,
+            )
         }
 
         if (main.teamsManager.areEnoughPlayersPerTeam()) {
-            if(countdown <= STARTING_PHASE_COUNTDOWN_END_VALUE) {
+            if (countdown <= STARTING_PHASE_COUNTDOWN_END_VALUE) {
                 this.main.gameManager.triggerPlayingGamePhase()
                 this.cancel()
             } else {
                 Bukkit.getOnlinePlayers().forEach { player -> player.sendTitle("${ChatColor.YELLOW}Démarrage dans ${ChatColor.GOLD}$countdown", "${ChatColor.YELLOW}secondes", 10, 70, 20) }
                 countdown--
-            };
+            }
         } else {
             countdown = STARTING_PHASE_COUNTDOWN_START_VALUE
         }
