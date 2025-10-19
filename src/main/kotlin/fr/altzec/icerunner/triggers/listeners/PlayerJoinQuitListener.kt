@@ -1,6 +1,7 @@
 package fr.altzec.fr.altzec.icerunner.triggers.listeners
 
 import fr.altzec.fr.altzec.icerunner.Main
+import fr.altzec.fr.altzec.icerunner.game.GameItems
 import fr.altzec.fr.altzec.icerunner.game.GameManager
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -19,6 +20,7 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
             if (Bukkit.getOnlinePlayers().size >= GameManager.PLAYERS_REQUIRED_TO_START_GAME) {
                 this.main.gameManager.startGame()
             } else {
+                GameItems.applyWaitingInventoryToPlayer(event.player)
                 Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Il manque ${GameManager.PLAYERS_REQUIRED_TO_START_GAME - Bukkit.getOnlinePlayers().size} joueurs pour débuter la partie !")
             }
         }
