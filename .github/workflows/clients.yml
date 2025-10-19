@@ -4,16 +4,8 @@ name: IceRunner Kotlin CI
 on:
   push:
     branches: ["main", "dev"]
-    paths:
-      - "/**"
-      - "!.github/**"
-      - ".github/workflows/**"
   pull_request:
     branches: ["main", "dev"]
-    paths:
-      - "/**"
-      - "!.github/**"
-      - ".github/workflows/**"
 
 jobs:
   # Job that builds the plugin JAR
