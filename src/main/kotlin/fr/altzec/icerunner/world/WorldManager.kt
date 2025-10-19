@@ -7,7 +7,6 @@ import org.bukkit.GameRule
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.WorldCreator
-import org.bukkit.scheduler.BukkitRunnable
 import java.io.File
 
 /**
@@ -24,7 +23,7 @@ class WorldManager(val main: Main) {
         private const val DEFAULT_WORLD_VARIANT_PATH = "worlds/variants/ice"
 
         // Some world configuration constants
-        private const val NOON_TIME_TICKS = 6000L;
+        private const val NOON_TIME_TICKS = 6000L
     }
 
     var loadedWorldMetadata: WorldVariantMetadata? = null
@@ -66,8 +65,8 @@ class WorldManager(val main: Main) {
         gameWorld.setGameRule(GameRule<Boolean>.DO_WEATHER_CYCLE, false)
         gameWorld.setGameRule(GameRule<Boolean>.DO_FIRE_TICK, false)
 
-        gameWorld.clearWeatherDuration = Int.MAX_VALUE;
-        gameWorld.time = NOON_TIME_TICKS;
+        gameWorld.clearWeatherDuration = Int.MAX_VALUE
+        gameWorld.time = NOON_TIME_TICKS
     }
 
     fun teleportPlayersToGameWorld() {

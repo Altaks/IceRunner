@@ -14,14 +14,14 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
 
     companion object {
         private val PLAYER_LIST_HEADER: String =
-                "${ChatColor.GRAY}[${ChatColor.AQUA}Ice Runner${ChatColor.GRAY}] \n" +
+            "${ChatColor.GRAY}[${ChatColor.AQUA}Ice Runner${ChatColor.GRAY}] \n" +
                 "${ChatColor.GRAY}Made by ${ChatColor.LIGHT_PURPLE}Altaks ${ChatColor.GRAY}& ${ChatColor.LIGHT_PURPLE}_Zecross_" +
-                "\n";
+                "\n"
 
         private val PLAYER_LIST_FOOTER: String =
-                "\n" +
+            "\n" +
                 "${ChatColor.GRAY}\u00BB ${ChatColor.AQUA}https://github.com/Altaks/IceRunner ${ChatColor.GRAY}\u00AB\n" +
-                "${ChatColor.LIGHT_PURPLE}altakxs ${ChatColor.GRAY}& ${ChatColor.LIGHT_PURPLE}zecross256 ${ChatColor.GRAY}on ${ChatColor.BLUE}Discord";
+                "${ChatColor.LIGHT_PURPLE}altakxs ${ChatColor.GRAY}& ${ChatColor.LIGHT_PURPLE}zecross256 ${ChatColor.GRAY}on ${ChatColor.BLUE}Discord"
     }
 
     @EventHandler
