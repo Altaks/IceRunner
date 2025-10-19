@@ -22,7 +22,7 @@ class TeamsManager(val main: Main) : Listener {
         val prefix: Char,
         val chatColor: ChatColor, // https://minecraft.fandom.com/wiki/Dye for Dye color codes
         val armorColor: Color,
-        val choiceItem: ItemStack
+        val choiceItem: ItemStack,
     )
 
     companion object {
@@ -31,7 +31,7 @@ class TeamsManager(val main: Main) : Listener {
 
         const val PLAYERS_REQUIRED_TO_START_GAME = PLAYERS_PER_TEAM * AMOUNT_OF_TEAMS
 
-        private val redTeam = GameTeam("RedTeam", "Equipe rouge", '✦', ChatColor.RED, Color.RED,GameItems.redTeamTag) // "B02E26"
+        private val redTeam = GameTeam("RedTeam", "Equipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) // "B02E26"
         private val blueTeam = GameTeam("BlueTeam", "Equipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) // "3AB3DA"
 
         private val teams: List<GameTeam> = listOf(redTeam, blueTeam)
@@ -39,18 +39,20 @@ class TeamsManager(val main: Main) : Listener {
 
     private val teamToGameTeamMapping: HashBiMap<Team, GameTeam> = HashBiMap.create<Team, GameTeam>(teams.size)
 
-    private fun getMainScoreboard(): Scoreboard { return Bukkit.getScoreboardManager()?.mainScoreboard ?: throw IllegalStateException("Unable to access main scoreboard") }
+    private fun getMainScoreboard(): Scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: throw IllegalStateException("Unable to access main scoreboard")
 
     fun prepareTeams() {
-
         // Remove all existing teams
-        this.getMainScoreboard().teams.forEach { team -> main.logger.info("Unregister team ${team.displayName}"); team.unregister(); }
+        this.getMainScoreboard().teams.forEach { team ->
+            main.logger.info("Unregister team ${team.displayName}")
+            team.unregister()
+        }
 
         // Setup game teams
         for (team in teams) {
             // Create the team
-            val minecraftTeam = getMainScoreboard().registerNewTeam(team.minecraftTeamId);
-            minecraftTeam.color = team.chatColor;
+            val minecraftTeam = getMainScoreboard().registerNewTeam(team.minecraftTeamId)
+            minecraftTeam.color = team.chatColor
             minecraftTeam.displayName = "${team.chatColor}${team.displayName}"
             minecraftTeam.setAllowFriendlyFire(false)
             minecraftTeam.prefix = "${team.chatColor}${team.prefix} "
@@ -73,7 +75,7 @@ class TeamsManager(val main: Main) : Listener {
     }
 
     private fun changePlayerTeam(player: Player, targetTeam: GameTeam) {
-        val minecraftTeam = teamToGameTeamMapping.inverse()[targetTeam] ?: throw IllegalStateException("Team ${targetTeam.displayName} is not mapped to a Minecraft team");
+        val minecraftTeam = teamToGameTeamMapping.inverse()[targetTeam] ?: throw IllegalStateException("Team ${targetTeam.displayName} is not mapped to a Minecraft team")
         minecraftTeam.addEntry(player.name)
         main.logger.info("${player.displayName} is now in the ${targetTeam.displayName}")
     }
@@ -85,7 +87,7 @@ class TeamsManager(val main: Main) : Listener {
         return this.teamToGameTeamMapping.get(team) ?: throw IllegalStateException("Team ${team.displayName} is not mapped to a GameTeam!")
     }
 
-    fun teleportPlayersToTheirTeamSpawnAndSetRespawnPoints(): Unit {
+    fun teleportPlayersToTheirTeamSpawnAndSetRespawnPoints() {
         Bukkit.getOnlinePlayers().forEach { player ->
             val gameTeam = getPlayerGameTeam(player)
 

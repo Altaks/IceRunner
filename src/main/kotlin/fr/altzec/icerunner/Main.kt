@@ -10,7 +10,6 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.PluginCommand
 import org.bukkit.command.TabExecutor
-import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {
@@ -35,7 +34,9 @@ class Main : JavaPlugin() {
 
         // Register event listeners
         listOf(
-            PlayerJoinQuitListener(this), DevListener(this), teamsManager
+            PlayerJoinQuitListener(this),
+            DevListener(this),
+            teamsManager,
         ).forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, this) }
     }
 

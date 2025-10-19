@@ -28,7 +28,13 @@ class GameManager(val main: Main) {
         this.main.teamsManager.equipPlayersWithTeamArmor()
 
         // Resetting player stats
-        Bukkit.getOnlinePlayers().forEach { player -> player.gameMode = GameMode.ADVENTURE; player.exp = 0.0F; player.level = 0; player.foodLevel = 20; player.health = 20.0; }
+        Bukkit.getOnlinePlayers().forEach { player ->
+            player.gameMode = GameMode.ADVENTURE
+            player.exp = 0.0F
+            player.level = 0
+            player.foodLevel = 20
+            player.health = 20.0
+        }
     }
 
     fun isGameStarting(): Boolean = this.gameState == GameState.STARTING

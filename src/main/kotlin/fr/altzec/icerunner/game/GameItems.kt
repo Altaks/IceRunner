@@ -6,7 +6,6 @@ import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 
 object GameItems {
@@ -21,8 +20,8 @@ object GameItems {
 
     fun applyWaitingInventoryToPlayer(player: Player) {
         player.inventory.clear()
-        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_RED_TEAM_SLOT_INDEX, redTeamTag);
-        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_BLUE_TEAM_SLOT_INDEX, blueTeamTag);
+        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_RED_TEAM_SLOT_INDEX, redTeamTag)
+        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_BLUE_TEAM_SLOT_INDEX, blueTeamTag)
         player.inventory.heldItemSlot = PLAYER_INVENTORY_HOTBAR_WAITING_HAND_SLOT_INDEX
     }
 
@@ -37,17 +36,18 @@ object GameItems {
     private val baseKitBow: ItemStack = ItemFactory(Material.BOW).setDisplayName("Arc elfique").setUnbreakable(true).build()
 
     private fun getTeamColoredLeatherArmorPiece(material: Material, color: Color): ItemStack {
-        assert(arrayOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS).contains(material)
-        ) { "Specified armor material is not leather-based" };
+        assert(
+            arrayOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS).contains(material),
+        ) { "Specified armor material is not leather-based" }
 
-        val item = ItemStack(material, 1);
-        val leatherItemMeta: LeatherArmorMeta = item.itemMeta as LeatherArmorMeta;
+        val item = ItemStack(material, 1)
+        val leatherItemMeta: LeatherArmorMeta = item.itemMeta as LeatherArmorMeta
 
         leatherItemMeta.setColor(color)
         leatherItemMeta.isUnbreakable = true
 
-        item.itemMeta = leatherItemMeta;
-        return item;
+        item.itemMeta = leatherItemMeta
+        return item
     }
 
     fun applyPlayingInventoryToPlayer(player: Player, teamColor: Color) {
