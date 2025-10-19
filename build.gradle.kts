@@ -44,7 +44,7 @@ idea {
 spigot {
     authors = listOf("Altaks", "_Zecross_")
     apiVersion = "1.21"
-    load = Load.STARTUP
+    load = Load.POST_WORLD
     commands {
         create("dev") {
             aliases = listOf("development")

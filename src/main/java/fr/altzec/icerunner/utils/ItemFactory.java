@@ -355,4 +355,9 @@ public class ItemFactory {
         }
         return this;
     }
+
+    public ItemFactory setUnbreakable(boolean unbreakable) {
+        this.customItemMeta.setUnbreakable(unbreakable);
+        return this;
+    }
 }

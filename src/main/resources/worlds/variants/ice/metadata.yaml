@@ -1,3 +1,23 @@
+red_island:
+  team_spawn_coordinates:
+    ==: org.bukkit.Location
+    world: world_ice_runner
+    x: 60
+    y: 101
+    z: 60
+    pitch: 0.0
+    yaw: 135.0
+
+blue_island:
+  team_spawn_coordinates:
+    ==: org.bukkit.Location
+    world: world_ice_runner
+    x: -60
+    y: 101
+    z: -60
+    pitch: 0.0
+    yaw: -45.0
+
 main_island:
   center_coordinates:
     ==: org.bukkit.Location

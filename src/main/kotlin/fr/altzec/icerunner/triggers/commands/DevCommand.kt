@@ -28,8 +28,8 @@ class DevCommand(val main: Main) : TabExecutor {
     ): Boolean {
         if (sender is Player && args.isNotEmpty()) {
             when (args.first()) {
-                "startGame" -> this.main.gameManager.startGame()
-                "endGame" -> this.main.gameManager.endGame()
+                "startGame" -> this.main.gameManager.triggerStartingGamePhase()
+                "endGame" -> this.main.gameManager.triggerFinishedGamePhase()
                 "genWorld" -> this.main.worldManager.setupGameWorld()
                 else -> {
                     sender.sendMessage("This command sub-argument matches nothing")
