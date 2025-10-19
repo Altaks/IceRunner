@@ -17,6 +17,12 @@ data class WorldVariantMetadata(
     // ------------- YELLOW SECONDARY ISLAND ------------- //
     val yellowIslandCoordinates: Location,
     val yellowIslandGlassCoordinates: List<Location>,
+
+    // ------------- RED TEAM ISLAND ------------- //
+    val redTeamSpawnCoordinates: Location,
+
+    // ------------- BLUE TEAM ISLAND ------------- //
+    val blueTeamSpawnCoordinates: Location,
 ) {
     override fun toString(): String = "Map center: $mapCenterCoordinates,\n" +
         "Amount of glass blocks found : ${mapCenterGlassCoordinates.size},\n" +
@@ -35,6 +41,11 @@ data class WorldVariantMetadata(
         private const val CENTER_COORDINATES_SYMBOLIC_NAME: String = "center_coordinates"
         private const val GLASS_BLOCKS_COORDINATES_SYMBOLIC_NAME: String = "glass_coordinates"
 
+        private const val RED_TEAM_ISLAND_SYMBOLIC_NAME: String = "red_island"
+        private const val BLUE_TEAM_ISLAND_SYMBOLIC_NAME: String = "blue_island"
+
+        private const val TEAM_SPAWN_COORDINATES_SYMBOLIC_NAME: String = "team_spawn_coordinates"
+
         // ------------- MAP MAIN ISLAND ------------- //
         private const val MAP_CENTER_COORDINATES_PATH = "$MAIN_ISLAND_SYMBOLIC_NAME.$CENTER_COORDINATES_SYMBOLIC_NAME"
         private const val MAP_CENTER_GLASS_BLOCKS_COORDINATES_PATH = "$MAIN_ISLAND_SYMBOLIC_NAME.$GLASS_BLOCKS_COORDINATES_SYMBOLIC_NAME"
@@ -47,6 +58,12 @@ data class WorldVariantMetadata(
         private const val YELLOW_ISLAND_CENTER_COORDINATES_PATH = "$YELLOW_ISLAND_SYMBOLIC_NAME.$CENTER_COORDINATES_SYMBOLIC_NAME"
         private const val YELLOW_ISLAND_GLASS_BLOCKS_COORDINATES_PATH = "$YELLOW_ISLAND_SYMBOLIC_NAME.$GLASS_BLOCKS_COORDINATES_SYMBOLIC_NAME"
 
+        // ------------- RED TEAM ISLAND ------------- //
+        private const val RED_TEAM_SPAWN_COORDINATES_PATH = "$RED_TEAM_ISLAND_SYMBOLIC_NAME.$TEAM_SPAWN_COORDINATES_SYMBOLIC_NAME"
+
+        // ------------- BLUE TEAM ISLAND ------------- //
+        private const val BLUE_TEAM_SPAWN_COORDINATES_PATH = "$BLUE_TEAM_ISLAND_SYMBOLIC_NAME.$TEAM_SPAWN_COORDINATES_SYMBOLIC_NAME"
+
         fun loadWorldVariantMetadata(folder: File): WorldVariantMetadata {
             val file: File = File(folder.absolutePath + File.separator + METADATA_FILE_NAME)
             val yaml: FileConfiguration = YamlConfiguration.loadConfiguration(file)
@@ -58,6 +75,8 @@ data class WorldVariantMetadata(
                 greenIslandGlassCoordinates = (yaml.getList(GREEN_ISLAND_GLASS_BLOCKS_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $GREEN_ISLAND_GLASS_BLOCKS_COORDINATES_PATH path in map variant metadata")) as List<Location>,
                 yellowIslandCoordinates = yaml.getLocation(YELLOW_ISLAND_CENTER_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $YELLOW_ISLAND_CENTER_COORDINATES_PATH path in map variant metadata"),
                 yellowIslandGlassCoordinates = (yaml.getList(YELLOW_ISLAND_GLASS_BLOCKS_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $YELLOW_ISLAND_GLASS_BLOCKS_COORDINATES_PATH path in map variant metadata")) as List<Location>,
+                redTeamSpawnCoordinates = yaml.getLocation(RED_TEAM_SPAWN_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $RED_TEAM_SPAWN_COORDINATES_PATH path in map variant metadata"),
+                blueTeamSpawnCoordinates = yaml.getLocation(BLUE_TEAM_SPAWN_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $BLUE_TEAM_SPAWN_COORDINATES_PATH path in map variant metadata"),
             )
         }
     }

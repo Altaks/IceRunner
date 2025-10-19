@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class Main : JavaPlugin() {
 
     companion object {
-        val MAIN_PREFIX: String = "${ChatColor.GRAY}[${ChatColor.BLUE}IceRunner${ChatColor.GRAY}] \u00BB${ChatColor.RESET}"
+        val MAIN_PREFIX: String = "${ChatColor.GRAY}[${ChatColor.AQUA}IceRunner${ChatColor.GRAY}] \u00BB${ChatColor.RESET}"
     }
 
     val pluginLogger = Bukkit.getLogger()
