@@ -3,6 +3,7 @@ package fr.altzec.fr.altzec.icerunner.world
 import fr.altzec.fr.altzec.icerunner.Main
 import fr.altzec.fr.altzec.icerunner.utils.FileUtils
 import org.bukkit.Bukkit
+import org.bukkit.GameRule
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.WorldCreator
@@ -21,6 +22,9 @@ class WorldManager(val main: Main) {
 
         // All the worlds resources variants of the plugin
         private const val DEFAULT_WORLD_VARIANT_PATH = "worlds/variants/ice"
+
+        // Some world configuration constants
+        private const val NOON_TIME_TICKS = 6000L;
     }
 
     var loadedWorldMetadata: WorldVariantMetadata? = null
@@ -31,12 +35,8 @@ class WorldManager(val main: Main) {
     fun setupGameWorld() {
         generateGameWorld()
         loadGameWorld()
+        configureGameWorldBehavior()
         teleportPlayersToGameWorld()
-    }
-
-    fun teleportPlayersToGameWorld() {
-        val gameWorld: World = Bukkit.getWorld(ICE_RUNNER_WORLD_NAME) ?: throw IllegalStateException("World $ICE_RUNNER_WORLD_NAME not found!")
-        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(Location(gameWorld, 0.0, 100.5 + 1, 0.0)) }
     }
 
     private fun generateGameWorld() {
@@ -57,5 +57,21 @@ class WorldManager(val main: Main) {
 
         this.loadedWorldMetadata = metadata
         this.main.logger.info(this.loadedWorldMetadata?.toString())
+    }
+
+    fun configureGameWorldBehavior() {
+        val gameWorld = Bukkit.getWorld(ICE_RUNNER_WORLD_NAME) ?: throw IllegalStateException("World $ICE_RUNNER_WORLD_NAME not found")
+
+        gameWorld.setGameRule(GameRule<Boolean>.DO_DAYLIGHT_CYCLE, false)
+        gameWorld.setGameRule(GameRule<Boolean>.DO_WEATHER_CYCLE, false)
+        gameWorld.setGameRule(GameRule<Boolean>.DO_FIRE_TICK, false)
+
+        gameWorld.clearWeatherDuration = Int.MAX_VALUE;
+        gameWorld.time = NOON_TIME_TICKS;
+    }
+
+    fun teleportPlayersToGameWorld() {
+        val gameWorld: World = Bukkit.getWorld(ICE_RUNNER_WORLD_NAME) ?: throw IllegalStateException("World $ICE_RUNNER_WORLD_NAME not found!")
+        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(Location(gameWorld, 0.0, 100.5 + 1, 0.0)) }
     }
 }
