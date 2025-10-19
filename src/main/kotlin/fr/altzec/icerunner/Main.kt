@@ -2,7 +2,9 @@ package fr.altzec.fr.altzec.icerunner
 
 import fr.altzec.fr.altzec.icerunner.game.GameManager
 import fr.altzec.fr.altzec.icerunner.triggers.commands.DevCommand
+import fr.altzec.fr.altzec.icerunner.triggers.listeners.DevListener
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.PlayerJoinQuitListener
+import fr.altzec.fr.altzec.icerunner.world.WorldManager
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.PluginCommand
@@ -16,20 +18,26 @@ class Main : JavaPlugin() {
     }
 
     val gameManager: GameManager = GameManager(this)
+    val worldManager: WorldManager = WorldManager(this)
     val pluginLogger = Bukkit.getLogger()
 
     override fun onEnable() {
         super.onEnable()
+        saveDefaultConfig()
 
         registerCommand("dev", DevCommand(this))
 
         Bukkit.getPluginManager().registerEvents(PlayerJoinQuitListener(this), this)
+        Bukkit.getPluginManager().registerEvents(DevListener(this), this)
     }
 
     override fun onDisable() {
         super.onDisable()
     }
 
+    /**
+     * Registers a command and assigns it a TabCompleter and a CommandExecutor, thus a TabExecutor
+     */
     fun registerCommand(command: String, tabExecutor: TabExecutor) {
         val command: PluginCommand? = getCommand(command)
         command?.setExecutor(tabExecutor)

@@ -1,0 +1,305 @@
+main_island:
+  center_coordinates:
+    ==: org.bukkit.Location
+    world: world_ice_runner
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0.0
+    yaw: 0.0
+  glass_coordinates:
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 2
+      y: 100
+      z: 2
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 2
+      y: 100
+      z: 1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 1
+      y: 100
+      z: 1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 1
+      y: 100
+      z: 2
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -2
+      y: 100
+      z: 2
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -1
+      y: 100
+      z: 2
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -1
+      y: 100
+      z: 1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -2
+      y: 100
+      z: 1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -2
+      y: 100
+      z: -1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -2
+      y: 100
+      z: -2
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -1
+      y: 100
+      z: -2
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -1
+      y: 100
+      z: -1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 1
+      y: 100
+      z: -2
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 2
+      y: 100
+      z: -2
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 2
+      y: 100
+      z: -1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 1
+      y: 100
+      z: -1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 1
+      y: 100
+      z: 0
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 0
+      y: 100
+      z: 1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -1
+      y: 100
+      z: 0
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 0
+      y: 100
+      z: -1
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 0
+      y: 100
+      z: 0
+      pitch: 0.0
+      yaw: 0.0
+
+green_island:
+  center_coordinates:
+    ==: org.bukkit.Location
+    world: world_ice_runner
+    x: -60
+    y: 100
+    z: 60
+    pitch: 0.0
+    yaw: 0.0
+  glass_coordinates:
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -61
+      y: 100
+      z: 61
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -61
+      y: 100
+      z: 60
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -61
+      y: 100
+      z: 59
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -60
+      y: 100
+      z: 59
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -60
+      y: 100
+      z: 60
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -60
+      y: 100
+      z: 61
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -59
+      y: 100
+      z: 61
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -59
+      y: 100
+      z: 60
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: -59
+      y: 100
+      z: 59
+      pitch: 0.0
+      yaw: 0.0
+
+yellow_island:
+  center_coordinates:
+    ==: org.bukkit.Location
+    world: world_ice_runner
+    x: 60
+    y: 100
+    z: -60
+    pitch: 0.0
+    yaw: 0.0
+  glass_coordinates:
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 59
+      y: 100
+      z: -61
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 60
+      y: 100
+      z: -61
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 61
+      y: 100
+      z: -61
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 61
+      y: 100
+      z: -60
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 60
+      y: 100
+      z: -60
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 59
+      y: 100
+      z: -60
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 59
+      y: 100
+      z: -59
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 60
+      y: 100
+      z: -59
+      pitch: 0.0
+      yaw: 0.0
+    - ==: org.bukkit.Location
+      world: world_ice_runner
+      x: 61
+      y: 100
+      z: -59
+      pitch: 0.0
+      yaw: 0.0
