@@ -16,7 +16,7 @@ class WorldManager(val main: Main) {
 
     companion object {
         // Get the folder that contains all the different worlds
-        private val ICE_RUNNER_WORLD_DESTINATION_PATH = Bukkit.getWorldContainer().path
+        private const val ICE_RUNNER_WORLD_DESTINATION_PATH = "."
         private const val ICE_RUNNER_WORLD_NAME = "world_ice_runner"
 
         // All the worlds resources variants of the plugin
