@@ -47,3 +47,4 @@ debug/
 artifacts/
 
 .env
+/.idea/discord.xml

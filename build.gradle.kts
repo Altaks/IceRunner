@@ -1,6 +1,7 @@
 import io.github.klahap.dotenv.DotEnvBuilder
 import io.typst.spigradle.lombok
 import io.typst.spigradle.spigot.Load
+import io.typst.spigradle.spigot.papermc
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
 
@@ -21,6 +22,7 @@ tasks.compileJava.get().options.encoding = "UTF-8"
 repositories {
     mavenCentral()
     spigotmc()
+    papermc()
 }
 
 dependencies {
@@ -30,8 +32,11 @@ dependencies {
 
     compileOnly(spigot(version = "1.21.8"))
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.69.2")
     testImplementation(kotlin("stdlib-jdk8"))
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 idea {
@@ -88,6 +93,15 @@ tasks.processResources {
     into("build/resources/main")
 }
 
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+
+    maxHeapSize = "1G"
+
+    testLogging {
+        events("passed")
+    }
+}
 /*
 tasks.named<KotlinJvmCompile>("compileKotlin") {
     compilerOptions {

@@ -10,9 +10,16 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.PluginCommand
 import org.bukkit.command.TabExecutor
+import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.java.JavaPluginLoader
+import java.io.File
 
-class Main : JavaPlugin() {
+open class Main : JavaPlugin {
+
+    constructor() : super()
+
+    constructor(loader: JavaPluginLoader, description: PluginDescriptionFile, dataFolder: File, file: File?) : super(loader, description, dataFolder, file ?: File(""))
 
     companion object {
         val MAIN_PREFIX: String = "${ChatColor.GRAY}[${ChatColor.AQUA}IceRunner${ChatColor.GRAY}] \u00BB${ChatColor.RESET}"

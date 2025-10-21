@@ -300,7 +300,7 @@ public class ItemFactory {
      * @return the {@link ItemFactory} instance
      */
     public ItemFactory addSafeEnchantment(Enchantment enchantment, int level) {
-        this.customItemStack.addEnchantment(enchantment, level);
+        this.customItemMeta.addEnchant(enchantment, level, false);
         return this;
     }
 
@@ -312,7 +312,7 @@ public class ItemFactory {
      * @return the {@link ItemFactory} instance
      */
     public ItemFactory addUnsafeEnchantment(Enchantment enchantment, int level) {
-        this.customItemStack.addUnsafeEnchantment(enchantment, level);
+        this.customItemMeta.addEnchant(enchantment, level, true);
         return this;
     }
 
@@ -323,7 +323,7 @@ public class ItemFactory {
      * @return the {@link ItemFactory} instance
      */
     public ItemFactory removeEnchant(Enchantment enchantment) {
-        this.customItemStack.removeEnchantment(enchantment);
+        this.customItemMeta.removeEnchant(enchantment);
         return this;
     }
 
@@ -335,8 +335,9 @@ public class ItemFactory {
      * @return the {@link ItemFactory} instance
      */
     public ItemFactory addFakeEnchant() {
-        this.customItemStack.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
-        return this.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        return this
+                .addUnsafeEnchantment(Enchantment.UNBREAKING, 1)
+                .addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
     /**
