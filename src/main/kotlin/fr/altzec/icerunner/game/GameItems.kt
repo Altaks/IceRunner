@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta
 object GameItems {
 
     // ●○
-    private val loreDelimitation: String = "${ChatColor.GRAY}${ChatColor.STRIKETHROUGH}${"  ".repeat(40)}";
+    private val loreDelimitation: String = "${ChatColor.GRAY}${ChatColor.STRIKETHROUGH}${"  ".repeat(40)}"
 
     // ---------------- WAITING PHASE ---------------- //
     val redTeamTag: ItemStack = ItemFactory(Material.RED_DYE, 1).setDisplayName("${ChatColor.RED}\u00BB Equipe rouge \u00AB").build()
@@ -43,7 +43,7 @@ object GameItems {
             "${ChatColor.GRAY}La pointe de ces flèches est remplie d’un liquide rougeoyant,",
             "${ChatColor.GRAY}extrait des glandes venimeuses des dragons des marais. ",
             "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
-            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre."
+            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
         )
         .build()
 
@@ -54,7 +54,7 @@ object GameItems {
             "${ChatColor.GRAY}Les Bifrost ne sont pas de simples boules de neige : ",
             "${ChatColor.GRAY}Ce sont des fragments gelés du Pont des Dieux, forgés par les",
             "${ChatColor.GRAY}sorciers elfes des Glaces Éternelles après avoir découvert un",
-            "${ChatColor.GRAY}passage secret vers le royaume d’Yggdrasil."
+            "${ChatColor.GRAY}passage secret vers le royaume d’Yggdrasil.",
         )
         .build()
 
@@ -64,7 +64,7 @@ object GameItems {
             "${ChatColor.GRAY}$loreDelimitation",
             "${ChatColor.GRAY}Son bois, taillé dans le cœur d’un arbre millénaire, murmure",
             "${ChatColor.GRAY}encore les secrets des batailles passées et vibre à proximité",
-            "${ChatColor.GRAY}des échos du bifrost"
+            "${ChatColor.GRAY}des échos du bifrost",
         )
         .addSafeEnchantment(Enchantment.POWER, 1)
         .addUnsafeEnchantment(Enchantment.KNOCKBACK, 1)
