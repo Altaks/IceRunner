@@ -21,7 +21,7 @@ class WorldManager(val main: Main) {
     companion object {
         // Get the folder that contains all the different worlds
         private const val ICE_RUNNER_WORLD_DESTINATION_PATH = "."
-        private const val ICE_RUNNER_WORLD_NAME = "world_ice_runner"
+        const val ICE_RUNNER_WORLD_NAME = "world_ice_runner"
 
         // All the worlds resources variants of the plugin
         private const val DEFAULT_WORLD_VARIANT_PATH = "worlds/variants/ice"

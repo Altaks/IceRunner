@@ -1,11 +1,13 @@
 package fr.altzec.fr.altzec.icerunner.game
 
 import fr.altzec.fr.altzec.icerunner.Main
+import fr.altzec.fr.altzec.icerunner.triggers.tasks.BifrostTask
 import fr.altzec.fr.altzec.icerunner.triggers.tasks.PlayingPhaseTask
 import fr.altzec.fr.altzec.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 
 class GameManager(val main: Main) {
@@ -55,6 +57,7 @@ class GameManager(val main: Main) {
             player.foodLevel = 20
             player.health = 20.0
         }
+        BifrostTask().runTaskTimer(this.main, 0,1)
 
         this.playingPhaseTask = PlayingPhaseTask(this.main).runTaskTimer(this.main, 0, 20)
     }
