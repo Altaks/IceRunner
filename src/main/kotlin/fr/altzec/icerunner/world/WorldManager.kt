@@ -1,6 +1,7 @@
 package fr.altzec.fr.altzec.icerunner.world
 
 import fr.altzec.fr.altzec.icerunner.Main
+import fr.altzec.fr.altzec.icerunner.game.TeamsManager
 import fr.altzec.fr.altzec.icerunner.utils.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -79,6 +80,7 @@ class WorldManager(val main: Main) {
         gameWorld.setGameRule(GameRule<Boolean>.DO_DAYLIGHT_CYCLE, false)
         gameWorld.setGameRule(GameRule<Boolean>.DO_WEATHER_CYCLE, false)
         gameWorld.setGameRule(GameRule<Boolean>.DO_FIRE_TICK, false)
+        gameWorld.setGameRule(GameRule<Boolean>.KEEP_INVENTORY, true)
 
         gameWorld.clearWeatherDuration = Int.MAX_VALUE
         gameWorld.time = NOON_TIME_TICKS
