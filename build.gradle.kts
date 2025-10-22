@@ -1,6 +1,7 @@
 import io.github.klahap.dotenv.DotEnvBuilder
 import io.typst.spigradle.lombok
 import io.typst.spigradle.spigot.Load
+import io.typst.spigradle.spigot.paper
 import io.typst.spigradle.spigot.papermc
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
@@ -32,7 +33,8 @@ dependencies {
 
     compileOnly(spigot(version = "1.21.8"))
 
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.69.2")
+    testImplementation(paper(version = "1.21.8"))
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.87.0")
     testImplementation(kotlin("stdlib-jdk8"))
 
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.0")
