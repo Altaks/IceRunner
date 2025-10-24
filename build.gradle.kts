@@ -8,7 +8,7 @@ import io.typst.spigradle.spigot.spigotmc
 
 plugins {
     id("idea")
-    id("org.jetbrains.kotlin.jvm") version "2.2.20"
+    id("org.jetbrains.kotlin.jvm") version "2.2.21"
     id("com.gradleup.shadow") version "9.2.2"
     id("io.typst.spigradle") version "3.1.0"
     id("io.github.klahap.dotenv") version "1.1.3"
