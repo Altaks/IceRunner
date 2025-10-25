@@ -94,9 +94,7 @@ class TeamsManager(val main: Main) : Listener {
         return this.teamToGameTeamMapping[team] ?: throw IllegalStateException("Team ${team.displayName} is not mapped to a GameTeam!")
     }
 
-    fun getTeamsToGameTeamMapping() : HashBiMap<Team, GameTeam> {
-        return this.teamToGameTeamMapping;
-    }
+    fun getTeamsToGameTeamMapping(): HashBiMap<Team, GameTeam> = this.teamToGameTeamMapping
 
     fun teleportPlayersToTheirTeamSpawnAndSetRespawnPoints() {
         Bukkit.getOnlinePlayers().forEach { player ->
