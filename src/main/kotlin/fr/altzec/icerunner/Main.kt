@@ -47,7 +47,7 @@ open class Main : JavaPlugin {
             PlayerJoinQuitListener(this),
             DevListener(this),
             teamsManager,
-            scoreboardManager
+            scoreboardManager,
         ).forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, this) }
 
         Bukkit.getOnlinePlayers().forEach { player -> this.scoreboardManager.initPlayerScoreboard(player) }
