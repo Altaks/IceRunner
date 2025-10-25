@@ -5,6 +5,8 @@ package fr.altzec.icerunner.game
 import fr.altzec.fr.altzec.icerunner.utils.StatusBarUtils
 import org.bukkit.ChatColor
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import kotlin.random.Random
 
 open class StatusBarUtilsTests {
@@ -73,4 +75,29 @@ open class StatusBarUtilsTests {
         val statusBar = StatusBarUtils.buildProgressBar(barState, barStyle);
         assert(statusBar == expectedStatusBar);
     }
+
+    @Test
+    fun testAssertThrowsWhenCapacityIsNegative() {
+        val barState = StatusBarUtils.StatusBarState(7, -1, 1);
+        assertThrows<IllegalArgumentException> { StatusBarUtils.buildProgressBar(barState) }
+    }
+
+    @Test
+    fun testAssertThrowWhenLengthIsNegative() {
+        val barState = StatusBarUtils.StatusBarState(-1, 7, 1);
+        assertThrows<IllegalArgumentException> { StatusBarUtils.buildProgressBar(barState) }
+    }
+
+    @Test
+    fun testAssertDoesNotThrowWhenCurrentCountItAtTotalCapacity() {
+        val barState = StatusBarUtils.StatusBarState(7, 7, 7);
+        assertDoesNotThrow { StatusBarUtils.buildProgressBar(barState) }
+    }
+
+    @Test
+    fun testAssertThrowWhenCurrentCountIsHigherThanTotalCapacity() {
+        val barState = StatusBarUtils.StatusBarState(0, 1, 2);
+        assertThrows<IllegalArgumentException> { StatusBarUtils.buildProgressBar(barState) }
+    }
+
 }
