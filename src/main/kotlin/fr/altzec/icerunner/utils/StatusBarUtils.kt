@@ -25,16 +25,16 @@ object StatusBarUtils {
      * Default the statusBarStyle with the default values of the data class
      */
     fun buildProgressBar(progressBarState: StatusBarState, statusBarStyle: StatusBarStyle = StatusBarStyle()): String {
-        assert(progressBarState.totalCapacity >= 0) { "Progress bar total capacity cannot be 0" }
-        assert(progressBarState.length >= 0) { "Progress bar length cannot be 0" }
-        assert(progressBarState.currentCount <= progressBarState.totalCapacity) { "Progress bar currentCount: ${progressBarState.currentCount} cannot be higher than totalCapacity : ${progressBarState.totalCapacity}" }
+        require(progressBarState.totalCapacity >= 0) { "Progress bar total capacity cannot be 0" }
+        require(progressBarState.length >= 0) { "Progress bar length cannot be 0" }
+        require(progressBarState.currentCount <= progressBarState.totalCapacity) { "Progress bar currentCount: ${progressBarState.currentCount} cannot be higher than totalCapacity : ${progressBarState.totalCapacity}" }
 
         val activePercentage = progressBarState.currentCount.toFloat() / progressBarState.totalCapacity.toFloat();
         val activeLength = (progressBarState.length * activePercentage).toInt();
         val inactiveLength = progressBarState.length - activeLength;
 
-        assert(activeLength + inactiveLength == progressBarState.length);
-        assert(activeLength >= 0);
+        check(activeLength + inactiveLength == progressBarState.length);
+        check(activeLength >= 0);
 
         val activePart = "${statusBarStyle.activeColor}${statusBarStyle.activeSymbol.repeat(activeLength)}";
         val inactivePart = "${statusBarStyle.baseColor}${statusBarStyle.baseSymbol.repeat(inactiveLength)}";
