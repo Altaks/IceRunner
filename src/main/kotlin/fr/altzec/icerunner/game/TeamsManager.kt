@@ -27,7 +27,7 @@ class TeamsManager(val main: Main) : Listener {
         val chatColor: ChatColor, // https://minecraft.fandom.com/wiki/Dye for Dye color codes
         val armorColor: Color,
         val choiceItem: ItemStack,
-        val respawnPoint: (WorldVariantMetadata) -> Location
+        val respawnPoint: (WorldVariantMetadata) -> Location,
     )
 
     data class GameScoringState(
@@ -128,7 +128,7 @@ class TeamsManager(val main: Main) : Listener {
     fun teleportPlayersToTheirTeamSpawnAndSetRespawnPoints() {
         Bukkit.getOnlinePlayers().forEach { player ->
             val gameTeam = getPlayerGameTeam(player)
-            val respawnPoint = gameTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"));
+            val respawnPoint = gameTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
 
             player.setRespawnLocation(respawnPoint, true)
             player.teleport(respawnPoint)

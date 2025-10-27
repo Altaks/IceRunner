@@ -1,35 +1,31 @@
 package fr.altzec.fr.altzec.icerunner.game
 
 import fr.altzec.fr.altzec.icerunner.Main
+import fr.altzec.fr.altzec.icerunner.triggers.tasks.ArrowTask
 import fr.altzec.fr.altzec.icerunner.triggers.tasks.BifrostTask
 import fr.altzec.fr.altzec.icerunner.triggers.tasks.PlayingPhaseTask
 import fr.altzec.fr.altzec.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
-import org.bukkit.damage.DamageSource
-import org.bukkit.damage.DamageType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
-import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 
 class GameManager(val main: Main) : Listener {
 
     companion object {
-        private const val NO_TASK_DELAY = 0L;
-        private const val EVERY_TICK = 1L;
-        private const val EVERY_SECOND = EVERY_TICK * 20L;
+        private const val NO_TASK_DELAY = 0L
+        private const val EVERY_TICK = 1L
+        private const val EVERY_SECOND = EVERY_TICK * 20L
 
-        private const val INFINITE_POTION_EFFECT_DURATION = 1_000_000;
+        private const val INFINITE_POTION_EFFECT_DURATION = 1_000_000
         private const val JUMP_BOOST_AMPLIFIER = 1; // 2 blocks high
 
         private val CONGRATS_DECORATION = "${ChatColor.RED}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GOLD}${ChatColor.MAGIC}!"
@@ -42,6 +38,7 @@ class GameManager(val main: Main) : Listener {
     private var bifrostTask: BukkitTask? = null
     private var playingPhaseTask: BukkitTask? = null
 
+    private var arrowTask: BukkitTask? = null
 
     fun triggerStartingGamePhase() {
         this.gameState = GameState.STARTING
@@ -82,7 +79,8 @@ class GameManager(val main: Main) : Listener {
         }
 
         // Just for testing purposes
-        this.bifrostTask = BifrostTask().runTaskTimer(this.main, NO_TASK_DELAY,EVERY_TICK)
+        this.bifrostTask = BifrostTask().runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
+        this.arrowTask = ArrowTask().runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
         this.playingPhaseTask = PlayingPhaseTask(this.main).runTaskTimer(this.main, 0, 20)
     }
 
@@ -107,9 +105,9 @@ class GameManager(val main: Main) : Listener {
 
     @EventHandler
     fun onPlayerFallsIntoTheVoid(event: EntityDamageEvent) {
-        if(event.cause != EntityDamageEvent.DamageCause.VOID) return;
-        if(event.entity is Player) {
-            val player = event.entity as Player;
+        if (event.cause != EntityDamageEvent.DamageCause.VOID) return
+        if (event.entity is Player) {
+            val player = event.entity as Player
 
             when (this.gameState) {
                 GameState.PLAYING -> {
@@ -119,7 +117,7 @@ class GameManager(val main: Main) : Listener {
                     val playerTeam = this.main.teamsManager.getPlayerGameTeam(player)
 
                     // Teleport them to their base
-                    val respawnPoint = playerTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"));
+                    val respawnPoint = playerTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
                     player.teleport(respawnPoint)
 
                     player.exp = 0.0F
@@ -144,13 +142,13 @@ class GameManager(val main: Main) : Listener {
     @EventHandler
     fun onEntityTakesFallDamage(event: EntityDamageEvent) {
         if (event.cause == EntityDamageEvent.DamageCause.FALL) {
-            event.isCancelled = true;
+            event.isCancelled = true
         }
     }
 
     @EventHandler
     fun onPlayerDropsItem(event: PlayerDropItemEvent) {
         // No matter the game state, no one should be able to drop items
-        event.isCancelled = true;
+        event.isCancelled = true
     }
 }

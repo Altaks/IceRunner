@@ -1,7 +1,6 @@
 package fr.altzec.fr.altzec.icerunner.world
 
 import fr.altzec.fr.altzec.icerunner.Main
-import fr.altzec.fr.altzec.icerunner.game.TeamsManager
 import fr.altzec.fr.altzec.icerunner.utils.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
