@@ -10,6 +10,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
@@ -71,6 +72,14 @@ class TeamsManager(val main: Main) : Listener {
             ItemComparator.compare(GameItems.redTeamTag, event.item) -> changePlayerTeam(event.player, redTeam)
             ItemComparator.compare(GameItems.blueTeamTag, event.item) -> changePlayerTeam(event.player, blueTeam)
             else -> return
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDisconnects(event: PlayerQuitEvent) {
+        if(!this.main.gameManager.hasGameStarted()) {
+            // make the player quit their team
+            event.player.scoreboard.getEntryTeam(event.player.name)?.removeEntry(event.player.name)
         }
     }
 
