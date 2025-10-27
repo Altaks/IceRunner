@@ -4,6 +4,7 @@ import fr.altzec.fr.altzec.icerunner.game.GameManager
 import fr.altzec.fr.altzec.icerunner.game.ScoreboardManager
 import fr.altzec.fr.altzec.icerunner.game.TeamsManager
 import fr.altzec.fr.altzec.icerunner.triggers.commands.DevCommand
+import fr.altzec.fr.altzec.icerunner.triggers.listeners.ArrowListener
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.DevListener
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.PlayerJoinQuitListener
 import fr.altzec.fr.altzec.icerunner.utils.TextGradientUtils
@@ -48,6 +49,7 @@ open class Main : JavaPlugin {
         listOf(
             PlayerJoinQuitListener(this),
             DevListener(this),
+            ArrowListener(this),
             teamsManager,
             scoreboardManager,
         ).forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, this) }
