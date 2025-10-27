@@ -1,13 +1,13 @@
 package fr.altzec.fr.altzec.icerunner.triggers.listeners
 
 import fr.altzec.fr.altzec.icerunner.Main
-import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.Particle
+import org.bukkit.Sound
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileHitEvent
-import org.bukkit.scheduler.BukkitScheduler
 import org.bukkit.util.NumberConversions
 
 
@@ -39,13 +39,18 @@ class ArrowListener(val main: Main) : Listener {
                                     Material.ICE -> Material.AIR
                                     Material.PACKED_ICE -> Material.ICE
                                     Material.BLUE_ICE -> Material.PACKED_ICE
-                                    else -> position.block.type
+                                    else -> continue
                                 }
+
                                 position.block.setType(newType, false)
                             }
                         }
                     }
                 }
+
+                val explosionCenter = event.hitBlock?.location ?: throw IllegalStateException("Hit block does not have a Location");
+                event.hitBlock?.world?.playSound(explosionCenter, Sound.ENTITY_WIND_CHARGE_WIND_BURST, 50f, 1f)
+                event.hitBlock?.world?.spawnParticle(Particle.GUST_EMITTER_LARGE, explosionCenter, 1)
             }
         }
     }
