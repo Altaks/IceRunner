@@ -15,7 +15,7 @@ data class WorldVariantMetadata(
     val greenIslandGlassCoordinates: List<Location>,
 
     // ------------- YELLOW SECONDARY ISLAND ------------- //
-    val yellowIslandCoordinates: Location,
+    val yellowIslandCenterCoordinates: Location,
     val yellowIslandGlassCoordinates: List<Location>,
 
     // ------------- RED TEAM ISLAND ------------- //
@@ -28,7 +28,7 @@ data class WorldVariantMetadata(
         "Amount of glass blocks found : ${mapCenterGlassCoordinates.size},\n" +
         "Green Island: $greenIslandCenterCoordinates,\n" +
         "Amount of glass blocks found : ${greenIslandGlassCoordinates.size},\n" +
-        "Yellow Island: $yellowIslandCoordinates,\n" +
+        "Yellow Island: $yellowIslandCenterCoordinates,\n" +
         "Amount of glass blocks found : ${yellowIslandGlassCoordinates.size}"
 
     companion object {
@@ -73,7 +73,7 @@ data class WorldVariantMetadata(
                 mapCenterGlassCoordinates = (yaml.getList(MAP_CENTER_GLASS_BLOCKS_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $MAP_CENTER_GLASS_BLOCKS_COORDINATES_PATH path in map variant metadata")) as List<Location>,
                 greenIslandCenterCoordinates = yaml.getLocation(GREEN_ISLAND_CENTER_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $GREEN_ISLAND_CENTER_COORDINATES_PATH path in map variant metadata"),
                 greenIslandGlassCoordinates = (yaml.getList(GREEN_ISLAND_GLASS_BLOCKS_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $GREEN_ISLAND_GLASS_BLOCKS_COORDINATES_PATH path in map variant metadata")) as List<Location>,
-                yellowIslandCoordinates = yaml.getLocation(YELLOW_ISLAND_CENTER_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $YELLOW_ISLAND_CENTER_COORDINATES_PATH path in map variant metadata"),
+                yellowIslandCenterCoordinates = yaml.getLocation(YELLOW_ISLAND_CENTER_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $YELLOW_ISLAND_CENTER_COORDINATES_PATH path in map variant metadata"),
                 yellowIslandGlassCoordinates = (yaml.getList(YELLOW_ISLAND_GLASS_BLOCKS_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $YELLOW_ISLAND_GLASS_BLOCKS_COORDINATES_PATH path in map variant metadata")) as List<Location>,
                 redTeamSpawnCoordinates = yaml.getLocation(RED_TEAM_SPAWN_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $RED_TEAM_SPAWN_COORDINATES_PATH path in map variant metadata"),
                 blueTeamSpawnCoordinates = yaml.getLocation(BLUE_TEAM_SPAWN_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $BLUE_TEAM_SPAWN_COORDINATES_PATH path in map variant metadata"),

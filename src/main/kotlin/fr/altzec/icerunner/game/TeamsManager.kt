@@ -2,6 +2,7 @@ package fr.altzec.fr.altzec.icerunner.game
 
 import com.google.common.collect.HashBiMap
 import fr.altzec.fr.altzec.icerunner.Main
+import fr.altzec.fr.altzec.icerunner.world.WorldManager
 import fr.altzec.icerunner.utils.ItemComparator
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -35,9 +36,13 @@ class TeamsManager(val main: Main) : Listener {
         private val blueTeam = GameTeam("BlueTeam", "Equipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) // "3AB3DA"
 
         private val teams: List<GameTeam> = listOf(redTeam, blueTeam)
+
+        private const val CENTER_ISLAND_CAPTURE_POINTS_DELTA = +2;
+        private const val SECONDARY_ISLAND_CAPTURE_POINTS_DELTA = +1;
     }
 
     private val teamToGameTeamMapping: HashBiMap<Team, GameTeam> = HashBiMap.create<Team, GameTeam>(teams.size)
+    private val teamToScoreMapping: HashMap<GameTeam, Int> = teams.associateWith { 0 } as HashMap
 
     private fun getMainScoreboard(): Scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: throw IllegalStateException("Unable to access main scoreboard")
 
@@ -84,7 +89,7 @@ class TeamsManager(val main: Main) : Listener {
 
     fun getPlayerGameTeam(player: Player): GameTeam {
         val team: Team = this.getMainScoreboard().getEntryTeam(player.name) ?: throw IllegalStateException("Player ${player.name} has no team !")
-        return this.teamToGameTeamMapping.get(team) ?: throw IllegalStateException("Team ${team.displayName} is not mapped to a GameTeam!")
+        return this.teamToGameTeamMapping[team] ?: throw IllegalStateException("Team ${team.displayName} is not mapped to a GameTeam!")
     }
 
     fun teleportPlayersToTheirTeamSpawnAndSetRespawnPoints() {
@@ -106,5 +111,33 @@ class TeamsManager(val main: Main) : Listener {
         Bukkit.getOnlinePlayers().forEach { player ->
             GameItems.applyPlayingInventoryToPlayer(player, getPlayerGameTeam(player).armorColor)
         }
+    }
+
+    fun triggerPointsCounting() {
+        this.main.worldManager.getIslandsVisitors().forEach { (island, players) -> run {
+
+            val teamToAmountOfPlayers = mutableMapOf<Team, Int>();
+            players.forEach { player -> run {
+                val team = player.scoreboard.getEntryTeam(player.name) ?: throw IllegalStateException("Couldn't get player team");
+                teamToAmountOfPlayers.putIfAbsent(team, 0)
+                teamToAmountOfPlayers[team] = teamToAmountOfPlayers[team]!! + 1
+            }};
+
+            if(teamToAmountOfPlayers.isEmpty()) return
+
+            val dominantTeam = teamToAmountOfPlayers.maxBy { (_, amount) -> amount }.key;
+            val gameTeam = teamToGameTeamMapping[dominantTeam] ?: throw IllegalStateException("This team is not registered as a GameTeam")
+
+            when(island) {
+                WorldManager.WorldIslands.CENTER -> updateTeamScore(gameTeam, CENTER_ISLAND_CAPTURE_POINTS_DELTA)
+                WorldManager.WorldIslands.GREEN -> updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
+                WorldManager.WorldIslands.YELLOW -> updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
+            }
+        } }
+    }
+
+    private fun updateTeamScore(team: GameTeam, delta: Int) {
+        this.main.logger.info("Team ${team.displayName} gains $delta points !")
+        this.teamToScoreMapping[team] = this.teamToScoreMapping[team]!! + delta
     }
 }
