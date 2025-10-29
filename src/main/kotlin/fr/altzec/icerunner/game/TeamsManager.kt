@@ -40,7 +40,7 @@ class TeamsManager(val main: Main) : Listener {
         private const val CENTER_ISLAND_CAPTURE_POINTS_DELTA = +2;
         private const val SECONDARY_ISLAND_CAPTURE_POINTS_DELTA = +1;
 
-        private const val POINTS_TO_ACHIEVE_VICTORY = 30;
+        private const val POINTS_TO_ACHIEVE_VICTORY = 360;
     }
 
     private val teamToGameTeamMapping: HashBiMap<Team, GameTeam> = HashBiMap.create<Team, GameTeam>(teams.size)
