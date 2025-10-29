@@ -48,3 +48,4 @@ artifacts/
 
 .env
 /.idea/discord.xml
+/_tools/pixelart/aseprite
