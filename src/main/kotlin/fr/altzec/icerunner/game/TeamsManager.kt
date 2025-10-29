@@ -39,6 +39,8 @@ class TeamsManager(val main: Main) : Listener {
 
         private const val CENTER_ISLAND_CAPTURE_POINTS_DELTA = +2;
         private const val SECONDARY_ISLAND_CAPTURE_POINTS_DELTA = +1;
+
+        private const val POINTS_TO_ACHIEVE_VICTORY = 30;
     }
 
     private val teamToGameTeamMapping: HashBiMap<Team, GameTeam> = HashBiMap.create<Team, GameTeam>(teams.size)
@@ -114,7 +116,11 @@ class TeamsManager(val main: Main) : Listener {
     }
 
     fun triggerPointsCounting() {
-        this.main.worldManager.getIslandsVisitors().forEach { (island, players) -> run {
+        this.main.worldManager.getIslandsVisitors().forEach { (island, players) -> run iteration@{
+
+            if(players.isEmpty()) {
+                return@iteration;
+            }
 
             val teamToAmountOfPlayers = mutableMapOf<Team, Int>();
             players.forEach { player -> run {
@@ -123,9 +129,7 @@ class TeamsManager(val main: Main) : Listener {
                 teamToAmountOfPlayers[team] = teamToAmountOfPlayers[team]!! + 1
             }};
 
-            if(teamToAmountOfPlayers.isEmpty()) return
-
-            val dominantTeam = teamToAmountOfPlayers.maxBy { (_, amount) -> amount }.key;
+            val dominantTeam = teamToAmountOfPlayers.maxBy { (_, amount) -> amount }.key; // TODO : change this team selection algorithm
             val gameTeam = teamToGameTeamMapping[dominantTeam] ?: throw IllegalStateException("This team is not registered as a GameTeam")
 
             when(island) {
@@ -137,7 +141,14 @@ class TeamsManager(val main: Main) : Listener {
     }
 
     private fun updateTeamScore(team: GameTeam, delta: Int) {
-        this.main.logger.info("Team ${team.displayName} gains $delta points !")
-        this.teamToScoreMapping[team] = this.teamToScoreMapping[team]!! + delta
+        this.main.pluginLogger.info("Team ${team.displayName} gains $delta points !")
+        val newTeamScore = this.teamToScoreMapping[team]!! + delta;
+
+        if(newTeamScore >= POINTS_TO_ACHIEVE_VICTORY) {
+            this.main.pluginLogger.info("Game is finished : ${team.displayName} has won !")
+            this.main.gameManager.triggerFinishedGamePhase(team)
+        } else {
+            this.teamToScoreMapping[team] = this.teamToScoreMapping[team]!! + delta
+        }
     }
 }

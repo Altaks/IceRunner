@@ -15,7 +15,7 @@ class DevCommand(val main: Main) : TabExecutor {
         args: Array<out String?>,
     ): List<String?>? {
         if (args.isNotEmpty()) {
-            return listOf("startGame", "endGame", "genWorld")
+            return listOf("startGame", "endGame", "playingGame", "genWorld")
         }
         return null
     }
@@ -29,7 +29,8 @@ class DevCommand(val main: Main) : TabExecutor {
         if (sender is Player && args.isNotEmpty()) {
             when (args.first()) {
                 "startGame" -> this.main.gameManager.triggerStartingGamePhase()
-                "endGame" -> this.main.gameManager.triggerFinishedGamePhase()
+                "playingGame" -> this.main.gameManager.triggerPlayingGamePhase()
+                "endGame" -> this.main.gameManager.triggerFinishedGamePhase(this.main.teamsManager.getPlayerGameTeam(sender))
                 "genWorld" -> this.main.worldManager.setupGameWorld()
                 else -> {
                     sender.sendMessage("This command sub-argument matches nothing")

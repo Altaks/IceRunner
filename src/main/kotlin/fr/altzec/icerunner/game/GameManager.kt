@@ -43,9 +43,20 @@ class GameManager(val main: Main) {
 
     fun isGameStarting(): Boolean = this.gameState == GameState.STARTING
     fun hasGameStarted(): Boolean = this.gameState > GameState.STARTING
+    fun isGameFinished(): Boolean = this.gameState >= GameState.FINISHED
 
-    fun triggerFinishedGamePhase() {
+    fun triggerFinishedGamePhase(winningTeam: TeamsManager.GameTeam) {
         this.gameState = GameState.FINISHED
-        Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Game is finished...")
+        Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Game is finished...$winningTeam has won !")
+
+        // Resetting player stats
+        Bukkit.getOnlinePlayers().forEach { player ->
+            player.gameMode = GameMode.CREATIVE
+            player.exp = 0.0F
+            player.level = 0
+            player.foodLevel = 20
+            player.health = 20.0
+            player.inventory.clear()
+        }
     }
 }
