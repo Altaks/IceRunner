@@ -4,6 +4,7 @@ import fr.altzec.fr.altzec.icerunner.Main
 import fr.altzec.fr.altzec.icerunner.triggers.tasks.PlayingPhaseTask
 import fr.altzec.fr.altzec.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.scheduler.BukkitTask
 
@@ -14,9 +15,14 @@ class GameManager(val main: Main) {
     private var startingPhaseTask: BukkitTask? = null
     private var playingPhaseTask: BukkitTask? = null
 
+    companion object {
+        private val CONGRATS_DECORATION = "${ChatColor.RED}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GOLD}${ChatColor.MAGIC}!";
+        private val CONGRATS_DECORATION_REVERSED = "${ChatColor.GOLD}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.RED}${ChatColor.MAGIC}!";
+    }
+
     fun triggerStartingGamePhase() {
         this.gameState = GameState.STARTING
-        Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Starting game...")
+        Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La phase de sélection d'équipes commence !")
 
         this.main.worldManager.setupGameWorld()
         this.main.worldManager.teleportPlayersToGameWorld()
@@ -26,6 +32,9 @@ class GameManager(val main: Main) {
     }
 
     fun triggerPlayingGamePhase() {
+        this.gameState = GameState.PLAYING
+        Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La partie commence !...")
+
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
         this.main.teamsManager.equipPlayersWithTeamArmor()
 
@@ -47,7 +56,7 @@ class GameManager(val main: Main) {
 
     fun triggerFinishedGamePhase(winningTeam: TeamsManager.GameTeam) {
         this.gameState = GameState.FINISHED
-        Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Game is finished...$winningTeam has won !")
+        Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.YELLOW} L'${ChatColor.GOLD}${winningTeam.displayName}${ChatColor.YELLOW} a gagné ! ${ChatColor.AQUA}$CONGRATS_DECORATION ${ChatColor.RESET}${ChatColor.YELLOW}Félicitations $CONGRATS_DECORATION_REVERSED")
 
         // Resetting player stats
         Bukkit.getOnlinePlayers().forEach { player ->
