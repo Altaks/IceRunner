@@ -3,10 +3,12 @@ package fr.altzec.fr.altzec.icerunner.game
 import com.google.common.collect.HashBiMap
 import fr.altzec.fr.altzec.icerunner.Main
 import fr.altzec.fr.altzec.icerunner.world.WorldManager
+import fr.altzec.fr.altzec.icerunner.world.WorldVariantMetadata
 import fr.altzec.icerunner.utils.ItemComparator
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Color
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -25,6 +27,7 @@ class TeamsManager(val main: Main) : Listener {
         val chatColor: ChatColor, // https://minecraft.fandom.com/wiki/Dye for Dye color codes
         val armorColor: Color,
         val choiceItem: ItemStack,
+        val respawnPoint: (WorldVariantMetadata) -> Location,
     )
 
     data class GameScoringState(
@@ -42,8 +45,8 @@ class TeamsManager(val main: Main) : Listener {
 
         const val PLAYERS_REQUIRED_TO_START_GAME = PLAYERS_PER_TEAM * AMOUNT_OF_TEAMS
 
-        private val redTeam = GameTeam("RedTeam", "Équipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) // "B02E26"
-        private val blueTeam = GameTeam("BlueTeam", "Équipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) // "3AB3DA"
+        private val redTeam = GameTeam("RedTeam", "Equipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) { meta -> meta.redTeamSpawnCoordinates } // "B02E26"
+        private val blueTeam = GameTeam("BlueTeam", "Equipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) { meta -> meta.blueTeamSpawnCoordinates } // "3AB3DA"
 
         private val teams: List<GameTeam> = listOf(redTeam, blueTeam)
 
@@ -125,15 +128,10 @@ class TeamsManager(val main: Main) : Listener {
     fun teleportPlayersToTheirTeamSpawnAndSetRespawnPoints() {
         Bukkit.getOnlinePlayers().forEach { player ->
             val gameTeam = getPlayerGameTeam(player)
+            val respawnPoint = gameTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
 
-            val spawnLocation = when (gameTeam) {
-                redTeam -> this.main.worldManager.loadedWorldMetadata?.redTeamSpawnCoordinates
-                blueTeam -> this.main.worldManager.loadedWorldMetadata?.blueTeamSpawnCoordinates
-                else -> null
-            } ?: throw IllegalStateException("This GameTeam : $gameTeam is not supported !")
-
-            player.setRespawnLocation(spawnLocation, true)
-            player.teleport(spawnLocation)
+            player.setRespawnLocation(respawnPoint, true)
+            player.teleport(respawnPoint)
         }
     }
 
