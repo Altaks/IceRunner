@@ -40,9 +40,9 @@ object StatusBarUtils {
         val inactivePart = "${statusBarStyle.baseColor}${statusBarStyle.baseSymbol.repeat(inactiveLength)}"
 
         return if (statusBarStyle.leftToRight) {
-            activePart + inactivePart
+            activePart + inactivePart + ChatColor.RESET
         } else {
-            inactivePart + activePart
+            inactivePart + activePart + ChatColor.RESET
         }
     }
 }
