@@ -9,7 +9,7 @@ class ServerListPingListener(val main: Main) : Listener {
 
     @EventHandler
     fun onServerPingEvent(event: ServerListPingEvent) {
-        if(main.serverCachedIcon != null) {
+        if (main.serverCachedIcon != null) {
             event.setServerIcon(main.serverCachedIcon)
         }
     }

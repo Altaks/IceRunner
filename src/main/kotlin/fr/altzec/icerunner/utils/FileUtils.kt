@@ -1,11 +1,9 @@
 package fr.altzec.fr.altzec.icerunner.utils
 
-import org.bukkit.util.FileUtil
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
-import kotlin.io.path.Path
 import kotlin.io.path.deleteRecursively
 import kotlin.jvm.java
 

@@ -48,7 +48,7 @@ class WorldManager(val main: Main) {
      * Generates the IceRunner game world, by copying it from the inside of the JAR to the outside filesystem
      */
     fun setupGameWorld() {
-        ensureGameWorldDoesNotExistOrIsUnloaded();
+        ensureGameWorldDoesNotExistOrIsUnloaded()
         generateGameWorld()
         loadGameWorld()
         configureGameWorldBehavior()
@@ -61,7 +61,7 @@ class WorldManager(val main: Main) {
 
     private fun generateGameWorld() {
         val worldDestination = "$ICE_RUNNER_WORLD_DESTINATION_PATH${File.separator}$ICE_RUNNER_WORLD_NAME"
-        FileUtils.deleteDirIfExists(worldDestination);
+        FileUtils.deleteDirIfExists(worldDestination)
         main.logger.info("Copying game world $DEFAULT_WORLD_VARIANT_PATH from JAR file to $worldDestination")
         FileUtils.copyResourceDir(DEFAULT_WORLD_VARIANT_PATH, worldDestination)
         main.logger.info("Finished copying game world to $worldDestination")

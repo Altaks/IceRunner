@@ -31,8 +31,8 @@ open class Main : JavaPlugin {
         val GAME_NAME = "${ChatColor.GRAY}[${TextGradientUtils.generateGradient("IceRunner", "#59B1FD", "#59FDF8")}${ChatColor.GRAY}]${ChatColor.RESET}"
         val MAIN_PREFIX: String = "$GAME_NAME ${ChatColor.GRAY}\u00BB${ChatColor.RESET}"
 
-        private const val INTERNAL_GAME_ICON_PATH = "game_icon.png";
-        private const val EXTERNAL_GAME_ICON_PATH = "icon.png";
+        private const val INTERNAL_GAME_ICON_PATH = "game_icon.png"
+        private const val EXTERNAL_GAME_ICON_PATH = "icon.png"
     }
 
     val pluginLogger = Bukkit.getLogger()
@@ -42,7 +42,7 @@ open class Main : JavaPlugin {
     val teamsManager: TeamsManager = TeamsManager(this)
     val scoreboardManager: ScoreboardManager = ScoreboardManager(this)
 
-    var serverCachedIcon: CachedServerIcon? = null;
+    var serverCachedIcon: CachedServerIcon? = null
 
     override fun onEnable() {
         super.onEnable()
@@ -91,12 +91,12 @@ open class Main : JavaPlugin {
     fun prepareServerMotdAndIcon() {
         Bukkit.setMotd(
             "               \u00bb ${ChatColor.YELLOW}Bienvenue en ${TextGradientUtils.generateGradient("IceRunner", "#59B1FD", "#59FDF8")}${ChatColor.YELLOW} !${ChatColor.GRAY} \u00ab\n" +
-                    "      ${ChatColor.YELLOW}Un ${ChatColor.GOLD}KOTH${ChatColor.YELLOW}, des ${TextGradientUtils.generateGradient("glissades", "#FFFFFF", "#59FDF8")}${ChatColor.YELLOW} et des ${TextGradientUtils.generateGradient("explosions", "ED524F", "EDA14F")} ${ChatColor.YELLOW}!"
+                "      ${ChatColor.YELLOW}Un ${ChatColor.GOLD}KOTH${ChatColor.YELLOW}, des ${TextGradientUtils.generateGradient("glissades", "#FFFFFF", "#59FDF8")}${ChatColor.YELLOW} et des ${TextGradientUtils.generateGradient("explosions", "ED524F", "EDA14F")} ${ChatColor.YELLOW}!",
         )
 
-        val gameIconFile = File(dataFolder.path + File.separator + EXTERNAL_GAME_ICON_PATH);
-        if(!gameIconFile.exists()) {
-            FileUtils.copyResourceDir(INTERNAL_GAME_ICON_PATH, dataFolder.path + File.separator + EXTERNAL_GAME_ICON_PATH);
+        val gameIconFile = File(dataFolder.path + File.separator + EXTERNAL_GAME_ICON_PATH)
+        if (!gameIconFile.exists()) {
+            FileUtils.copyResourceDir(INTERNAL_GAME_ICON_PATH, dataFolder.path + File.separator + EXTERNAL_GAME_ICON_PATH)
         }
         this.serverCachedIcon = Bukkit.loadServerIcon(File(dataFolder.path + File.separator + EXTERNAL_GAME_ICON_PATH))
     }
