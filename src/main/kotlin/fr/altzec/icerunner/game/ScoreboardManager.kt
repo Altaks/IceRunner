@@ -1,6 +1,7 @@
 package fr.altzec.fr.altzec.icerunner.game
 
 import fr.altzec.fr.altzec.icerunner.Main
+import fr.altzec.fr.altzec.icerunner.utils.ExposedFunctions.length
 import fr.altzec.fr.altzec.icerunner.utils.StatusBarUtils
 import fr.mrmicky.fastboard.FastBoard
 import org.bukkit.Bukkit
@@ -11,6 +12,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
+import kotlin.math.log10
 
 class ScoreboardManager(val main: Main) : Listener {
 
@@ -30,6 +32,8 @@ class ScoreboardManager(val main: Main) : Listener {
         private const val WAITING_STATUS_BAR_STATUS_BAR_LENGTH = 7; // 7 players, one diamond per player
         private const val WAITING_STATUS_BAR_STYLE_DECORATION_CHARACTER_LENGTH = 2 * 1; // One > and a < on the sides.
         private const val WAITING_STATUS_BAR_SPACEFILL_LENGTH = (WAITING_LINE_LENGTH - WAITING_STATUS_BAR_STATUS_BAR_LENGTH - WAITING_STATUS_BAR_STYLE_DECORATION_CHARACTER_LENGTH) / 2
+
+        fun spaceFilledScore(score: Int) = "${" ".repeat(3 - score.length())}$score"
     }
 
     val playerScoreboards: HashMap<Player, FastBoard> = HashMap()
@@ -108,16 +112,18 @@ class ScoreboardManager(val main: Main) : Listener {
             val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE;
 
             return listOf(
-                "Equipe rouge : ${gameScoringState.redTeamScore}",
                 "",
-                "    ${yellowIslandColor}⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
-                "                ${ChatColor.RED}⬛${ChatColor.RESET}  ",
-                "         $centerIslandColor⬛⬛${ChatColor.RESET}",
-                "         $centerIslandColor⬛⬛${ChatColor.RESET}",
-                "    ${ChatColor.AQUA}⬛${ChatColor.RESET}             ",
-                "    ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        ${greenIslandColor}⬛${ChatColor.RESET}  ",
+                "   ${ChatColor.RED}✦ ${spaceFilledScore(gameScoringState.redTeamScore)}${ChatColor.RESET}/360",
                 "",
-                "Equipe bleue : ${gameScoringState.blueTeamScore}",
+                "   ${yellowIslandColor}⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
+                "               ${ChatColor.RED}⬛${ChatColor.RESET}  ",
+                "        $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "        $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "   ${ChatColor.AQUA}⬛${ChatColor.RESET}             ",
+                "   ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        ${greenIslandColor}⬛${ChatColor.RESET}  ",
+                "",
+                "   ${ChatColor.AQUA}❉ ${spaceFilledScore(gameScoringState.blueTeamScore)}${ChatColor.RESET}/360",
+                "",
             )
         }
 
@@ -128,16 +134,18 @@ class ScoreboardManager(val main: Main) : Listener {
             val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE;
 
             return listOf(
-                "Equipe bleue : ${gameScoringState.blueTeamScore}",
                 "",
-                "    ${greenIslandColor}⬛${ChatColor.RESET}        ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}  ",
-                "                ${ChatColor.AQUA}⬛${ChatColor.RESET}  ",
-                "         $centerIslandColor⬛⬛${ChatColor.RESET}",
-                "         $centerIslandColor⬛⬛${ChatColor.RESET}",
-                "    ${ChatColor.RED}⬛${ChatColor.RESET}             ",
-                "    ${ChatColor.RED}⬛⬛${ChatColor.RESET}        ${yellowIslandColor}⬛${ChatColor.RESET}  ",
+                "   ${ChatColor.AQUA}❉ ${spaceFilledScore(gameScoringState.blueTeamScore)}${ChatColor.RESET}/360",
                 "",
-                "Equipe rouge : ${gameScoringState.redTeamScore}",
+                "   ${greenIslandColor}⬛${ChatColor.RESET}        ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}  ",
+                "               ${ChatColor.AQUA}⬛${ChatColor.RESET}  ",
+                "        $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "        $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "   ${ChatColor.RED}⬛${ChatColor.RESET}             ",
+                "   ${ChatColor.RED}⬛⬛${ChatColor.RESET}        ${yellowIslandColor}⬛${ChatColor.RESET}  ",
+                "",
+                "   ${ChatColor.RED}✦ ${spaceFilledScore(gameScoringState.redTeamScore)}${ChatColor.RESET}/360",
+                ""
             )
         }
     }

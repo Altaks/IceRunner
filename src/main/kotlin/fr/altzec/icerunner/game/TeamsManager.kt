@@ -53,6 +53,7 @@ class TeamsManager(val main: Main) : Listener {
         private const val POINTS_TO_ACHIEVE_VICTORY = 360
     }
 
+
     private val teamToGameTeamMapping: HashBiMap<Team, GameTeam> = HashBiMap.create<Team, GameTeam>(teams.size)
     private val teamToScoreMapping: HashMap<GameTeam, Int> = teams.associateWith { 0 } as HashMap
 
