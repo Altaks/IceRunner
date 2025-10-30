@@ -3,8 +3,9 @@ package fr.altzec.fr.altzec.icerunner.triggers.listeners
 import fr.altzec.fr.altzec.icerunner.Main
 import fr.altzec.fr.altzec.icerunner.game.GameItems
 import fr.altzec.fr.altzec.icerunner.game.TeamsManager
+import fr.altzec.fr.altzec.icerunner.utils.TextGradientUtils
+import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -14,14 +15,14 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
 
     companion object {
         private val PLAYER_LIST_HEADER: String =
-            "${ChatColor.GRAY}[${ChatColor.AQUA}Ice Runner${ChatColor.GRAY}] \n" +
-                "${ChatColor.GRAY}Made by ${ChatColor.LIGHT_PURPLE}Altaks ${ChatColor.GRAY}& ${ChatColor.LIGHT_PURPLE}_Zecross_" +
+            "${Main.GAME_NAME} \n" +
+                "${ChatColor.GRAY}Made by ${TextGradientUtils.generateGradient("Altaks", "#CA02AE", "#8102CA")}" +
                 "\n"
 
         private val PLAYER_LIST_FOOTER: String =
             "\n" +
                 "${ChatColor.GRAY}\u00BB ${ChatColor.AQUA}https://github.com/Altaks/IceRunner ${ChatColor.GRAY}\u00AB\n" +
-                "${ChatColor.LIGHT_PURPLE}altakxs ${ChatColor.GRAY}& ${ChatColor.LIGHT_PURPLE}zecross256 ${ChatColor.GRAY}on ${ChatColor.BLUE}Discord"
+                "${TextGradientUtils.generateGradient("altakxs", "#CA02AE", "#8102CA")}${ChatColor.GRAY} on ${ChatColor.BLUE}Discord"
     }
 
     @EventHandler

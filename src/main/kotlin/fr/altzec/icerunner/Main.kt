@@ -6,9 +6,10 @@ import fr.altzec.fr.altzec.icerunner.game.TeamsManager
 import fr.altzec.fr.altzec.icerunner.triggers.commands.DevCommand
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.DevListener
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.PlayerJoinQuitListener
+import fr.altzec.fr.altzec.icerunner.utils.TextGradientUtils
 import fr.altzec.fr.altzec.icerunner.world.WorldManager
+import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.command.PluginCommand
 import org.bukkit.command.TabExecutor
 import org.bukkit.plugin.PluginDescriptionFile
@@ -23,7 +24,8 @@ open class Main : JavaPlugin {
     constructor(loader: JavaPluginLoader, description: PluginDescriptionFile, dataFolder: File, file: File?) : super(loader, description, dataFolder, file ?: File(""))
 
     companion object {
-        val MAIN_PREFIX: String = "${ChatColor.GRAY}[${ChatColor.AQUA}IceRunner${ChatColor.GRAY}] \u00BB${ChatColor.RESET}"
+        val GAME_NAME = "${ChatColor.GRAY}[${TextGradientUtils.generateGradient("IceRunner", "#59B1FD", "#59FDF8")}${ChatColor.GRAY}]${ChatColor.RESET}"
+        val MAIN_PREFIX: String = "$GAME_NAME ${ChatColor.GRAY}\u00BB${ChatColor.RESET}"
     }
 
     val pluginLogger = Bukkit.getLogger()
