@@ -28,7 +28,7 @@ class ArrowTask : BukkitRunnable() {
                             PARTICLE_LOCATION_DELTA,
                             PARTICLE_LOCATION_DELTA,
                             PARTICLE_LOCATION_DELTA,
-                            PARTICLE_SPEED
+                            PARTICLE_SPEED,
                         )
                     }
                 }

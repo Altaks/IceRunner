@@ -2,8 +2,8 @@ package fr.altzec.fr.altzec.icerunner.game
 
 import com.google.common.collect.HashBiMap
 import fr.altzec.fr.altzec.icerunner.Main
-import fr.altzec.fr.altzec.icerunner.world.WorldVariantMetadata
 import fr.altzec.fr.altzec.icerunner.world.WorldManager
+import fr.altzec.fr.altzec.icerunner.world.WorldVariantMetadata
 import fr.altzec.icerunner.utils.ItemComparator
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor

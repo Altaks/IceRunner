@@ -8,7 +8,6 @@ import fr.altzec.fr.altzec.icerunner.triggers.listeners.ArrowListener
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.DevListener
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.PlayerJoinQuitListener
 import fr.altzec.fr.altzec.icerunner.utils.TextGradientUtils
-import fr.altzec.fr.altzec.icerunner.triggers.tasks.BifrostTask
 import fr.altzec.fr.altzec.icerunner.world.WorldManager
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
@@ -53,7 +52,7 @@ open class Main : JavaPlugin {
             ArrowListener(this),
             teamsManager,
             scoreboardManager,
-            gameManager
+            gameManager,
         ).forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, this) }
 
         Bukkit.getOnlinePlayers().forEach { player -> this.scoreboardManager.initPlayerScoreboard(player) }
