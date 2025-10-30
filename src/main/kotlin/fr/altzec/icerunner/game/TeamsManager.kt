@@ -130,6 +130,8 @@ class TeamsManager(val main: Main) : Listener {
         this.main.worldManager.getIslandsVisitors().forEach { (island, players) ->
             run iteration@{
                 if (players.isEmpty()) {
+                    // No team dominates this island, thus dominant team color is null.
+                    this.main.worldManager.updateIslandGlassWithTeamColor(island, null);
                     return@iteration
                 }
 
@@ -144,6 +146,9 @@ class TeamsManager(val main: Main) : Listener {
 
                 val dominantTeam = teamToAmountOfPlayers.maxBy { (_, amount) -> amount }.key; // TODO : change this team selection algorithm
                 val gameTeam = teamToGameTeamMapping[dominantTeam] ?: throw IllegalStateException("This team is not registered as a GameTeam")
+
+                // Update the island with the dominant team color
+                this.main.worldManager.updateIslandGlassWithTeamColor(island, gameTeam.chatColor)
 
                 when (island) {
                     WorldManager.WorldIslands.CENTER -> updateTeamScore(gameTeam, CENTER_ISLAND_CAPTURE_POINTS_DELTA)
