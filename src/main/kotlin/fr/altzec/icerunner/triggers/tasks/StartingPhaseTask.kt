@@ -33,6 +33,7 @@ class StartingPhaseTask(val main: Main) : BukkitRunnable() {
         if (main.teamsManager.areEnoughPlayersPerTeam()) {
             if (countdown <= STARTING_PHASE_COUNTDOWN_END_VALUE) {
                 this.main.gameManager.triggerPlayingGamePhase()
+                main.worldManager.loadedWorldMetadata?.mapCenterGlassCoordinates?.forEach { location -> location.block.type = Material.WHITE_STAINED_GLASS }
                 this.cancel()
             } else {
                 Bukkit.getOnlinePlayers().forEach { player -> player.sendTitle("${ChatColor.YELLOW}Démarrage dans ${ChatColor.GOLD}$countdown", "${ChatColor.YELLOW}secondes", 10, 70, 20) }

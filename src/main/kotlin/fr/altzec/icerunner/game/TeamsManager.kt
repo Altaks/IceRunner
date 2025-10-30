@@ -27,6 +27,15 @@ class TeamsManager(val main: Main) : Listener {
         val choiceItem: ItemStack,
     )
 
+    data class GameScoringState(
+        var redTeamScore: Int,
+        var blueTeamScore: Int,
+
+        var centerIslandDominatedBy: GameTeam?,
+        var greenIslandDominatedBy: GameTeam?,
+        var yellowIslandDominatedBy: GameTeam?,
+    )
+
     companion object {
         const val PLAYERS_PER_TEAM = 1
         const val AMOUNT_OF_TEAMS = 2
@@ -46,6 +55,14 @@ class TeamsManager(val main: Main) : Listener {
 
     private val teamToGameTeamMapping: HashBiMap<Team, GameTeam> = HashBiMap.create<Team, GameTeam>(teams.size)
     private val teamToScoreMapping: HashMap<GameTeam, Int> = teams.associateWith { 0 } as HashMap
+
+    private val gameScoringState = GameScoringState(
+        redTeamScore = 0,
+        blueTeamScore = 0,
+        centerIslandDominatedBy = null,
+        greenIslandDominatedBy = null,
+        yellowIslandDominatedBy = null,
+    )
 
     private fun getMainScoreboard(): Scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: throw IllegalStateException("Unable to access main scoreboard")
 
@@ -130,6 +147,13 @@ class TeamsManager(val main: Main) : Listener {
         this.main.worldManager.getIslandsVisitors().forEach { (island, players) ->
             run iteration@{
                 if (players.isEmpty()) {
+                    // No team dominates this island, thus dominant team color is null.
+                    this.main.worldManager.updateIslandGlassWithTeamColor(island, null)
+                    when (island) {
+                        WorldManager.WorldIslands.CENTER -> this.gameScoringState.centerIslandDominatedBy = null
+                        WorldManager.WorldIslands.GREEN -> this.gameScoringState.greenIslandDominatedBy = null
+                        WorldManager.WorldIslands.YELLOW -> this.gameScoringState.yellowIslandDominatedBy = null
+                    }
                     return@iteration
                 }
 
@@ -145,10 +169,22 @@ class TeamsManager(val main: Main) : Listener {
                 val dominantTeam = teamToAmountOfPlayers.maxBy { (_, amount) -> amount }.key; // TODO : change this team selection algorithm
                 val gameTeam = teamToGameTeamMapping[dominantTeam] ?: throw IllegalStateException("This team is not registered as a GameTeam")
 
+                // Update the island with the dominant team color
+                this.main.worldManager.updateIslandGlassWithTeamColor(island, gameTeam.chatColor)
+
                 when (island) {
-                    WorldManager.WorldIslands.CENTER -> updateTeamScore(gameTeam, CENTER_ISLAND_CAPTURE_POINTS_DELTA)
-                    WorldManager.WorldIslands.GREEN -> updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
-                    WorldManager.WorldIslands.YELLOW -> updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
+                    WorldManager.WorldIslands.CENTER -> {
+                        updateTeamScore(gameTeam, CENTER_ISLAND_CAPTURE_POINTS_DELTA)
+                        this.gameScoringState.centerIslandDominatedBy = gameTeam
+                    }
+                    WorldManager.WorldIslands.GREEN -> {
+                        updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
+                        this.gameScoringState.greenIslandDominatedBy = gameTeam
+                    }
+                    WorldManager.WorldIslands.YELLOW -> {
+                        updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
+                        this.gameScoringState.yellowIslandDominatedBy = gameTeam
+                    }
                 }
             }
         }
@@ -163,6 +199,13 @@ class TeamsManager(val main: Main) : Listener {
             this.main.gameManager.triggerFinishedGamePhase(team)
         } else {
             this.teamToScoreMapping[team] = this.teamToScoreMapping[team]!! + delta
+            when (team) {
+                redTeam -> this.gameScoringState.redTeamScore = newTeamScore
+                blueTeam -> this.gameScoringState.blueTeamScore = newTeamScore
+                else -> throw IllegalStateException("This team is not supported by the game scoring state data")
+            }
         }
     }
+
+    fun getGameScoringState() = gameScoringState
 }
