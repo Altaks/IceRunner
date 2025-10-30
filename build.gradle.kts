@@ -29,6 +29,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8")) // Maybe you need to apply the plugin 'shadowJar' for shading 'kotlin-stdlib'.
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.0")
+    implementation("fr.mrmicky:fastboard:2.1.5")
     implementation(lombok())
 
     compileOnly(spigot(version = "1.21.8"))
@@ -84,7 +85,7 @@ tasks.jar {
 }
 
 tasks.shadowJar {
-    relocate("com.fasterxml.jackson", "fr.altzec.fasterxml.jackson")
+    relocate("fr.mrmicky.fastboard", "fr.altzec.fastboard")
     destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
 }
 

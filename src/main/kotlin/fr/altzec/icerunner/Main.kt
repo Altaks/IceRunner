@@ -1,6 +1,7 @@
 package fr.altzec.fr.altzec.icerunner
 
 import fr.altzec.fr.altzec.icerunner.game.GameManager
+import fr.altzec.fr.altzec.icerunner.game.ScoreboardManager
 import fr.altzec.fr.altzec.icerunner.game.TeamsManager
 import fr.altzec.fr.altzec.icerunner.triggers.commands.DevCommand
 import fr.altzec.fr.altzec.icerunner.triggers.listeners.DevListener
@@ -30,12 +31,14 @@ open class Main : JavaPlugin {
     val gameManager: GameManager = GameManager(this)
     val worldManager: WorldManager = WorldManager(this)
     val teamsManager: TeamsManager = TeamsManager(this)
+    val scoreboardManager: ScoreboardManager = ScoreboardManager(this)
 
     override fun onEnable() {
         super.onEnable()
         saveDefaultConfig()
 
         this.teamsManager.prepareTeams()
+        this.scoreboardManager.initScoreboardUpdating()
 
         registerCommand("dev", DevCommand(this))
 
@@ -44,11 +47,16 @@ open class Main : JavaPlugin {
             PlayerJoinQuitListener(this),
             DevListener(this),
             teamsManager,
+            scoreboardManager,
         ).forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, this) }
+
+        Bukkit.getOnlinePlayers().forEach { player -> this.scoreboardManager.initPlayerScoreboard(player) }
     }
 
     override fun onDisable() {
         super.onDisable()
+
+        Bukkit.getOnlinePlayers().forEach { player -> this.scoreboardManager.unloadPlayerScoreboard(player) }
     }
 
     /**

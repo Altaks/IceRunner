@@ -14,7 +14,7 @@ open class StatusBarUtilsTests {
     @Test
     fun testGenerateBasicStatusBar() {
         val barState = StatusBarUtils.StatusBarState(7, 7, 4)
-        val expectedStatusBar = "${ChatColor.GREEN}■■■■${ChatColor.GRAY}□□□"
+        val expectedStatusBar = "${ChatColor.GREEN}■■■■${ChatColor.GRAY}□□□${ChatColor.RESET}"
 
         val statusBar = StatusBarUtils.buildProgressBar(barState)
         assert(statusBar == expectedStatusBar)
@@ -23,7 +23,7 @@ open class StatusBarUtilsTests {
     @Test
     fun testGenerateRTLBasicStatusBar() {
         val barState = StatusBarUtils.StatusBarState(2, 100, 50)
-        val expectedStatusBar = "${ChatColor.GRAY}□${ChatColor.GREEN}■"
+        val expectedStatusBar = "${ChatColor.GRAY}□${ChatColor.GREEN}■${ChatColor.RESET}"
 
         val statusBar = StatusBarUtils.buildProgressBar(barState, StatusBarUtils.StatusBarStyle(leftToRight = false))
         assert(statusBar == expectedStatusBar)
@@ -33,7 +33,7 @@ open class StatusBarUtilsTests {
     fun testGenerateNonDefaultSymbolStatusBar() {
         val barStyle = StatusBarUtils.StatusBarStyle(activeSymbol = ")", baseSymbol = "!")
         val barState = StatusBarUtils.StatusBarState(2, 100, 50)
-        val expectedStatusBar = "${ChatColor.GREEN})${ChatColor.GRAY}!"
+        val expectedStatusBar = "${ChatColor.GREEN})${ChatColor.GRAY}!${ChatColor.RESET}"
 
         val statusBar = StatusBarUtils.buildProgressBar(barState, barStyle)
         assert(statusBar == expectedStatusBar)
@@ -43,7 +43,7 @@ open class StatusBarUtilsTests {
     fun testGenerateNonDefaultColorsStatusBar() {
         val barStyle = StatusBarUtils.StatusBarStyle(activeColor = ChatColor.AQUA, baseColor = ChatColor.GOLD)
         val barState = StatusBarUtils.StatusBarState(2, 100, 50)
-        val expectedStatusBar = "${ChatColor.AQUA}■${ChatColor.GOLD}□"
+        val expectedStatusBar = "${ChatColor.AQUA}■${ChatColor.GOLD}□${ChatColor.RESET}"
 
         val statusBar = StatusBarUtils.buildProgressBar(barState, barStyle)
         assert(statusBar == expectedStatusBar)
@@ -57,7 +57,7 @@ open class StatusBarUtilsTests {
         val barStyle = StatusBarUtils.StatusBarStyle(baseSymbol = "◆", activeSymbol = "◆", activeColor = ChatColor.RED)
         val barState = StatusBarUtils.StatusBarState(teamSize, teamSize, teamCurrentPlayersAmount)
 
-        val expectedStatusBar = "${ChatColor.RED}${"◆".repeat(teamCurrentPlayersAmount)}${ChatColor.GRAY}${"◆".repeat(7 - teamCurrentPlayersAmount)}"
+        val expectedStatusBar = "${ChatColor.RED}${"◆".repeat(teamCurrentPlayersAmount)}${ChatColor.GRAY}${"◆".repeat(7 - teamCurrentPlayersAmount)}${ChatColor.RESET}"
         val statusBar = StatusBarUtils.buildProgressBar(barState, barStyle)
         assert(statusBar == expectedStatusBar)
     }
@@ -70,7 +70,7 @@ open class StatusBarUtilsTests {
         val barStyle = StatusBarUtils.StatusBarStyle(baseSymbol = "◆", activeSymbol = "◆", activeColor = ChatColor.AQUA)
         val barState = StatusBarUtils.StatusBarState(teamSize, teamSize, teamCurrentPlayersAmount)
 
-        val expectedStatusBar = "${ChatColor.AQUA}${"◆".repeat(teamCurrentPlayersAmount)}${ChatColor.GRAY}${"◆".repeat(7 - teamCurrentPlayersAmount)}"
+        val expectedStatusBar = "${ChatColor.AQUA}${"◆".repeat(teamCurrentPlayersAmount)}${ChatColor.GRAY}${"◆".repeat(7 - teamCurrentPlayersAmount)}${ChatColor.RESET}"
         val statusBar = StatusBarUtils.buildProgressBar(barState, barStyle)
         assert(statusBar == expectedStatusBar)
     }

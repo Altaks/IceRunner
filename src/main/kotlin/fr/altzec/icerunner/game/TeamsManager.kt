@@ -11,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
@@ -32,8 +33,8 @@ class TeamsManager(val main: Main) : Listener {
 
         const val PLAYERS_REQUIRED_TO_START_GAME = PLAYERS_PER_TEAM * AMOUNT_OF_TEAMS
 
-        private val redTeam = GameTeam("RedTeam", "Equipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) // "B02E26"
-        private val blueTeam = GameTeam("BlueTeam", "Equipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) // "3AB3DA"
+        private val redTeam = GameTeam("RedTeam", "Équipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) // "B02E26"
+        private val blueTeam = GameTeam("BlueTeam", "Équipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) // "3AB3DA"
 
         private val teams: List<GameTeam> = listOf(redTeam, blueTeam)
 
@@ -81,6 +82,14 @@ class TeamsManager(val main: Main) : Listener {
         }
     }
 
+    @EventHandler
+    fun onPlayerDisconnects(event: PlayerQuitEvent) {
+        if (!this.main.gameManager.hasGameStarted()) {
+            // make the player quit their team
+            event.player.scoreboard.getEntryTeam(event.player.name)?.removeEntry(event.player.name)
+        }
+    }
+
     private fun changePlayerTeam(player: Player, targetTeam: GameTeam) {
         val minecraftTeam = teamToGameTeamMapping.inverse()[targetTeam] ?: throw IllegalStateException("Team ${targetTeam.displayName} is not mapped to a Minecraft team")
         minecraftTeam.addEntry(player.name)
@@ -93,6 +102,8 @@ class TeamsManager(val main: Main) : Listener {
         val team: Team = this.getMainScoreboard().getEntryTeam(player.name) ?: throw IllegalStateException("Player ${player.name} has no team !")
         return this.teamToGameTeamMapping[team] ?: throw IllegalStateException("Team ${team.displayName} is not mapped to a GameTeam!")
     }
+
+    fun getTeamsToGameTeamMapping(): HashBiMap<Team, GameTeam> = this.teamToGameTeamMapping
 
     fun teleportPlayersToTheirTeamSpawnAndSetRespawnPoints() {
         Bukkit.getOnlinePlayers().forEach { player ->
