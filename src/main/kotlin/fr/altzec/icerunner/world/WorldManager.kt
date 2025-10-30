@@ -1,11 +1,9 @@
 package fr.altzec.fr.altzec.icerunner.world
 
 import fr.altzec.fr.altzec.icerunner.Main
-import fr.altzec.fr.altzec.icerunner.game.TeamsManager
 import fr.altzec.fr.altzec.icerunner.utils.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.Color
 import org.bukkit.GameRule
 import org.bukkit.Location
 import org.bukkit.Material
@@ -100,10 +98,10 @@ class WorldManager(val main: Main) {
     }.filter { entity -> entity.type == EntityType.PLAYER }.map { entity -> entity as Player }.toList()
 
     fun updateIslandGlassWithTeamColor(island: WorldIslands, dominantTeamColor: ChatColor?) {
-        val material = when(dominantTeamColor) {
+        val material = when (dominantTeamColor) {
             ChatColor.RED -> Material.RED_STAINED_GLASS
             ChatColor.AQUA -> Material.LIGHT_BLUE_STAINED_GLASS
-            null -> when(island) {
+            null -> when (island) {
                 WorldIslands.CENTER -> Material.WHITE_STAINED_GLASS
                 WorldIslands.GREEN -> Material.LIME_STAINED_GLASS
                 WorldIslands.YELLOW -> Material.YELLOW_STAINED_GLASS
@@ -111,7 +109,7 @@ class WorldManager(val main: Main) {
             else -> throw IllegalStateException("This team color is not supported !")
         }
 
-        when(island) {
+        when (island) {
             WorldIslands.CENTER -> loadedWorldMetadata?.mapCenterGlassCoordinates?.forEach { loc -> loc.block.type = material }
             WorldIslands.GREEN -> loadedWorldMetadata?.greenIslandGlassCoordinates?.forEach { loc -> loc.block.type = material }
             WorldIslands.YELLOW -> loadedWorldMetadata?.yellowIslandGlassCoordinates?.forEach { loc -> loc.block.type = material }

@@ -33,14 +33,16 @@ class GameManager(val main: Main) {
 
     fun triggerPlayingGamePhase() {
         this.gameState = GameState.PLAYING
-        Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La partie commence !...\n" +
+        Bukkit.broadcastMessage(
+            "${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La partie commence !...\n" +
                 "${ChatColor.GRAY}Le but du jeu est simple, capturer les différentes îles : \n" +
                 "${ChatColor.GRAY}- L'île ${ChatColor.WHITE}blanche${ChatColor.GRAY}, située au centre rapporte le plus de points à votre équipe.\n" +
                 "${ChatColor.GRAY}- Les îles secondaires (${ChatColor.GREEN}verte${ChatColor.GRAY} et ${ChatColor.YELLOW}jaune${ChatColor.GRAY}) rapportent aussi des points.\n" +
                 "\n\n" +
                 "${ChatColor.GRAY}Vous disposez de ${ChatColor.UNDERLINE}boules de neige${ChatColor.RESET}${ChatColor.GRAY} qui forment des ponts de glace pour vous rendrez sur les différents objectifs, mais aussi des ${ChatColor.UNDERLINE}flèches explosives${ChatColor.RESET}${ChatColor.GRAY} pour \u00AB briser la glace \u00BB avec vos adversaires.\n" +
                 "${ChatColor.GRAY}Une équipe remporte la partie lorsqu'elle atteint ${ChatColor.UNDERLINE}360 points${ChatColor.RESET}${ChatColor.GRAY}.\n" +
-                "${Main.MAIN_PREFIX} ${ChatColor.YELLOW}${ChatColor.GOLD}Bonne partie et bonne chance à tous !\n")
+                "${Main.MAIN_PREFIX} ${ChatColor.YELLOW}${ChatColor.GOLD}Bonne partie et bonne chance à tous !\n",
+        )
 
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
         this.main.teamsManager.equipPlayersWithTeamArmor()

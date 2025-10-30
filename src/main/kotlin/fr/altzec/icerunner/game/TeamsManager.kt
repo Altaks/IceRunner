@@ -33,8 +33,8 @@ class TeamsManager(val main: Main) : Listener {
 
         var centerIslandDominatedBy: GameTeam?,
         var greenIslandDominatedBy: GameTeam?,
-        var yellowIslandDominatedBy: GameTeam?
-    );
+        var yellowIslandDominatedBy: GameTeam?,
+    )
 
     companion object {
         const val PLAYERS_PER_TEAM = 1
@@ -53,7 +53,6 @@ class TeamsManager(val main: Main) : Listener {
         private const val POINTS_TO_ACHIEVE_VICTORY = 360
     }
 
-
     private val teamToGameTeamMapping: HashBiMap<Team, GameTeam> = HashBiMap.create<Team, GameTeam>(teams.size)
     private val teamToScoreMapping: HashMap<GameTeam, Int> = teams.associateWith { 0 } as HashMap
 
@@ -62,7 +61,7 @@ class TeamsManager(val main: Main) : Listener {
         blueTeamScore = 0,
         centerIslandDominatedBy = null,
         greenIslandDominatedBy = null,
-        yellowIslandDominatedBy = null
+        yellowIslandDominatedBy = null,
     )
 
     private fun getMainScoreboard(): Scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: throw IllegalStateException("Unable to access main scoreboard")
@@ -149,11 +148,11 @@ class TeamsManager(val main: Main) : Listener {
             run iteration@{
                 if (players.isEmpty()) {
                     // No team dominates this island, thus dominant team color is null.
-                    this.main.worldManager.updateIslandGlassWithTeamColor(island, null);
-                    when(island) {
-                        WorldManager.WorldIslands.CENTER -> this.gameScoringState.centerIslandDominatedBy = null;
-                        WorldManager.WorldIslands.GREEN -> this.gameScoringState.greenIslandDominatedBy = null;
-                        WorldManager.WorldIslands.YELLOW -> this.gameScoringState.yellowIslandDominatedBy = null;
+                    this.main.worldManager.updateIslandGlassWithTeamColor(island, null)
+                    when (island) {
+                        WorldManager.WorldIslands.CENTER -> this.gameScoringState.centerIslandDominatedBy = null
+                        WorldManager.WorldIslands.GREEN -> this.gameScoringState.greenIslandDominatedBy = null
+                        WorldManager.WorldIslands.YELLOW -> this.gameScoringState.yellowIslandDominatedBy = null
                     }
                     return@iteration
                 }
@@ -200,7 +199,7 @@ class TeamsManager(val main: Main) : Listener {
             this.main.gameManager.triggerFinishedGamePhase(team)
         } else {
             this.teamToScoreMapping[team] = this.teamToScoreMapping[team]!! + delta
-            when(team) {
+            when (team) {
                 redTeam -> this.gameScoringState.redTeamScore = newTeamScore
                 blueTeam -> this.gameScoringState.blueTeamScore = newTeamScore
                 else -> throw IllegalStateException("This team is not supported by the game scoring state data")
@@ -209,5 +208,4 @@ class TeamsManager(val main: Main) : Listener {
     }
 
     fun getGameScoringState() = gameScoringState
-
 }

@@ -3,7 +3,6 @@ package fr.altzec.fr.altzec.icerunner.triggers.commands
 import fr.altzec.fr.altzec.icerunner.Main
 import fr.altzec.fr.altzec.icerunner.game.GameItems
 import fr.altzec.fr.altzec.icerunner.triggers.commands.DevCommand.SubDevCommand.Companion.getFromInGameSubCommand
-import org.bukkit.ChatColor
 import org.bukkit.Color
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender

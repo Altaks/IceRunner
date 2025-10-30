@@ -12,7 +12,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
-import kotlin.math.log10
 
 class ScoreboardManager(val main: Main) : Listener {
 
@@ -96,8 +95,8 @@ class ScoreboardManager(val main: Main) : Listener {
         }
 
         private fun updatePlayingScoreboard(player: Player, scoreboard: FastBoard, gameScoringState: TeamsManager.GameScoringState) {
-            val playerTeamColor = player.scoreboard.getEntryTeam(player.name)?.color;
-            val boardLines = when(playerTeamColor) {
+            val playerTeamColor = player.scoreboard.getEntryTeam(player.name)?.color
+            val boardLines = when (playerTeamColor) {
                 ChatColor.RED -> buildRedSideScoreboard(gameScoringState)
                 ChatColor.AQUA -> buildBlueSideScoreboard(gameScoringState)
                 else -> throw IllegalStateException("This team is null / not supported")
@@ -105,47 +104,45 @@ class ScoreboardManager(val main: Main) : Listener {
             scoreboard.updateLines(boardLines)
         }
 
-        private fun buildBlueSideScoreboard(gameScoringState: TeamsManager.GameScoringState) : List<String> {
-
-            val yellowIslandColor = gameScoringState.yellowIslandDominatedBy?.chatColor ?: ChatColor.YELLOW;
-            val greenIslandColor = gameScoringState.greenIslandDominatedBy?.chatColor ?: ChatColor.GREEN;
-            val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE;
+        private fun buildBlueSideScoreboard(gameScoringState: TeamsManager.GameScoringState): List<String> {
+            val yellowIslandColor = gameScoringState.yellowIslandDominatedBy?.chatColor ?: ChatColor.YELLOW
+            val greenIslandColor = gameScoringState.greenIslandDominatedBy?.chatColor ?: ChatColor.GREEN
+            val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE
 
             return listOf(
                 "",
                 "   ${ChatColor.RED}✦ ${spaceFilledScore(gameScoringState.redTeamScore)}${ChatColor.RESET}/360",
                 "",
-                "   ${yellowIslandColor}⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
+                "   $yellowIslandColor⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
                 "               ${ChatColor.RED}⬛${ChatColor.RESET}  ",
                 "        $centerIslandColor⬛⬛${ChatColor.RESET}",
                 "        $centerIslandColor⬛⬛${ChatColor.RESET}",
                 "   ${ChatColor.AQUA}⬛${ChatColor.RESET}             ",
-                "   ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        ${greenIslandColor}⬛${ChatColor.RESET}  ",
+                "   ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        $greenIslandColor⬛${ChatColor.RESET}  ",
                 "",
                 "   ${ChatColor.AQUA}❉ ${spaceFilledScore(gameScoringState.blueTeamScore)}${ChatColor.RESET}/360",
                 "",
             )
         }
 
-        private fun buildRedSideScoreboard(gameScoringState: TeamsManager.GameScoringState) : List<String> {
-
-            val yellowIslandColor = gameScoringState.yellowIslandDominatedBy?.chatColor ?: ChatColor.YELLOW;
-            val greenIslandColor = gameScoringState.greenIslandDominatedBy?.chatColor ?: ChatColor.GREEN;
-            val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE;
+        private fun buildRedSideScoreboard(gameScoringState: TeamsManager.GameScoringState): List<String> {
+            val yellowIslandColor = gameScoringState.yellowIslandDominatedBy?.chatColor ?: ChatColor.YELLOW
+            val greenIslandColor = gameScoringState.greenIslandDominatedBy?.chatColor ?: ChatColor.GREEN
+            val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE
 
             return listOf(
                 "",
                 "   ${ChatColor.AQUA}❉ ${spaceFilledScore(gameScoringState.blueTeamScore)}${ChatColor.RESET}/360",
                 "",
-                "   ${greenIslandColor}⬛${ChatColor.RESET}        ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}  ",
+                "   $greenIslandColor⬛${ChatColor.RESET}        ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}  ",
                 "               ${ChatColor.AQUA}⬛${ChatColor.RESET}  ",
                 "        $centerIslandColor⬛⬛${ChatColor.RESET}",
                 "        $centerIslandColor⬛⬛${ChatColor.RESET}",
                 "   ${ChatColor.RED}⬛${ChatColor.RESET}             ",
-                "   ${ChatColor.RED}⬛⬛${ChatColor.RESET}        ${yellowIslandColor}⬛${ChatColor.RESET}  ",
+                "   ${ChatColor.RED}⬛⬛${ChatColor.RESET}        $yellowIslandColor⬛${ChatColor.RESET}  ",
                 "",
                 "   ${ChatColor.RED}✦ ${spaceFilledScore(gameScoringState.redTeamScore)}${ChatColor.RESET}/360",
-                ""
+                "",
             )
         }
     }
