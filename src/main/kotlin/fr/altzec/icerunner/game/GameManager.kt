@@ -127,7 +127,10 @@ class GameManager(val main: Main) : Listener {
                     // Reapply inventory to player
                     GameItems.applyPlayingInventoryToPlayer(player, playerTeam.armorColor)
                 }
-                else -> {}
+                else -> {
+                    event.isCancelled = true
+                    player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
+                }
             }
         }
     }
