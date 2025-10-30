@@ -84,7 +84,7 @@ class TeamsManager(val main: Main) : Listener {
 
     @EventHandler
     fun onPlayerDisconnects(event: PlayerQuitEvent) {
-        if(!this.main.gameManager.hasGameStarted()) {
+        if (!this.main.gameManager.hasGameStarted()) {
             // make the player quit their team
             event.player.scoreboard.getEntryTeam(event.player.name)?.removeEntry(event.player.name)
         }
