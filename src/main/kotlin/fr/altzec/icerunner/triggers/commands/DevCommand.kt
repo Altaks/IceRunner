@@ -3,6 +3,7 @@ package fr.altzec.fr.altzec.icerunner.triggers.commands
 import fr.altzec.fr.altzec.icerunner.Main
 import fr.altzec.fr.altzec.icerunner.game.GameItems
 import fr.altzec.fr.altzec.icerunner.triggers.commands.DevCommand.SubDevCommand.Companion.getFromInGameSubCommand
+import org.bukkit.ChatColor
 import org.bukkit.Color
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -20,6 +21,8 @@ class DevCommand(val main: Main) : TabExecutor {
 
         WAITING_INVENTORY("waitingInv"),
         PLAYING_INVENTORY("playingInv"),
+
+        TEST_PLAYING_SCOREBOARD("playingScoreboard")
         ;
 
         override fun toString(): String = inGameName
@@ -65,6 +68,19 @@ class DevCommand(val main: Main) : TabExecutor {
                     sender.sendMessage("This command sub-argument matches nothing")
                     return false
                 }
+
+                SubDevCommand.TEST_PLAYING_SCOREBOARD -> sender.sendMessage(listOf(
+                    "Equipe rouge : 15",
+                    "",
+                    "    ${ChatColor.YELLOW}⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
+                    "                ${ChatColor.RED}⬛${ChatColor.RESET}  ",
+                    "         ⬛⬛",
+                    "         ⬛⬛",
+                    "    ${ChatColor.AQUA}⬛${ChatColor.RESET}             ",
+                    "    ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        ${ChatColor.GREEN}⬛${ChatColor.RESET}  ",
+                    "",
+                    "Equipe bleue : 60",
+                ).joinToString("\n"))
             }
             return true
         }

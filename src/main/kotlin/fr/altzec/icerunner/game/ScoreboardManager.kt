@@ -30,8 +30,6 @@ class ScoreboardManager(val main: Main) : Listener {
         private const val WAITING_STATUS_BAR_STATUS_BAR_LENGTH = 7; // 7 players, one diamond per player
         private const val WAITING_STATUS_BAR_STYLE_DECORATION_CHARACTER_LENGTH = 2 * 1; // One > and a < on the sides.
         private const val WAITING_STATUS_BAR_SPACEFILL_LENGTH = (WAITING_LINE_LENGTH - WAITING_STATUS_BAR_STATUS_BAR_LENGTH - WAITING_STATUS_BAR_STYLE_DECORATION_CHARACTER_LENGTH) / 2
-
-        private val SCOREBOARD_TITLE: String = "${ChatColor.GRAY}[${ChatColor.AQUA}IceRunner${ChatColor.GRAY}]"
     }
 
     val playerScoreboards: HashMap<Player, FastBoard> = HashMap()
@@ -44,7 +42,7 @@ class ScoreboardManager(val main: Main) : Listener {
 
     fun initPlayerScoreboard(player: Player) {
         val board = FastBoard(player)
-        board.updateTitle(SCOREBOARD_TITLE)
+        board.updateTitle(Main.GAME_NAME)
         playerScoreboards[player] = board
     }
 
@@ -95,6 +93,21 @@ class ScoreboardManager(val main: Main) : Listener {
 
         private fun updatePlayingScoreboard(player: Player, scoreboard: FastBoard) {
             // Do nothing
+
+            val boardlines = listOf<String>(
+                "Equipe rouge : 15",
+                "",
+                "    ${ChatColor.YELLOW}⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
+                "                ${ChatColor.RED}⬛${ChatColor.RESET}  ",
+                "         ⬛⬛",
+                "         ⬛⬛",
+                "    ${ChatColor.AQUA}⬛${ChatColor.RESET}             ",
+                "    ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        ${ChatColor.GREEN}⬛${ChatColor.RESET}  ",
+                "",
+                "Equipe bleue : 60",
+            )
+
+            scoreboard.updateLines(boardlines)
         }
     }
 }
