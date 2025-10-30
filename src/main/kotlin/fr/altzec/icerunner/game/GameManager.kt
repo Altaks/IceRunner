@@ -16,8 +16,8 @@ class GameManager(val main: Main) {
     private var playingPhaseTask: BukkitTask? = null
 
     companion object {
-        private val CONGRATS_DECORATION = "${ChatColor.RED}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GOLD}${ChatColor.MAGIC}!";
-        private val CONGRATS_DECORATION_REVERSED = "${ChatColor.GOLD}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.RED}${ChatColor.MAGIC}!";
+        private val CONGRATS_DECORATION = "${ChatColor.RED}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GOLD}${ChatColor.MAGIC}!"
+        private val CONGRATS_DECORATION_REVERSED = "${ChatColor.GOLD}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.RED}${ChatColor.MAGIC}!"
     }
 
     fun triggerStartingGamePhase() {
@@ -47,7 +47,7 @@ class GameManager(val main: Main) {
             player.health = 20.0
         }
 
-        this.playingPhaseTask = PlayingPhaseTask(this.main).runTaskTimer(this.main, 0, 20);
+        this.playingPhaseTask = PlayingPhaseTask(this.main).runTaskTimer(this.main, 0, 20)
     }
 
     fun isGameStarting(): Boolean = this.gameState == GameState.STARTING
