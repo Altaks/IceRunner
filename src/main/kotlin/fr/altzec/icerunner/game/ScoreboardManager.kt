@@ -1,6 +1,7 @@
 package fr.altzec.fr.altzec.icerunner.game
 
 import fr.altzec.fr.altzec.icerunner.Main
+import fr.altzec.fr.altzec.icerunner.utils.ExposedFunctions.length
 import fr.altzec.fr.altzec.icerunner.utils.StatusBarUtils
 import fr.mrmicky.fastboard.FastBoard
 import org.bukkit.Bukkit
@@ -31,7 +32,7 @@ class ScoreboardManager(val main: Main) : Listener {
         private const val WAITING_STATUS_BAR_STYLE_DECORATION_CHARACTER_LENGTH = 2 * 1; // One > and a < on the sides.
         private const val WAITING_STATUS_BAR_SPACEFILL_LENGTH = (WAITING_LINE_LENGTH - WAITING_STATUS_BAR_STATUS_BAR_LENGTH - WAITING_STATUS_BAR_STYLE_DECORATION_CHARACTER_LENGTH) / 2
 
-        private val SCOREBOARD_TITLE: String = "${ChatColor.GRAY}[${ChatColor.AQUA}IceRunner${ChatColor.GRAY}]"
+        fun spaceFilledScore(score: Int) = "${" ".repeat(3 - score.length())}$score"
     }
 
     val playerScoreboards: HashMap<Player, FastBoard> = HashMap()
@@ -44,7 +45,7 @@ class ScoreboardManager(val main: Main) : Listener {
 
     fun initPlayerScoreboard(player: Player) {
         val board = FastBoard(player)
-        board.updateTitle(SCOREBOARD_TITLE)
+        board.updateTitle(Main.GAME_NAME)
         playerScoreboards[player] = board
     }
 
@@ -62,7 +63,7 @@ class ScoreboardManager(val main: Main) : Listener {
             if (!main.gameManager.hasGameStarted()) {
                 this.main.scoreboardManager.playerScoreboards.entries.forEach { (_, scoreboard) -> updateWaitingScoreboard(scoreboard) }
             } else {
-                this.main.scoreboardManager.playerScoreboards.entries.forEach { (player, scoreboard) -> updatePlayingScoreboard(player, scoreboard) }
+                this.main.scoreboardManager.playerScoreboards.entries.forEach { (player, scoreboard) -> updatePlayingScoreboard(player, scoreboard, this.main.teamsManager.getGameScoringState()) }
             }
         }
 
@@ -93,8 +94,56 @@ class ScoreboardManager(val main: Main) : Listener {
             board.updateLines(boardLines)
         }
 
-        private fun updatePlayingScoreboard(player: Player, scoreboard: FastBoard) {
-            // Do nothing
+        private fun updatePlayingScoreboard(player: Player, scoreboard: FastBoard, gameScoringState: TeamsManager.GameScoringState) {
+            val playerTeamColor = player.scoreboard.getEntryTeam(player.name)?.color
+            val boardLines = when (playerTeamColor) {
+                ChatColor.RED -> buildRedSideScoreboard(gameScoringState)
+                ChatColor.AQUA -> buildBlueSideScoreboard(gameScoringState)
+                else -> throw IllegalStateException("This team is null / not supported")
+            }
+            scoreboard.updateLines(boardLines)
+        }
+
+        private fun buildBlueSideScoreboard(gameScoringState: TeamsManager.GameScoringState): List<String> {
+            val yellowIslandColor = gameScoringState.yellowIslandDominatedBy?.chatColor ?: ChatColor.YELLOW
+            val greenIslandColor = gameScoringState.greenIslandDominatedBy?.chatColor ?: ChatColor.GREEN
+            val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE
+
+            return listOf(
+                "",
+                "   ${ChatColor.RED}✦ ${spaceFilledScore(gameScoringState.redTeamScore)}${ChatColor.RESET}/360",
+                "",
+                "   $yellowIslandColor⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
+                "               ${ChatColor.RED}⬛${ChatColor.RESET}  ",
+                "        $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "        $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "   ${ChatColor.AQUA}⬛${ChatColor.RESET}             ",
+                "   ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        $greenIslandColor⬛${ChatColor.RESET}  ",
+                "",
+                "   ${ChatColor.AQUA}❉ ${spaceFilledScore(gameScoringState.blueTeamScore)}${ChatColor.RESET}/360",
+                "",
+            )
+        }
+
+        private fun buildRedSideScoreboard(gameScoringState: TeamsManager.GameScoringState): List<String> {
+            val yellowIslandColor = gameScoringState.yellowIslandDominatedBy?.chatColor ?: ChatColor.YELLOW
+            val greenIslandColor = gameScoringState.greenIslandDominatedBy?.chatColor ?: ChatColor.GREEN
+            val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE
+
+            return listOf(
+                "",
+                "   ${ChatColor.AQUA}❉ ${spaceFilledScore(gameScoringState.blueTeamScore)}${ChatColor.RESET}/360",
+                "",
+                "   $greenIslandColor⬛${ChatColor.RESET}        ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}  ",
+                "               ${ChatColor.AQUA}⬛${ChatColor.RESET}  ",
+                "        $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "        $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "   ${ChatColor.RED}⬛${ChatColor.RESET}             ",
+                "   ${ChatColor.RED}⬛⬛${ChatColor.RESET}        $yellowIslandColor⬛${ChatColor.RESET}  ",
+                "",
+                "   ${ChatColor.RED}✦ ${spaceFilledScore(gameScoringState.redTeamScore)}${ChatColor.RESET}/360",
+                "",
+            )
         }
     }
 }
