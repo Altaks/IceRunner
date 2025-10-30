@@ -40,6 +40,8 @@ open class Main : JavaPlugin {
         super.onEnable()
         saveDefaultConfig()
 
+        this.worldManager.setupGameWorld()
+
         this.teamsManager.prepareTeams()
         this.scoreboardManager.initScoreboardUpdating()
 

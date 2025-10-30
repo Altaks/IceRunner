@@ -22,6 +22,7 @@ class WorldManager(val main: Main) {
         // Get the folder that contains all the different worlds
         private const val ICE_RUNNER_WORLD_DESTINATION_PATH = "."
         const val ICE_RUNNER_WORLD_NAME = "world_ice_runner"
+        private const val OVERWORLD_WORLD_NAME = "world"
 
         // All the worlds resources variants of the plugin
         private const val DEFAULT_WORLD_VARIANT_PATH = "worlds/variants/ice"
@@ -47,14 +48,20 @@ class WorldManager(val main: Main) {
      * Generates the IceRunner game world, by copying it from the inside of the JAR to the outside filesystem
      */
     fun setupGameWorld() {
+        ensureGameWorldDoesNotExistOrIsUnloaded();
         generateGameWorld()
         loadGameWorld()
         configureGameWorldBehavior()
-        teleportPlayersToGameWorld()
+    }
+
+    private fun ensureGameWorldDoesNotExistOrIsUnloaded() {
+        Bukkit.getWorld(ICE_RUNNER_WORLD_NAME)?.players?.forEach { player -> player.teleport(Bukkit.getWorld(OVERWORLD_WORLD_NAME)?.spawnLocation ?: throw IllegalStateException("Couldn't teleport players to the overworld base spawn point")) }
+        Bukkit.getServer().unloadWorld(ICE_RUNNER_WORLD_NAME, false)
     }
 
     private fun generateGameWorld() {
         val worldDestination = "$ICE_RUNNER_WORLD_DESTINATION_PATH${File.separator}$ICE_RUNNER_WORLD_NAME"
+        FileUtils.deleteDirIfExists(worldDestination);
         main.logger.info("Copying game world $DEFAULT_WORLD_VARIANT_PATH from JAR file to $worldDestination")
         FileUtils.copyResourceDir(DEFAULT_WORLD_VARIANT_PATH, worldDestination)
         main.logger.info("Finished copying game world to $worldDestination")
@@ -75,6 +82,8 @@ class WorldManager(val main: Main) {
 
     fun configureGameWorldBehavior() {
         val gameWorld = Bukkit.getWorld(ICE_RUNNER_WORLD_NAME) ?: throw IllegalStateException("World $ICE_RUNNER_WORLD_NAME not found")
+
+        gameWorld.isAutoSave = false
 
         gameWorld.setGameRule(GameRule<Boolean>.DO_DAYLIGHT_CYCLE, false)
         gameWorld.setGameRule(GameRule<Boolean>.DO_WEATHER_CYCLE, false)

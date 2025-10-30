@@ -44,7 +44,6 @@ class GameManager(val main: Main) : Listener {
         this.gameState = GameState.STARTING
         Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La phase de sélection d'équipes commence !")
 
-        this.main.worldManager.setupGameWorld()
         this.main.worldManager.teleportPlayersToGameWorld()
 
         // Starting and storing the startingPhaseTask
@@ -52,7 +51,6 @@ class GameManager(val main: Main) : Listener {
     }
 
     fun triggerPlayingGamePhase() {
-        this.gameState = GameState.PLAYING
         this.gameState = GameState.PLAYING
         Bukkit.broadcastMessage(
             "${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La partie commence !...\n" +
