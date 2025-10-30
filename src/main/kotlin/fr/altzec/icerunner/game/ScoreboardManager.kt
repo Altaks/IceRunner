@@ -60,7 +60,7 @@ class ScoreboardManager(val main: Main) : Listener {
             if (!main.gameManager.hasGameStarted()) {
                 this.main.scoreboardManager.playerScoreboards.entries.forEach { (_, scoreboard) -> updateWaitingScoreboard(scoreboard) }
             } else {
-                this.main.scoreboardManager.playerScoreboards.entries.forEach { (player, scoreboard) -> updatePlayingScoreboard(player, scoreboard) }
+                this.main.scoreboardManager.playerScoreboards.entries.forEach { (player, scoreboard) -> updatePlayingScoreboard(player, scoreboard, this.main.teamsManager.getGameScoringState()) }
             }
         }
 
@@ -91,23 +91,54 @@ class ScoreboardManager(val main: Main) : Listener {
             board.updateLines(boardLines)
         }
 
-        private fun updatePlayingScoreboard(player: Player, scoreboard: FastBoard) {
-            // Do nothing
+        private fun updatePlayingScoreboard(player: Player, scoreboard: FastBoard, gameScoringState: TeamsManager.GameScoringState) {
+            val playerTeamColor = player.scoreboard.getEntryTeam(player.name)?.color;
+            val boardLines = when(playerTeamColor) {
+                ChatColor.RED -> buildRedSideScoreboard(gameScoringState)
+                ChatColor.AQUA -> buildBlueSideScoreboard(gameScoringState)
+                else -> throw IllegalStateException("This team is null / not supported")
+            }
+            scoreboard.updateLines(boardLines)
+        }
 
-            val boardlines = listOf<String>(
-                "Equipe rouge : 15",
+        private fun buildBlueSideScoreboard(gameScoringState: TeamsManager.GameScoringState) : List<String> {
+
+            val yellowIslandColor = gameScoringState.yellowIslandDominatedBy?.chatColor ?: ChatColor.YELLOW;
+            val greenIslandColor = gameScoringState.greenIslandDominatedBy?.chatColor ?: ChatColor.GREEN;
+            val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE;
+
+            return listOf(
+                "Equipe rouge : ${gameScoringState.redTeamScore}",
                 "",
-                "    ${ChatColor.YELLOW}⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
+                "    ${yellowIslandColor}⬛${ChatColor.RESET}        ${ChatColor.RED}⬛⬛${ChatColor.RESET}  ",
                 "                ${ChatColor.RED}⬛${ChatColor.RESET}  ",
-                "         ⬛⬛",
-                "         ⬛⬛",
+                "         $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "         $centerIslandColor⬛⬛${ChatColor.RESET}",
                 "    ${ChatColor.AQUA}⬛${ChatColor.RESET}             ",
-                "    ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        ${ChatColor.GREEN}⬛${ChatColor.RESET}  ",
+                "    ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}        ${greenIslandColor}⬛${ChatColor.RESET}  ",
                 "",
-                "Equipe bleue : 60",
+                "Equipe bleue : ${gameScoringState.blueTeamScore}",
             )
+        }
 
-            scoreboard.updateLines(boardlines)
+        private fun buildRedSideScoreboard(gameScoringState: TeamsManager.GameScoringState) : List<String> {
+
+            val yellowIslandColor = gameScoringState.yellowIslandDominatedBy?.chatColor ?: ChatColor.YELLOW;
+            val greenIslandColor = gameScoringState.greenIslandDominatedBy?.chatColor ?: ChatColor.GREEN;
+            val centerIslandColor = gameScoringState.centerIslandDominatedBy?.chatColor ?: ChatColor.WHITE;
+
+            return listOf(
+                "Equipe bleue : ${gameScoringState.blueTeamScore}",
+                "",
+                "    ${greenIslandColor}⬛${ChatColor.RESET}        ${ChatColor.AQUA}⬛⬛${ChatColor.RESET}  ",
+                "                ${ChatColor.AQUA}⬛${ChatColor.RESET}  ",
+                "         $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "         $centerIslandColor⬛⬛${ChatColor.RESET}",
+                "    ${ChatColor.RED}⬛${ChatColor.RESET}             ",
+                "    ${ChatColor.RED}⬛⬛${ChatColor.RESET}        ${yellowIslandColor}⬛${ChatColor.RESET}  ",
+                "",
+                "Equipe rouge : ${gameScoringState.redTeamScore}",
+            )
         }
     }
 }
