@@ -19,16 +19,13 @@ class DevCommand(val main: Main) : TabExecutor {
         GENERATE_WORLD("genWorld"),
 
         WAITING_INVENTORY("waitingInv"),
-        PLAYING_INVENTORY("playingInv");
+        PLAYING_INVENTORY("playingInv"),
+        ;
 
-        override fun toString(): String {
-            return inGameName
-        }
+        override fun toString(): String = inGameName
 
         companion object {
-            fun getFromInGameSubCommand(value: String) : SubDevCommand? {
-                return SubDevCommand.entries.firstOrNull { it.inGameName == value }
-            }
+            fun getFromInGameSubCommand(value: String): SubDevCommand? = SubDevCommand.entries.firstOrNull { it.inGameName == value }
         }
     }
 
@@ -52,7 +49,6 @@ class DevCommand(val main: Main) : TabExecutor {
     ): Boolean {
         if (sender is Player && args.isNotEmpty()) {
             when (getFromInGameSubCommand(args.first()!!)) {
-
                 // Game management
                 SubDevCommand.START_GAME -> this.main.gameManager.triggerStartingGamePhase()
                 SubDevCommand.PLAYING_GAME -> this.main.gameManager.triggerPlayingGamePhase()

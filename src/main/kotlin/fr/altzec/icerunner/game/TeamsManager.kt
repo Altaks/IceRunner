@@ -37,10 +37,10 @@ class TeamsManager(val main: Main) : Listener {
 
         private val teams: List<GameTeam> = listOf(redTeam, blueTeam)
 
-        private const val CENTER_ISLAND_CAPTURE_POINTS_DELTA = +2;
-        private const val SECONDARY_ISLAND_CAPTURE_POINTS_DELTA = +1;
+        private const val CENTER_ISLAND_CAPTURE_POINTS_DELTA = +2
+        private const val SECONDARY_ISLAND_CAPTURE_POINTS_DELTA = +1
 
-        private const val POINTS_TO_ACHIEVE_VICTORY = 360;
+        private const val POINTS_TO_ACHIEVE_VICTORY = 360
     }
 
     private val teamToGameTeamMapping: HashBiMap<Team, GameTeam> = HashBiMap.create<Team, GameTeam>(teams.size)
@@ -116,35 +116,38 @@ class TeamsManager(val main: Main) : Listener {
     }
 
     fun triggerPointsCounting() {
-        this.main.worldManager.getIslandsVisitors().forEach { (island, players) -> run iteration@{
+        this.main.worldManager.getIslandsVisitors().forEach { (island, players) ->
+            run iteration@{
+                if (players.isEmpty()) {
+                    return@iteration
+                }
 
-            if(players.isEmpty()) {
-                return@iteration;
+                val teamToAmountOfPlayers = mutableMapOf<Team, Int>()
+                players.forEach { player ->
+                    run {
+                        val team = player.scoreboard.getEntryTeam(player.name) ?: throw IllegalStateException("Couldn't get player team")
+                        teamToAmountOfPlayers.putIfAbsent(team, 0)
+                        teamToAmountOfPlayers[team] = teamToAmountOfPlayers[team]!! + 1
+                    }
+                }
+
+                val dominantTeam = teamToAmountOfPlayers.maxBy { (_, amount) -> amount }.key; // TODO : change this team selection algorithm
+                val gameTeam = teamToGameTeamMapping[dominantTeam] ?: throw IllegalStateException("This team is not registered as a GameTeam")
+
+                when (island) {
+                    WorldManager.WorldIslands.CENTER -> updateTeamScore(gameTeam, CENTER_ISLAND_CAPTURE_POINTS_DELTA)
+                    WorldManager.WorldIslands.GREEN -> updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
+                    WorldManager.WorldIslands.YELLOW -> updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
+                }
             }
-
-            val teamToAmountOfPlayers = mutableMapOf<Team, Int>();
-            players.forEach { player -> run {
-                val team = player.scoreboard.getEntryTeam(player.name) ?: throw IllegalStateException("Couldn't get player team");
-                teamToAmountOfPlayers.putIfAbsent(team, 0)
-                teamToAmountOfPlayers[team] = teamToAmountOfPlayers[team]!! + 1
-            }};
-
-            val dominantTeam = teamToAmountOfPlayers.maxBy { (_, amount) -> amount }.key; // TODO : change this team selection algorithm
-            val gameTeam = teamToGameTeamMapping[dominantTeam] ?: throw IllegalStateException("This team is not registered as a GameTeam")
-
-            when(island) {
-                WorldManager.WorldIslands.CENTER -> updateTeamScore(gameTeam, CENTER_ISLAND_CAPTURE_POINTS_DELTA)
-                WorldManager.WorldIslands.GREEN -> updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
-                WorldManager.WorldIslands.YELLOW -> updateTeamScore(gameTeam, SECONDARY_ISLAND_CAPTURE_POINTS_DELTA)
-            }
-        } }
+        }
     }
 
     private fun updateTeamScore(team: GameTeam, delta: Int) {
         this.main.pluginLogger.info("Team ${team.displayName} gains $delta points !")
-        val newTeamScore = this.teamToScoreMapping[team]!! + delta;
+        val newTeamScore = this.teamToScoreMapping[team]!! + delta
 
-        if(newTeamScore >= POINTS_TO_ACHIEVE_VICTORY) {
+        if (newTeamScore >= POINTS_TO_ACHIEVE_VICTORY) {
             this.main.pluginLogger.info("Game is finished : ${team.displayName} has won !")
             this.main.gameManager.triggerFinishedGamePhase(team)
         } else {

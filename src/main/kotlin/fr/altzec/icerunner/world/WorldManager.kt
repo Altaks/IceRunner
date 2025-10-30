@@ -27,16 +27,16 @@ class WorldManager(val main: Main) {
         // Some world configuration constants
         private const val NOON_TIME_TICKS = 6000L
 
-        private const val MAIN_ISLAND_POPULATION_SCAN_RADIUS = 3.0;
-        private const val SECONDARY_ISLAND_POPULATION_SCAN_RADIUS = 2.0;
+        private const val MAIN_ISLAND_POPULATION_SCAN_RADIUS = 3.0
+        private const val SECONDARY_ISLAND_POPULATION_SCAN_RADIUS = 2.0
 
-        private const val Y_AXIS_POPULATION_SCAN_RADIUS = 1.5;
+        private const val Y_AXIS_POPULATION_SCAN_RADIUS = 1.5
     }
 
     enum class WorldIslands {
         CENTER,
         GREEN,
-        YELLOW
+        YELLOW,
     }
 
     var loadedWorldMetadata: WorldVariantMetadata? = null
@@ -87,15 +87,11 @@ class WorldManager(val main: Main) {
         Bukkit.getOnlinePlayers().forEach { player -> player.teleport(Location(gameWorld, 0.0, 100.5 + 1, 0.0)) }
     }
 
-    fun getIslandsVisitors() : Map<WorldIslands, List<Player>> {
-        return WorldIslands.entries.associateWith { getNearbyPlayers(loadedWorldMetadata?.mapCenterCoordinates?.world!!, it) }
-    }
+    fun getIslandsVisitors(): Map<WorldIslands, List<Player>> = WorldIslands.entries.associateWith { getNearbyPlayers(loadedWorldMetadata?.mapCenterCoordinates?.world!!, it) }
 
-    private fun getNearbyPlayers(world: World, island: WorldIslands): List<Player> {
-        return when(island) {
-            WorldIslands.CENTER -> world.getNearbyEntities(loadedWorldMetadata?.mapCenterCoordinates!!, MAIN_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, MAIN_ISLAND_POPULATION_SCAN_RADIUS)
-            WorldIslands.GREEN -> world.getNearbyEntities(loadedWorldMetadata?.greenIslandCenterCoordinates!!, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS)
-            WorldIslands.YELLOW -> world.getNearbyEntities(loadedWorldMetadata?.yellowIslandCenterCoordinates!!, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS)
-        }.filter { entity -> entity.type == EntityType.PLAYER }.map { entity -> entity as Player }.toList()
-    }
+    private fun getNearbyPlayers(world: World, island: WorldIslands): List<Player> = when (island) {
+        WorldIslands.CENTER -> world.getNearbyEntities(loadedWorldMetadata?.mapCenterCoordinates!!, MAIN_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, MAIN_ISLAND_POPULATION_SCAN_RADIUS)
+        WorldIslands.GREEN -> world.getNearbyEntities(loadedWorldMetadata?.greenIslandCenterCoordinates!!, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS)
+        WorldIslands.YELLOW -> world.getNearbyEntities(loadedWorldMetadata?.yellowIslandCenterCoordinates!!, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS)
+    }.filter { entity -> entity.type == EntityType.PLAYER }.map { entity -> entity as Player }.toList()
 }
