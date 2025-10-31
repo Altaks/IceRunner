@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8")) // Maybe you need to apply the plugin 'shadowJar' for shading 'kotlin-stdlib'.
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.0")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.1")
     implementation("fr.mrmicky:fastboard:2.1.5")
     implementation(lombok())
 
