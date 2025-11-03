@@ -35,7 +35,7 @@ dependencies {
     compileOnly(spigot(version = "1.21.8"))
 
     testImplementation(paper(version = "1.21.8"))
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.89.0")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.91.0")
     testImplementation(kotlin("stdlib-jdk8"))
 
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.0")
