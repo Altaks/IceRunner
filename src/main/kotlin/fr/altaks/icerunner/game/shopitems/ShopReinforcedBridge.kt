@@ -1,6 +1,5 @@
 package fr.altaks.icerunner.game.shopitems
 
-import fr.altaks.icerunner.game.GameItems
 import fr.altaks.icerunner.game.GameItems.loreDelimitation
 import fr.altaks.icerunner.game.ShopManager
 import fr.altaks.icerunner.utils.ItemFactory
@@ -19,7 +18,11 @@ class ShopReinforcedBridge : ShopManager.Companion.IShopItem {
             "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
             "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
             "${ChatColor.GRAY}$loreDelimitation",
-            "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {"pièce"} else {"pièces"}}",
+            "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
+                "pièce"
+            } else {
+                "pièces"
+            }}",
         )
         .build()
     override fun position(): Int = 2

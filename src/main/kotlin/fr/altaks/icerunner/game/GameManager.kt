@@ -63,7 +63,7 @@ class GameManager(val main: Main) : Listener {
                 "${Main.MAIN_PREFIX} ${ChatColor.YELLOW}${ChatColor.GOLD}Bonne partie et bonne chance à tous !\n",
         )
 
-        this.main.shopManager.preparePlayerShops();
+        this.main.shopManager.preparePlayerShops()
 
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
         this.main.teamsManager.equipPlayersWithTeamEquipments()

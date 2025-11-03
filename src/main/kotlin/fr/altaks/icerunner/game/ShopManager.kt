@@ -11,7 +11,6 @@ import fr.altaks.icerunner.game.shopitems.ShopKamikaze
 import fr.altaks.icerunner.game.shopitems.ShopLastJudgement
 import fr.altaks.icerunner.game.shopitems.ShopReinforcedBridge
 import fr.altaks.icerunner.utils.ItemComparator
-import fr.altaks.icerunner.utils.TextGradientUtils
 import fr.mrmicky.fastinv.FastInv
 import fr.mrmicky.fastinv.FastInvManager
 import net.md_5.bungee.api.ChatColor
@@ -34,12 +33,12 @@ class ShopManager(val main: Main) : Listener {
             fun position(): Int
         }
 
-        private const val INVENTORY_LINE_LENGTH = 9;
+        private const val INVENTORY_LINE_LENGTH = 9
         private const val SHOP_SIZE = 1 * INVENTORY_LINE_LENGTH; // 9 slots
         private val SHOP_NAME = "${ChatColor.DARK_GRAY}⛁ Boutique"
 
-        private val SHOP_SYMBOL_DEFAULT = GameItems.shopSymbolItem(0u);
-        private val MAX_PLAYER_MONEY = Material.GOLD_NUGGET.maxStackSize.toUInt();
+        private val SHOP_SYMBOL_DEFAULT = GameItems.shopSymbolItem(0u)
+        private val MAX_PLAYER_MONEY = Material.GOLD_NUGGET.maxStackSize.toUInt()
     }
 
     private class ShopInventory : FastInv {
@@ -58,32 +57,35 @@ class ShopManager(val main: Main) : Listener {
                 ShopIronMan(),
                 ShopExplosiveSheep(),
                 ShopIgloo(),
-                ShopLastJudgement()
-            ).forEach { shopItem -> run {
-                setItem(shopItem.position(), shopItem.item())
-                itemToShopItemInstanceMapping[shopItem.item()] = shopItem;
-                Bukkit.getPluginManager().registerEvents(shopItem, main)
-            } }
+                ShopLastJudgement(),
+            ).forEach { shopItem ->
+                run {
+                    setItem(shopItem.position(), shopItem.item())
+                    itemToShopItemInstanceMapping[shopItem.item()] = shopItem
+                    Bukkit.getPluginManager().registerEvents(shopItem, main)
+                }
+            }
         }
 
         override fun onClick(event: InventoryClickEvent) {
             event.isCancelled = true
 
             val shopItem = itemToShopItemInstanceMapping[event.currentItem] ?: return
-            val player = event.whoClicked as Player;
+            val player = event.whoClicked as Player
 
-            if(this.main.shopManager.hasPlayerEnoughMoney(player, shopItem.cost())) {
-                this.main.shopManager.reducePlayerMoney(player, shopItem.cost());
+            if (this.main.shopManager.hasPlayerEnoughMoney(player, shopItem.cost())) {
+                this.main.shopManager.reducePlayerMoney(player, shopItem.cost())
                 player.inventory.addItem(shopItem.item())
             } else {
-                event.whoClicked.sendMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} Vous n'avez pas l'argent nécessaire pour acheter cet objet. " +
-                        "Il vous manque : ${ChatColor.GOLD}${shopItem.cost() - this.main.shopManager.getPlayerMoney(player)} ⛁")
+                event.whoClicked.sendMessage(
+                    "${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} Vous n'avez pas l'argent nécessaire pour acheter cet objet. " +
+                        "Il vous manque : ${ChatColor.GOLD}${shopItem.cost() - this.main.shopManager.getPlayerMoney(player)} ⛁",
+                )
             }
-
         }
     }
 
-    private var globalShopInventory: ShopInventory? = null;
+    private var globalShopInventory: ShopInventory? = null
     private val playerToMoneyMapping = HashMap<Player, UInt>()
 
     fun initShop() {
@@ -94,13 +96,9 @@ class ShopManager(val main: Main) : Listener {
         Bukkit.getOnlinePlayers().forEach { playerToMoneyMapping[it] = 0u }
     }
 
-    fun getPlayerMoney(player: Player): UInt {
-        return playerToMoneyMapping[player] ?: throw IllegalStateException("The player ${player.displayName} is not registered to have any money")
-    }
+    fun getPlayerMoney(player: Player): UInt = playerToMoneyMapping[player] ?: throw IllegalStateException("The player ${player.displayName} is not registered to have any money")
 
-    fun hasPlayerEnoughMoney(player: Player, checkedQuantity: UInt) : Boolean {
-        return getPlayerMoney(player) >= checkedQuantity
-    }
+    fun hasPlayerEnoughMoney(player: Player, checkedQuantity: UInt): Boolean = getPlayerMoney(player) >= checkedQuantity
 
     fun addPlayerMoney(player: Player, quantityToReduce: UInt) {
         playerToMoneyMapping[player] = min(MAX_PLAYER_MONEY, getPlayerMoney(player) + quantityToReduce)
@@ -119,8 +117,8 @@ class ShopManager(val main: Main) : Listener {
 
     @EventHandler
     fun onPlayerOpensShop(event: PlayerInteractEvent) {
-        if(event.hasItem() && ItemComparator.compare(event.item!!, SHOP_SYMBOL_DEFAULT)) {
-            if(this.globalShopInventory == null) {
+        if (event.hasItem() && ItemComparator.compare(event.item!!, SHOP_SYMBOL_DEFAULT)) {
+            if (this.globalShopInventory == null) {
                 this.globalShopInventory = ShopInventory(this.main)
             }
             this.globalShopInventory?.open(event.player)

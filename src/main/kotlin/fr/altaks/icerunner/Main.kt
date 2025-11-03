@@ -67,7 +67,7 @@ open class Main : JavaPlugin {
             teamsManager,
             scoreboardManager,
             gameManager,
-            shopManager
+            shopManager,
         ).forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, this) }
 
         Bukkit.getOnlinePlayers().forEach { player -> this.scoreboardManager.initPlayerScoreboard(player) }

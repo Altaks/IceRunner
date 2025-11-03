@@ -19,7 +19,11 @@ class ShopIgloo : ShopManager.Companion.IShopItem {
             "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
             "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
             "${ChatColor.GRAY}${GameItems.loreDelimitation}",
-            "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {"pièce"} else {"pièces"}}",
+            "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
+                "pièce"
+            } else {
+                "pièces"
+            }}",
         )
         .build()
 

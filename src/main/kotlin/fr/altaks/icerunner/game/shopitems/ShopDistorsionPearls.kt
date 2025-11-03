@@ -17,8 +17,12 @@ class ShopDistorsionPearls : ShopManager.Companion.IShopItem {
             "${ChatColor.GRAY}renferme le souffle des anciens glaciers.",
             "${ChatColor.GRAY}Lancée, elle déchire l’espace, téléportant son porteur",
             "${ChatColor.GRAY}au cœur des batailles",
-            "${ChatColor.GRAY}${loreDelimitation}",
-            "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {"pièce"} else {"pièces"}}",
+            "${ChatColor.GRAY}$loreDelimitation",
+            "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
+                "pièce"
+            } else {
+                "pièces"
+            }}",
         )
         .build()
     override fun position(): Int = 1
