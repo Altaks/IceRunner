@@ -5,6 +5,7 @@ import org.bukkit.ChatColor
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -12,8 +13,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta
 
 object GameItems {
 
-    // ●○
-    private val loreDelimitation: String = "${ChatColor.GRAY}${ChatColor.STRIKETHROUGH}${"  ".repeat(40)}"
+    val loreDelimitation: String = "${ChatColor.GRAY}${ChatColor.STRIKETHROUGH}${"  ".repeat(40)}"
 
     // ---------------- WAITING PHASE ---------------- //
     val redTeamTag: ItemStack = ItemFactory(Material.RED_DYE, 1).setDisplayName("${ChatColor.RED}\u00BB Equipe rouge \u00AB").build()
@@ -35,6 +35,7 @@ object GameItems {
     private const val PLAYER_INVENTORY_HOTBAR_BOW_SLOT_INDEX = 0
     private const val PLAYER_INVENTORY_HOTBAR_SNOWBALLS_SLOT_INDEX = 1
     private const val PLAYER_INVENTORY_HOTBAR_ARROWS_TEAM_SLOT_INDEX = 7
+    private const val PLAYER_INVENTORY_HOTBAR_SHOP_SYMBOL_SLOT_INDEX = 8;
 
     val baseKitArrows: ItemStack = ItemFactory(Material.ARROW, 4)
         .setDisplayName("${ChatColor.AQUA}\uD83D\uDCA5 Flèche explosive")
@@ -72,6 +73,21 @@ object GameItems {
         .addItemFlags(ItemFlag.HIDE_UNBREAKABLE)
         .build()
 
+    fun shopSymbolItem(playerMoney: UInt): ItemStack {
+        assert(UIntRange(UInt.MIN_VALUE, Material.GOLD_NUGGET.maxStackSize.toUInt()).contains(playerMoney));
+
+        return ItemFactory(Material.GOLD_NUGGET, playerMoney.toInt())
+            .setDisplayName("${ChatColor.GOLD}\uD83D\uDC8E Boutique")
+            .setLore(
+                "${ChatColor.GRAY}$loreDelimitation",
+                "${ChatColor.GRAY}Venez dépenser vos gains dûrement acquis pour obtenir des",
+                "${ChatColor.GRAY}objets puissants. Réfléchissez, établissez une stratégie,",
+                "${ChatColor.GRAY}Le bon choix sera sûrement celui qui vous fera gagner !"
+            )
+            .addFakeEnchant()
+            .build();
+    }
+
     private fun getTeamColoredLeatherArmorPiece(material: Material, color: Color): ItemStack {
         assert(
             arrayOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS).contains(material),
@@ -87,7 +103,7 @@ object GameItems {
         return item
     }
 
-    fun applyPlayingInventoryToPlayer(player: Player, teamColor: Color) {
+    fun applyPlayingInventoryToPlayer(player: Player, teamColor: Color, playerMoney: UInt) {
         player.inventory.clear()
 
         player.inventory.helmet = getTeamColoredLeatherArmorPiece(Material.LEATHER_HELMET, teamColor)
@@ -98,5 +114,10 @@ object GameItems {
         player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_BOW_SLOT_INDEX, baseKitBow)
         player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_SNOWBALLS_SLOT_INDEX, baseKitSnowballs)
         player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_ARROWS_TEAM_SLOT_INDEX, baseKitArrows)
+        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_SHOP_SYMBOL_SLOT_INDEX, shopSymbolItem(playerMoney))
+    }
+    
+    fun updateShopSymbolInPlayerInventory(player: Player, playerMoney: UInt) {
+        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_SHOP_SYMBOL_SLOT_INDEX, shopSymbolItem(playerMoney))
     }
 }

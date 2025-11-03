@@ -2,7 +2,6 @@ package fr.altaks.icerunner.game
 
 import com.google.common.collect.HashBiMap
 import fr.altaks.icerunner.Main
-import fr.altaks.icerunner.game.GameItems
 import fr.altaks.icerunner.utils.ItemComparator
 import fr.altaks.icerunner.world.WorldManager
 import fr.altaks.icerunner.world.WorldVariantMetadata
@@ -136,9 +135,9 @@ class TeamsManager(val main: Main) : Listener {
         }
     }
 
-    fun equipPlayersWithTeamArmor() {
+    fun equipPlayersWithTeamEquipments() {
         Bukkit.getOnlinePlayers().forEach { player ->
-            GameItems.applyPlayingInventoryToPlayer(player, getPlayerGameTeam(player).armorColor)
+            GameItems.applyPlayingInventoryToPlayer(player, getPlayerGameTeam(player).armorColor, this.main.shopManager.getPlayerMoney(player))
         }
     }
 

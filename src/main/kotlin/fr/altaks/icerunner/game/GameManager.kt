@@ -63,8 +63,10 @@ class GameManager(val main: Main) : Listener {
                 "${Main.MAIN_PREFIX} ${ChatColor.YELLOW}${ChatColor.GOLD}Bonne partie et bonne chance à tous !\n",
         )
 
+        this.main.shopManager.preparePlayerShops();
+
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
-        this.main.teamsManager.equipPlayersWithTeamArmor()
+        this.main.teamsManager.equipPlayersWithTeamEquipments()
 
         // Resetting player stats
         Bukkit.getOnlinePlayers().forEach { player ->
@@ -125,7 +127,7 @@ class GameManager(val main: Main) : Listener {
                     player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, INFINITE_POTION_EFFECT_DURATION, JUMP_BOOST_AMPLIFIER))
 
                     // Reapply inventory to player
-                    GameItems.applyPlayingInventoryToPlayer(player, playerTeam.armorColor)
+                    GameItems.applyPlayingInventoryToPlayer(player, playerTeam.armorColor, this.main.shopManager.getPlayerMoney(player))
                 }
                 else -> {
                     event.isCancelled = true

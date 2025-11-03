@@ -2,6 +2,7 @@ package fr.altaks.icerunner
 
 import fr.altaks.icerunner.game.GameManager
 import fr.altaks.icerunner.game.ScoreboardManager
+import fr.altaks.icerunner.game.ShopManager
 import fr.altaks.icerunner.game.TeamsManager
 import fr.altaks.icerunner.triggers.commands.DevCommand
 import fr.altaks.icerunner.triggers.listeners.ArrowListener
@@ -41,6 +42,7 @@ open class Main : JavaPlugin {
     val worldManager: WorldManager = WorldManager(this)
     val teamsManager: TeamsManager = TeamsManager(this)
     val scoreboardManager: ScoreboardManager = ScoreboardManager(this)
+    val shopManager: ShopManager = ShopManager(this)
 
     var serverCachedIcon: CachedServerIcon? = null
 
@@ -49,9 +51,10 @@ open class Main : JavaPlugin {
         saveDefaultConfig()
 
         this.worldManager.setupGameWorld()
-
         this.teamsManager.prepareTeams()
+
         this.scoreboardManager.initScoreboardUpdating()
+        this.shopManager.initShop()
 
         registerCommand("dev", DevCommand(this))
 
@@ -64,6 +67,7 @@ open class Main : JavaPlugin {
             teamsManager,
             scoreboardManager,
             gameManager,
+            shopManager
         ).forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, this) }
 
         Bukkit.getOnlinePlayers().forEach { player -> this.scoreboardManager.initPlayerScoreboard(player) }

@@ -59,7 +59,10 @@ class DevCommand(val main: Main) : TabExecutor {
 
                 // Inv management
                 SubDevCommand.WAITING_INVENTORY -> GameItems.applyWaitingInventoryToPlayer(sender)
-                SubDevCommand.PLAYING_INVENTORY -> GameItems.applyPlayingInventoryToPlayer(sender, Color.PURPLE)
+                SubDevCommand.PLAYING_INVENTORY -> {
+                    this.main.shopManager.setPlayerMoney(sender, 50u);
+                    GameItems.applyPlayingInventoryToPlayer(sender, Color.PURPLE, 50u);
+                }
 
                 null -> {
                     sender.sendMessage("This command sub-argument matches nothing")
