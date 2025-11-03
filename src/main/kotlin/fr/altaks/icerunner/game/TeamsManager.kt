@@ -3,9 +3,9 @@ package fr.altaks.icerunner.game
 import com.google.common.collect.HashBiMap
 import fr.altaks.icerunner.Main
 import fr.altaks.icerunner.game.GameItems
+import fr.altaks.icerunner.utils.ItemComparator
 import fr.altaks.icerunner.world.WorldManager
 import fr.altaks.icerunner.world.WorldVariantMetadata
-import fr.altaks.icerunner.utils.ItemComparator
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Color

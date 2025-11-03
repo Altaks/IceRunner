@@ -88,7 +88,6 @@ tasks.shadowJar {
     relocate("fr.mrmicky.fastboard", "$group.fastboard")
     destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
     archiveClassifier = ""
-
 }
 
 tasks.processResources {
