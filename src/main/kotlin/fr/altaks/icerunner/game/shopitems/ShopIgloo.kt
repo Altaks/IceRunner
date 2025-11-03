@@ -14,10 +14,10 @@ class ShopIgloo : ShopManager.Companion.IShopItem {
         .setDisplayName("${ChatColor.AQUA}\uD83C\uDF05 Igloo")
         .setLore(
             "${ChatColor.GRAY}${GameItems.loreDelimitation}",
-            "${ChatColor.GRAY}La pointe de ces flèches est remplie d’un liquide rougeoyant,",
-            "${ChatColor.GRAY}extrait des glandes venimeuses des dragons des marais. ",
-            "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
-            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
+            "${ChatColor.GRAY}L'Igloo des anciens géants des glaces. En activant cette",
+            "${ChatColor.GRAY}balise, tu invoques un abri magique, refuge contre les",
+            "${ChatColor.GRAY}tempêtes arctiques et les assauts ennemis, il s'agit",
+            "${ChatColor.GRAY}d'un sanctuaire de froid et de sécurité",
             "${ChatColor.GRAY}${GameItems.loreDelimitation}",
             "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
                 "pièce"

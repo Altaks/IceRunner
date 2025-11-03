@@ -13,10 +13,9 @@ class ShopDistorsionPearls : ShopManager.Companion.IShopItem {
         .setDisplayName("${ChatColor.LIGHT_PURPLE}\uD83C\uDF0C Perle de distortion")
         .setLore(
             "${ChatColor.GRAY}$loreDelimitation",
-            "${ChatColor.GRAY}Forgée dans les tempêtes du Nord, la Perle de Distorsion ",
-            "${ChatColor.GRAY}renferme le souffle des anciens glaciers.",
-            "${ChatColor.GRAY}Lancée, elle déchire l’espace, téléportant son porteur",
-            "${ChatColor.GRAY}au cœur des batailles",
+            "${ChatColor.GRAY}Perle cristalline du Jötunheim, forgée par les géants de",
+            "${ChatColor.GRAY}glace. Lancer cette perle te téléportera à l'endroit de",
+            "${ChatColor.GRAY}ton choix, comme un éclair fendant l'air glacial",
             "${ChatColor.GRAY}$loreDelimitation",
             "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
                 "pièce"

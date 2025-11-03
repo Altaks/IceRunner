@@ -14,10 +14,10 @@ class ShopLastJudgement : ShopManager.Companion.IShopItem {
         .setDisplayName("${ChatColor.GOLD}⚡ Jugement dernier")
         .setLore(
             "${ChatColor.GRAY}${GameItems.loreDelimitation}",
-            "${ChatColor.GRAY}La pointe de ces flèches est remplie d’un liquide rougeoyant,",
-            "${ChatColor.GRAY}extrait des glandes venimeuses des dragons des marais. ",
-            "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
-            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
+            "${ChatColor.GRAY}La poudre enflammée du Feu éternel. En la lançant, tu",
+            "${ChatColor.GRAY}invoques le jugement des anciens dieux, un cataclysme",
+            "${ChatColor.GRAY}déchaînant la fureur du feu céleste, consumant",
+            "${ChatColor.GRAY}toute construction et ennemis sur son passage.",
             "${ChatColor.GRAY}${GameItems.loreDelimitation}",
             "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
                 "pièce"

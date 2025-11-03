@@ -14,10 +14,10 @@ class ShopExplosiveSheep : ShopManager.Companion.IShopItem {
         .setDisplayName("${ChatColor.RED}☣ File un mauvais coton")
         .setLore(
             "${ChatColor.GRAY}${GameItems.loreDelimitation}",
-            "${ChatColor.GRAY}La pointe de ces flèches est remplie d’un liquide rougeoyant,",
-            "${ChatColor.GRAY}extrait des glandes venimeuses des dragons des marais. ",
-            "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
-            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
+            "${ChatColor.GRAY}Né des vents hurlants de Niflheim, ce mouton maudit bondit",
+            "${ChatColor.GRAY}vers son destin dans un cri tonitruant. Guidé par ton",
+            "${ChatColor.GRAY}regard, il charge l’ennemi avant d’exploser dans une",
+            "${ChatColor.GRAY}lumière glacée et divine.",
             "${ChatColor.GRAY}${GameItems.loreDelimitation}",
             "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
                 "pièce"

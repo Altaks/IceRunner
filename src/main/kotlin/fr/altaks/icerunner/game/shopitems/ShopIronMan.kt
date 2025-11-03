@@ -13,10 +13,10 @@ class ShopIronMan : ShopManager.Companion.IShopItem {
         .setDisplayName("${ChatColor.GRAY}\uD83D\uDEE1 Iron man")
         .setLore(
             "${ChatColor.GRAY}$loreDelimitation",
-            "${ChatColor.GRAY}La pointe de ces flèches est remplie d’un liquide rougeoyant,",
-            "${ChatColor.GRAY}extrait des glandes venimeuses des dragons des marais. ",
-            "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
-            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
+            "${ChatColor.GRAY}Armure forgée dans les foyers d'Asgard, infusée de la",
+            "${ChatColor.GRAY}puissance d'Ymir lui-même. Ce plastron te protège des",
+            "${ChatColor.GRAY}coups violents, te maintenant ferme comme un iceberg,",
+            "${ChatColor.GRAY}défiant les attaques ennemies.",
             "${ChatColor.GRAY}$loreDelimitation",
             "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
                 "pièce"

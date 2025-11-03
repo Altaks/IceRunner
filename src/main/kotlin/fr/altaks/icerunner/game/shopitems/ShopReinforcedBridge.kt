@@ -13,10 +13,8 @@ class ShopReinforcedBridge : ShopManager.Companion.IShopItem {
         .setDisplayName("${ChatColor.BLUE}❄ Eternuement de Yéti")
         .setLore(
             "${ChatColor.GRAY}$loreDelimitation",
-            "${ChatColor.GRAY}La pointe de ces flèches est remplie d’un liquide rougeoyant,",
-            "${ChatColor.GRAY}extrait des glandes venimeuses des dragons des marais. ",
-            "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
-            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
+            "${ChatColor.GRAY}Artéfact maudit de neige tombée des montagnes de Jotunheim.",
+            "${ChatColor.GRAY}En utilisant ces cristaux, un pont de glace solide se forme,",
             "${ChatColor.GRAY}$loreDelimitation",
             "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
                 "pièce"

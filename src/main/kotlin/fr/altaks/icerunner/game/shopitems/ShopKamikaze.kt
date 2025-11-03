@@ -13,10 +13,10 @@ class ShopKamikaze : ShopManager.Companion.IShopItem {
         .setDisplayName("${ChatColor.DARK_RED}\uD83D\uDCA5 Kamikaze")
         .setLore(
             "${ChatColor.GRAY}$loreDelimitation",
-            "${ChatColor.GRAY}La pointe de ces flèches est remplie d’un liquide rougeoyant,",
-            "${ChatColor.GRAY}extrait des glandes venimeuses des dragons des marais. ",
-            "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
-            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
+            "${ChatColor.GRAY}Artefact interdit d’Helheim, scellant la rage d’un guerrier",
+            "${ChatColor.GRAY}déchu. En l’activant, tu libères ton âme dans une onde",
+            "${ChatColor.GRAY}destructrice, fauchant tout être proche dans un dernier",
+            "${ChatColor.GRAY}éclat de gloire gelée",
             "${ChatColor.GRAY}$loreDelimitation",
             "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
                 "pièce"

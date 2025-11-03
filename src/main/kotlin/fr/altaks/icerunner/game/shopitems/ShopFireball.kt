@@ -10,13 +10,12 @@ import org.bukkit.inventory.ItemStack
 class ShopFireball : ShopManager.Companion.IShopItem {
     override fun cost(): UInt = 4u
     override fun item(): ItemStack = ItemFactory(Material.FIRE_CHARGE, 1)
-        .setDisplayName("${ChatColor.RED}\uD83D\uDD25 Souffle de feu")
+        .setDisplayName("${ChatColor.RED}\uD83D\uDD25 Souffle de flamme")
         .setLore(
             "${ChatColor.GRAY}$loreDelimitation",
-            "${ChatColor.GRAY}La pointe de ces flèches est remplie d’un liquide rougeoyant,",
-            "${ChatColor.GRAY}extrait des glandes venimeuses des dragons des marais. ",
-            "${ChatColor.GRAY}À l’impact, elles explosent en une gerbe de flammes bleutées,",
-            "${ChatColor.GRAY}laissant derrière elles une odeur de soufre et de cendre.",
+            "${ChatColor.GRAY}Essence enflammée du dragon Nidhögg, soufflée des abîmes. ",
+            "${ChatColor.GRAY}Cette boule de feu, aux flammes ardentes, incinère tout sur",
+            "${ChatColor.GRAY}son passage, défiant la glace, le vent, et l'adversité",
             "${ChatColor.GRAY}$loreDelimitation",
             "${ChatColor.GOLD}⛁ ${cost()} ${if (cost() <= 1u) {
                 "pièce"
