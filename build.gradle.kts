@@ -15,8 +15,8 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
 }
 
-group = "fr.altzec"
-version = "1.0-SNAPSHOT"
+group = "fr.altaks"
+version = "1.0.0"
 
 tasks.compileJava.get().options.encoding = "UTF-8"
 
@@ -50,7 +50,7 @@ idea {
 }
 
 spigot {
-    authors = listOf("Altaks", "_Zecross_")
+    authors = listOf("Altaks")
     apiVersion = "1.21"
     load = Load.POST_WORLD
     commands {
@@ -85,8 +85,9 @@ tasks.jar {
 }
 
 tasks.shadowJar {
-    relocate("fr.mrmicky.fastboard", "fr.altzec.fastboard")
+    relocate("fr.mrmicky.fastboard", "$group.fastboard")
     destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
+    archiveClassifier = ""
 }
 
 tasks.processResources {
