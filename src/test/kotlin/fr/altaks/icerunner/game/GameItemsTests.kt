@@ -62,7 +62,7 @@ open class GameItemsTests {
     @MethodSource("provideTeamColors")
     fun testApplyTeamPlayingInventoryToPlayer(color: Color) {
         val player = server.addPlayer()
-        GameItems.applyPlayingInventoryToPlayer(player, color)
+        GameItems.applyPlayingInventoryToPlayer(player, color, 50u)
 
         assert(!player.inventory.isEmpty) { "Player inventory must be not empty" }
 
