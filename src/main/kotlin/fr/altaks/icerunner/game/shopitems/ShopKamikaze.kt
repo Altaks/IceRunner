@@ -23,7 +23,7 @@ class ShopKamikaze(val main: Main) : ShopManager.Companion.IShopItem {
         private val EXPLOSION_AFFECTED_BLOCKS = listOf<Material>(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE)
     }
 
-    override fun cost(): UInt = 3u
+    override fun cost(): UInt = 12u
     override fun item(): ItemStack = ItemFactory(Material.TRIPWIRE_HOOK, 2)
         .setDisplayName("${ChatColor.DARK_RED}\uD83D\uDCA5 Kamikaze")
         .setLore(
@@ -40,7 +40,7 @@ class ShopKamikaze(val main: Main) : ShopManager.Companion.IShopItem {
             }}",
         )
         .build()
-    override fun position(): Int = 12
+    override fun position(): Int = 3
 
     @EventHandler
     fun onPlayerUsesItem(event: PlayerInteractEvent) {
