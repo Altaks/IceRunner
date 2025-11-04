@@ -137,7 +137,7 @@ class TeamsManager(val main: Main) : Listener {
 
     fun equipPlayersWithTeamEquipments() {
         Bukkit.getOnlinePlayers().forEach { player ->
-            GameItems.applyPlayingInventoryToPlayer(player, getPlayerGameTeam(player).armorColor, this.main.shopManager.getPlayerMoney(player))
+            GameItems.applyPlayingInventoryToPlayer(player, getPlayerGameTeam(player).armorColor, this.main.shopManager.getPlayerMoney(player), clearInventoryFirst = true)
         }
     }
 

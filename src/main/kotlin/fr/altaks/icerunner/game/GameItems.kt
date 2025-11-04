@@ -102,8 +102,8 @@ object GameItems {
         return item
     }
 
-    fun applyPlayingInventoryToPlayer(player: Player, teamColor: Color, playerMoney: UInt) {
-        player.inventory.clear()
+    fun applyPlayingInventoryToPlayer(player: Player, teamColor: Color, playerMoney: UInt, clearInventoryFirst: Boolean = false) {
+        if(clearInventoryFirst) player.inventory.clear()
 
         player.inventory.helmet = getTeamColoredLeatherArmorPiece(Material.LEATHER_HELMET, teamColor)
         player.inventory.chestplate = getTeamColoredLeatherArmorPiece(Material.LEATHER_CHESTPLATE, teamColor)

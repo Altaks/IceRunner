@@ -61,7 +61,7 @@ class DevCommand(val main: Main) : TabExecutor {
                 SubDevCommand.WAITING_INVENTORY -> GameItems.applyWaitingInventoryToPlayer(sender)
                 SubDevCommand.PLAYING_INVENTORY -> {
                     this.main.shopManager.setPlayerMoney(sender, 50u)
-                    GameItems.applyPlayingInventoryToPlayer(sender, Color.PURPLE, 50u)
+                    GameItems.applyPlayingInventoryToPlayer(sender, Color.PURPLE, 50u, clearInventoryFirst = true)
                 }
 
                 null -> {
