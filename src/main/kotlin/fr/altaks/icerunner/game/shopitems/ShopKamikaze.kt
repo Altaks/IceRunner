@@ -45,11 +45,12 @@ class ShopKamikaze(val main: Main) : ShopManager.Companion.IShopItem {
     @EventHandler
     fun onPlayerUsesItem(event: PlayerInteractEvent) {
         if (event.item != null && ItemComparator.compare(event.item, item())) {
+            event.isCancelled = true
             triggerPlayerExplosion(event.player)
         }
     }
 
-    fun triggerPlayerExplosion(player: Player) {
+    private fun triggerPlayerExplosion(player: Player) {
         for (x in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {
             for (y in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {
                 for (z in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {

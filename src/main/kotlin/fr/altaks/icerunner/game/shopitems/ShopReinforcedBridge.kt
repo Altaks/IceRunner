@@ -48,6 +48,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
     @EventHandler
     fun onPlayerUsesItem(event: PlayerInteractEvent) {
         if (event.item != null && ItemComparator.compare(event.item, item())) {
+            event.isCancelled = true
             ensureFireballTaskIsActive()
             spawnBridgeProjectile(event.player)
         }
@@ -69,7 +70,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
         }
     }
 
-    fun spawnBridgeProjectile(player: Player) {
+    private fun spawnBridgeProjectile(player: Player) {
         val eyePosition = player.eyeLocation
         val lookDirection = player.eyeLocation.direction
         val spawnLocation = eyePosition.add(lookDirection)
@@ -79,7 +80,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
 
     private var fireBallTask: BukkitTask? = null
 
-    fun ensureFireballTaskIsActive() {
+    private fun ensureFireballTaskIsActive() {
         if (fireBallTask == null) {
             this.fireBallTask = YetiSneeze(this).runTaskTimer(this.main, 0, 1L);
         }

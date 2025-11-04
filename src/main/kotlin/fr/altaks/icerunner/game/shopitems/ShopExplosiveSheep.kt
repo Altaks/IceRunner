@@ -11,7 +11,6 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
-import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.entity.Sheep
@@ -61,7 +60,7 @@ class ShopExplosiveSheep(val main: Main) : ShopManager.Companion.IShopItem {
         }
     }
 
-    fun spawnAndShootExplosiveSheep(player: Player) {
+    private fun spawnAndShootExplosiveSheep(player: Player) {
         val eyePosition = player.eyeLocation
         val lookDirection = player.eyeLocation.direction
         val spawnLocation = eyePosition.add(lookDirection)
@@ -77,7 +76,7 @@ class ShopExplosiveSheep(val main: Main) : ShopManager.Companion.IShopItem {
 
     private var fireBallTask: BukkitTask? = null
 
-    fun ensureExplosiveSheepTaskIsActive() {
+    private fun ensureExplosiveSheepTaskIsActive() {
         if (fireBallTask == null) {
             this.fireBallTask = ExplosiveSheepTask(this.main, this).runTaskTimer(this.main, 0, 20L);
         }
@@ -110,7 +109,7 @@ class ShopExplosiveSheep(val main: Main) : ShopManager.Companion.IShopItem {
             sheepToRemoveList.forEach { it -> run { explosiveSheepHandler.activeExplosiveSheepTTL.remove(it); it.remove() }}
         }
 
-        fun explode(location: Location) {
+        private fun explode(location: Location) {
             for (x in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {
                 for (y in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {
                     for (z in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {

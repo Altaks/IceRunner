@@ -47,6 +47,7 @@ class ShopFireball(val main: Main) : ShopManager.Companion.IShopItem {
     @EventHandler
     fun onPlayerUsesItem(event: PlayerInteractEvent) {
         if (event.item != null && ItemComparator.compare(event.item, item())) {
+            event.isCancelled = true
             ensureFireballTaskIsActive()
             spawnAndShootFireball(event.player)
         }
@@ -68,7 +69,7 @@ class ShopFireball(val main: Main) : ShopManager.Companion.IShopItem {
         }
     }
 
-    fun spawnAndShootFireball(player: Player) {
+    private fun spawnAndShootFireball(player: Player) {
         val eyePosition = player.eyeLocation
         val lookDirection = player.eyeLocation.direction
         val spawnLocation = eyePosition.add(lookDirection)
@@ -77,7 +78,7 @@ class ShopFireball(val main: Main) : ShopManager.Companion.IShopItem {
 
     private var fireBallTask: BukkitTask? = null
 
-    fun ensureFireballTaskIsActive() {
+    private fun ensureFireballTaskIsActive() {
         if (fireBallTask == null) {
             this.fireBallTask = FireballTask().runTaskTimer(this.main, 0, 1L);
         }

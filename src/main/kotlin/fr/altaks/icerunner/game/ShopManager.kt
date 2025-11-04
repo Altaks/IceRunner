@@ -43,7 +43,7 @@ class ShopManager(val main: Main) : Listener {
 
     private class ShopInventory : FastInv {
         val main: Main
-        val itemToShopItemInstanceMapping = HashMap<ItemStack, IShopItem>()
+        val itemToShopItemInstanceMapping = HashMap<Material, IShopItem>()
 
         constructor(main: Main) : super(SHOP_SIZE, SHOP_NAME) {
             this.main = main
@@ -58,11 +58,11 @@ class ShopManager(val main: Main) : Listener {
                 ShopExplosiveSheep(main),
                 ShopIgloo(),
                 ShopLastJudgement(),
-            ).forEach { shopItem ->
+            ).forEach { handler ->
                 run {
-                    setItem(shopItem.position(), shopItem.item())
-                    itemToShopItemInstanceMapping[shopItem.item()] = shopItem
-                    Bukkit.getPluginManager().registerEvents(shopItem, main)
+                    setItem(handler.position(), handler.item())
+                    itemToShopItemInstanceMapping[handler.item().type] = handler
+                    Bukkit.getPluginManager().registerEvents(handler, main)
                 }
             }
         }
@@ -70,7 +70,7 @@ class ShopManager(val main: Main) : Listener {
         override fun onClick(event: InventoryClickEvent) {
             event.isCancelled = true
 
-            val shopItem = itemToShopItemInstanceMapping[event.currentItem] ?: return
+            val shopItem = itemToShopItemInstanceMapping[event.currentItem?.type] ?: return
             val player = event.whoClicked as Player
 
             if (this.main.shopManager.hasPlayerEnoughMoney(player, shopItem.cost())) {
