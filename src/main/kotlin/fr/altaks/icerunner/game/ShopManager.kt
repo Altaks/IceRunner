@@ -51,7 +51,7 @@ class ShopManager(val main: Main) : Listener {
             listOf(
                 ShopArrows(),
                 ShopDistorsionPearls(),
-                ShopReinforcedBridge(),
+                ShopReinforcedBridge(main),
                 ShopKamikaze(),
                 ShopFireball(main),
                 ShopIronMan(),
