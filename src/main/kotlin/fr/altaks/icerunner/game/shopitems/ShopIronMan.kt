@@ -31,8 +31,15 @@ class ShopIronMan : ShopManager.Companion.IShopItem {
                 "pièces"
             }}",
         )
-        .addAttributeModifier(Attribute.KNOCKBACK_RESISTANCE,AttributeModifier(Attribute.KNOCKBACK_RESISTANCE.keyOrThrow, 1.0, AttributeModifier.Operation.ADD_NUMBER,
-            EquipmentSlotGroup.CHEST))
+        .addAttributeModifier(
+            Attribute.KNOCKBACK_RESISTANCE,
+            AttributeModifier(
+                Attribute.KNOCKBACK_RESISTANCE.keyOrThrow,
+                1.0,
+                AttributeModifier.Operation.ADD_NUMBER,
+                EquipmentSlotGroup.CHEST,
+            ),
+        )
         .setUnbreakable(true)
         .build()
 
@@ -45,5 +52,4 @@ class ShopIronMan : ShopManager.Companion.IShopItem {
             event.player.inventory.setItem(event.hand!!, null)
         }
     }
-
 }

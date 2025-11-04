@@ -19,11 +19,10 @@ import org.bukkit.util.NumberConversions
 import kotlin.math.cos
 import kotlin.math.sin
 
-
 class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
 
     companion object {
-        private const val EXPLOSION_EFFECT_RADIUS = 40;
+        private const val EXPLOSION_EFFECT_RADIUS = 40
         private val EXPLOSION_AFFECTED_BLOCKS = listOf<Material>(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE)
     }
 
@@ -70,10 +69,10 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
             private const val PARTICLE_LOCATION_DELTA = 0.0
         }
 
-        var phi = 0.0;
+        var phi = 0.0
 
         override fun run() {
-            phi += Math.PI / 8;
+            phi += Math.PI / 8
 
             var x: Double
             var y: Double
@@ -85,13 +84,17 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
                 theta += Math.PI / 16
 
                 for (i in 0..1) {
-                    x = HELIX_RADIUS * (3 * Math.PI - theta) * HELIX_RADIUS * cos(theta + phi + i * Math.PI);
-                    y = HELIX_HEIGHT * theta;
-                    z = HELIX_RADIUS * (3 * Math.PI - theta) * HELIX_RADIUS * sin(theta + phi + i * Math.PI);
+                    x = HELIX_RADIUS * (3 * Math.PI - theta) * HELIX_RADIUS * cos(theta + phi + i * Math.PI)
+                    y = HELIX_HEIGHT * theta
+                    z = HELIX_RADIUS * (3 * Math.PI - theta) * HELIX_RADIUS * sin(theta + phi + i * Math.PI)
 
-                    val particleSpawnLocation = player.location.add(x, 5.0 - y, z);
+                    val particleSpawnLocation = player.location.add(x, 5.0 - y, z)
                     particleSpawnLocation.world?.spawnParticle(
-                        if (i % 2 == 0) { Particle.SOUL_FIRE_FLAME } else { Particle.FLAME },
+                        if (i % 2 == 0) {
+                            Particle.SOUL_FIRE_FLAME
+                        } else {
+                            Particle.FLAME
+                        },
                         particleSpawnLocation.x,
                         particleSpawnLocation.y,
                         particleSpawnLocation.z,
@@ -102,16 +105,15 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
                         PARTICLE_SPEED,
                     )
                 }
-
             }
 
             if (phi > 10 * Math.PI) {
                 wipePlayersAndIceBridges()
-                this.cancel();
+                this.cancel()
             }
 
-            player.location.world?.spawnParticle(Particle.FLAME, player.location, 250,EXPLOSION_EFFECT_RADIUS.toDouble(),EXPLOSION_EFFECT_RADIUS.toDouble(),EXPLOSION_EFFECT_RADIUS.toDouble(), 0.0)
-            player.location.world?.spawnParticle(Particle.SOUL_FIRE_FLAME, player.location, 250,EXPLOSION_EFFECT_RADIUS.toDouble(),EXPLOSION_EFFECT_RADIUS.toDouble(),EXPLOSION_EFFECT_RADIUS.toDouble(), 0.0)
+            player.location.world?.spawnParticle(Particle.FLAME, player.location, 250, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), 0.0)
+            player.location.world?.spawnParticle(Particle.SOUL_FIRE_FLAME, player.location, 250, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), 0.0)
         }
 
         fun wipePlayersAndIceBridges() {
@@ -123,7 +125,7 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
 
                         // if the scanned block is in the sphere of radius EXPLOSION_EFFECT_RADIUS
                         if (position.distanceSquared(player.location) <= NumberConversions.square(EXPLOSION_EFFECT_RADIUS.toDouble())) {
-                            if(EXPLOSION_AFFECTED_BLOCKS.contains(position.block.type)) {
+                            if (EXPLOSION_AFFECTED_BLOCKS.contains(position.block.type)) {
                                 position.block.setType(Material.AIR, false)
                             }
                         }

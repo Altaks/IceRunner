@@ -19,7 +19,7 @@ import org.bukkit.util.NumberConversions
 class ShopKamikaze(val main: Main) : ShopManager.Companion.IShopItem {
 
     companion object {
-        private const val EXPLOSION_EFFECT_RADIUS = 10;
+        private const val EXPLOSION_EFFECT_RADIUS = 10
         private val EXPLOSION_AFFECTED_BLOCKS = listOf<Material>(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE)
     }
 
@@ -59,7 +59,7 @@ class ShopKamikaze(val main: Main) : ShopManager.Companion.IShopItem {
 
                     // if the scanned block is in the sphere of radius EXPLOSION_EFFECT_RADIUS
                     if (position.distanceSquared(player.location) <= NumberConversions.square(EXPLOSION_EFFECT_RADIUS.toDouble())) {
-                        if(EXPLOSION_AFFECTED_BLOCKS.contains(position.block.type)) {
+                        if (EXPLOSION_AFFECTED_BLOCKS.contains(position.block.type)) {
                             position.block.setType(Material.AIR, false)
                         }
                     }

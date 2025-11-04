@@ -22,7 +22,7 @@ import org.bukkit.util.NumberConversions
 class ShopFireball(val main: Main) : ShopManager.Companion.IShopItem {
 
     companion object {
-        private const val FIREBALL_MELT_EFFECT_RADIUS = 3;
+        private const val FIREBALL_MELT_EFFECT_RADIUS = 3
         private val FIREBALL_MELT_AFFECTED_BLOCKS = listOf<Material>(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE)
     }
 
@@ -55,7 +55,7 @@ class ShopFireball(val main: Main) : ShopManager.Companion.IShopItem {
 
     @EventHandler
     fun onFireballHitsBlock(event: ProjectileHitEvent) {
-        if(event.entity.type == EntityType.FIREBALL || event.entity.type == EntityType.SMALL_FIREBALL) {
+        if (event.entity.type == EntityType.FIREBALL || event.entity.type == EntityType.SMALL_FIREBALL) {
             event.isCancelled = true
             event.entity.remove()
         }
@@ -63,7 +63,7 @@ class ShopFireball(val main: Main) : ShopManager.Companion.IShopItem {
 
     @EventHandler
     fun onFireballExplodesOnGround(event: ExplosionPrimeEvent) {
-        if(event.entity.type == EntityType.FIREBALL || event.entity.type == EntityType.SMALL_FIREBALL) {
+        if (event.entity.type == EntityType.FIREBALL || event.entity.type == EntityType.SMALL_FIREBALL) {
             event.isCancelled = true
             event.entity.remove()
         }
@@ -80,39 +80,38 @@ class ShopFireball(val main: Main) : ShopManager.Companion.IShopItem {
 
     private fun ensureFireballTaskIsActive() {
         if (fireBallTask == null) {
-            this.fireBallTask = FireballTask().runTaskTimer(this.main, 0, 1L);
+            this.fireBallTask = FireballTask().runTaskTimer(this.main, 0, 1L)
         }
     }
 
-    private class FireballTask: BukkitRunnable() {
+    private class FireballTask : BukkitRunnable() {
         override fun run() {
             Bukkit.getWorlds().forEach { world ->
                 world
                     .entities
                     .filter { entity -> entity.type == EntityType.FIREBALL || entity.type == EntityType.SMALL_FIREBALL }
-                    .forEach { fireball -> run iteration@{
+                    .forEach { fireball ->
+                        run iteration@{
+                            // 3d radius matrix
+                            for (x in -FIREBALL_MELT_EFFECT_RADIUS..FIREBALL_MELT_EFFECT_RADIUS) {
+                                for (y in -FIREBALL_MELT_EFFECT_RADIUS..FIREBALL_MELT_EFFECT_RADIUS) {
+                                    for (z in -FIREBALL_MELT_EFFECT_RADIUS..FIREBALL_MELT_EFFECT_RADIUS) {
+                                        // scanned block position
+                                        val position = fireball.location.add(x.toDouble(), y.toDouble(), z.toDouble())
 
-                        // 3d radius matrix
-                        for (x in -FIREBALL_MELT_EFFECT_RADIUS..FIREBALL_MELT_EFFECT_RADIUS) {
-                            for (y in -FIREBALL_MELT_EFFECT_RADIUS..FIREBALL_MELT_EFFECT_RADIUS) {
-                                for (z in -FIREBALL_MELT_EFFECT_RADIUS..FIREBALL_MELT_EFFECT_RADIUS) {
-                                    // scanned block position
-                                    val position = fireball.location.add(x.toDouble(), y.toDouble(), z.toDouble())
-
-                                    // if the scanned block is in the sphere of radius FIREBALL_MELT_EFFECT_RADIUS
-                                    if (position.distanceSquared(fireball.location) <= NumberConversions.square(FIREBALL_MELT_EFFECT_RADIUS.toDouble())) {
-                                        if(FIREBALL_MELT_AFFECTED_BLOCKS.contains(position.block.type)) {
-                                            position.block.setType(Material.AIR, false)
+                                        // if the scanned block is in the sphere of radius FIREBALL_MELT_EFFECT_RADIUS
+                                        if (position.distanceSquared(fireball.location) <= NumberConversions.square(FIREBALL_MELT_EFFECT_RADIUS.toDouble())) {
+                                            if (FIREBALL_MELT_AFFECTED_BLOCKS.contains(position.block.type)) {
+                                                position.block.setType(Material.AIR, false)
+                                            }
                                         }
                                     }
                                 }
                             }
+                            // SMTH
                         }
-                        // SMTH
-                    }
                     }
             }
         }
-
     }
 }

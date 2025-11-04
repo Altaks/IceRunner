@@ -65,48 +65,55 @@ class ShopExplosiveSheep(val main: Main) : ShopManager.Companion.IShopItem {
         val lookDirection = player.eyeLocation.direction
         val spawnLocation = eyePosition.add(lookDirection)
         val entity = spawnLocation.world?.spawnEntity(spawnLocation, EntityType.SHEEP)
-        val sheep = entity as Sheep;
+        val sheep = entity as Sheep
 
-        sheep.color = DyeColor.BLACK;
+        sheep.color = DyeColor.BLACK
         sheep.addPotionEffect(PotionEffect(PotionEffectType.SLOW_FALLING, 1_000_000, 10, false))
         sheep.velocity = player.eyeLocation.direction.multiply(2.5)
 
-        activeExplosiveSheepTTL[sheep] = System.currentTimeMillis();
+        activeExplosiveSheepTTL[sheep] = System.currentTimeMillis()
     }
 
     private var fireBallTask: BukkitTask? = null
 
     private fun ensureExplosiveSheepTaskIsActive() {
         if (fireBallTask == null) {
-            this.fireBallTask = ExplosiveSheepTask(this.main, this).runTaskTimer(this.main, 0, 20L);
+            this.fireBallTask = ExplosiveSheepTask(this.main, this).runTaskTimer(this.main, 0, 20L)
         }
     }
 
     private class ExplosiveSheepTask(val main: Main, val explosiveSheepHandler: ShopExplosiveSheep) : BukkitRunnable() {
 
         companion object {
-            private const val EXPLOSION_EFFECT_RADIUS = 5;
+            private const val EXPLOSION_EFFECT_RADIUS = 5
             private val EXPLOSION_AFFECTED_BLOCKS = listOf<Material>(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE)
         }
 
         override fun run() {
-            val now = System.currentTimeMillis();
+            val now = System.currentTimeMillis()
             val sheepToRemoveList = mutableListOf<Sheep>()
 
-            explosiveSheepHandler.activeExplosiveSheepTTL.forEach { (sheep, spawnTimestamp) -> run {
-                if(spawnTimestamp + EXPLOSIVE_SHEEPS_TTL <= now) {
-                    explode(sheep.location)
-                    sheepToRemoveList.add(sheep)
-                } else {
-                    sheep.color = when(sheep.color) {
-                        DyeColor.BLACK -> DyeColor.WHITE
-                        DyeColor.WHITE -> DyeColor.BLACK
-                        else -> throw IllegalStateException("Explosive sheep shouldn't be of color : ${sheep.color}")
+            explosiveSheepHandler.activeExplosiveSheepTTL.forEach { (sheep, spawnTimestamp) ->
+                run {
+                    if (spawnTimestamp + EXPLOSIVE_SHEEPS_TTL <= now) {
+                        explode(sheep.location)
+                        sheepToRemoveList.add(sheep)
+                    } else {
+                        sheep.color = when (sheep.color) {
+                            DyeColor.BLACK -> DyeColor.WHITE
+                            DyeColor.WHITE -> DyeColor.BLACK
+                            else -> throw IllegalStateException("Explosive sheep shouldn't be of color : ${sheep.color}")
+                        }
                     }
                 }
-            } }
+            }
 
-            sheepToRemoveList.forEach { it -> run { explosiveSheepHandler.activeExplosiveSheepTTL.remove(it); it.remove() }}
+            sheepToRemoveList.forEach { it ->
+                run {
+                    explosiveSheepHandler.activeExplosiveSheepTTL.remove(it)
+                    it.remove()
+                }
+            }
         }
 
         private fun explode(location: Location) {
@@ -118,7 +125,7 @@ class ShopExplosiveSheep(val main: Main) : ShopManager.Companion.IShopItem {
 
                         // if the scanned block is in the sphere of radius EXPLOSION_EFFECT_RADIUS
                         if (position.distanceSquared(location) <= NumberConversions.square(EXPLOSION_EFFECT_RADIUS.toDouble())) {
-                            if(EXPLOSION_AFFECTED_BLOCKS.contains(position.block.type)) {
+                            if (EXPLOSION_AFFECTED_BLOCKS.contains(position.block.type)) {
                                 position.block.setType(Material.AIR, false)
                             }
                         }

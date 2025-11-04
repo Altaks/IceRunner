@@ -43,7 +43,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
         .build()
     override fun position(): Int = 2
 
-    private val sneezeTTL = HashMap<UUID, Long>();
+    private val sneezeTTL = HashMap<UUID, Long>()
 
     @EventHandler
     fun onPlayerUsesItem(event: PlayerInteractEvent) {
@@ -56,7 +56,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
 
     @EventHandler
     fun onChargeHitsBlock(event: ProjectileHitEvent) {
-        if(event.entity.type == EntityType.BREEZE_WIND_CHARGE || event.entity.type == EntityType.BREEZE_WIND_CHARGE) {
+        if (event.entity.type == EntityType.BREEZE_WIND_CHARGE || event.entity.type == EntityType.BREEZE_WIND_CHARGE) {
             event.isCancelled = true
             event.entity.remove()
         }
@@ -64,7 +64,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
 
     @EventHandler
     fun onChargeExplodesOnGround(event: ExplosionPrimeEvent) {
-        if(event.entity.type == EntityType.BREEZE_WIND_CHARGE || event.entity.type == EntityType.BREEZE_WIND_CHARGE) {
+        if (event.entity.type == EntityType.BREEZE_WIND_CHARGE || event.entity.type == EntityType.BREEZE_WIND_CHARGE) {
             event.isCancelled = true
             event.entity.remove()
         }
@@ -82,7 +82,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
 
     private fun ensureFireballTaskIsActive() {
         if (fireBallTask == null) {
-            this.fireBallTask = YetiSneeze(this).runTaskTimer(this.main, 0, 1L);
+            this.fireBallTask = YetiSneeze(this).runTaskTimer(this.main, 0, 1L)
         }
     }
 
@@ -95,7 +95,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
                     ?.forEach { windCharge ->
                         run iteration@{
                             // Kill the wind charge if it lived too long
-                            if((bridgeHandler.sneezeTTL[windCharge.uniqueId] ?: throw IllegalStateException("Couldn't get wind charge UUID within thrown Yeti snoozes")) + YETI_SNEEZE_TTL <= System.currentTimeMillis()) {
+                            if ((bridgeHandler.sneezeTTL[windCharge.uniqueId] ?: throw IllegalStateException("Couldn't get wind charge UUID within thrown Yeti snoozes")) + YETI_SNEEZE_TTL <= System.currentTimeMillis()) {
                                 bridgeHandler.sneezeTTL.remove(windCharge.uniqueId)
                                 windCharge.remove()
                                 return@iteration
