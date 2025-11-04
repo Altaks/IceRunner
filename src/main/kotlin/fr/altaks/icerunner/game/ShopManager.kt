@@ -57,7 +57,7 @@ class ShopManager(val main: Main) : Listener {
                 ShopIronMan(),
                 ShopExplosiveSheep(main),
                 ShopIgloo(),
-                ShopLastJudgement(),
+                ShopLastJudgement(main),
             ).forEach { handler ->
                 run {
                     setItem(handler.position(), handler.item())
