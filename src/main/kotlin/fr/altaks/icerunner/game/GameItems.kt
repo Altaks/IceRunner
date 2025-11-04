@@ -111,8 +111,8 @@ object GameItems {
         player.inventory.boots = getTeamColoredLeatherArmorPiece(Material.LEATHER_BOOTS, teamColor)
 
         player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_BOW_SLOT_INDEX, baseKitBow)
-        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_SNOWBALLS_SLOT_INDEX, baseKitSnowballs)
-        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_ARROWS_TEAM_SLOT_INDEX, baseKitArrows)
+        player.inventory.addItem(baseKitSnowballs)
+        player.inventory.addItem(baseKitArrows)
         player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_SHOP_SYMBOL_SLOT_INDEX, shopSymbolItem(playerMoney))
     }
 
