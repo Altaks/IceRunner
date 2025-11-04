@@ -13,6 +13,7 @@ plugins {
     id("io.typst.spigradle") version "3.1.2"
     id("io.github.klahap.dotenv") version "1.1.3"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
+    id("org.jetbrains.dokka") version "2.0.0"
 }
 
 group = "fr.altaks"
