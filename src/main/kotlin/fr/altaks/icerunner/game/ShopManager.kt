@@ -53,7 +53,7 @@ class ShopManager(val main: Main) : Listener {
                 ShopDistorsionPearls(),
                 ShopReinforcedBridge(),
                 ShopKamikaze(),
-                ShopFireball(),
+                ShopFireball(main),
                 ShopIronMan(),
                 ShopExplosiveSheep(),
                 ShopIgloo(),

@@ -2,9 +2,13 @@ package fr.altaks.icerunner.game.shopitems
 
 import fr.altaks.icerunner.game.GameItems.loreDelimitation
 import fr.altaks.icerunner.game.ShopManager
+import fr.altaks.icerunner.utils.ItemComparator
 import fr.altaks.icerunner.utils.ItemFactory
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 
 class ShopReinforcedBridge : ShopManager.Companion.IShopItem {
@@ -24,4 +28,15 @@ class ShopReinforcedBridge : ShopManager.Companion.IShopItem {
         )
         .build()
     override fun position(): Int = 2
+
+    @EventHandler
+    fun onPlayerUsesItem(event: PlayerInteractEvent) {
+        if (event.item != null && ItemComparator.compare(event.item, item())) {
+            spawnBridgeProjectile(event.player)
+        }
+    }
+
+    fun spawnBridgeProjectile(player: Player) {
+        player.sendMessage("Pas implémenté")
+    }
 }
