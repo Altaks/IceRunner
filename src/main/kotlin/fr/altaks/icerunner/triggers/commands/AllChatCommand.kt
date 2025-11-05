@@ -21,7 +21,7 @@ class AllChatCommand(val main: Main) : TabExecutor {
         label: String,
         args: Array<out String?>,
     ): Boolean {
-        if(this.main.gameManager.hasGameStarted()) {
+        if (this.main.gameManager.hasGameStarted()) {
             if (sender is Player && args.isNotEmpty() && command.name.equals("all", ignoreCase = true)) {
                 val message = args.joinToString(" ")
                 sender.chat("!$message")
