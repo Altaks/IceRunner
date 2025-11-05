@@ -8,8 +8,6 @@ import fr.altaks.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
-import org.bukkit.damage.DamageSource
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -145,8 +143,8 @@ class GameManager(val main: Main) : Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerDamagesOtherPlayer(event: EntityDamageEvent) {
-        if(event.entity !is Player) return
-        if(event.damageSource.causingEntity !is Player) return
+        if (event.entity !is Player) return
+        if (event.damageSource.causingEntity !is Player) return
         lastDamager[event.entity as Player] = Pair(event.damageSource.causingEntity as Player, System.currentTimeMillis())
     }
 
@@ -163,13 +161,13 @@ class GameManager(val main: Main) : Listener {
     private fun tryMakeLastDamagerEarnGolds(dyingPlayer: Player) {
         val (lastDamager, damageTiming) = lastDamager[dyingPlayer] ?: return
 
-        if(damageTiming + LAST_DAMAGE_TTL_FOR_BOUNTY >= System.currentTimeMillis()) {
+        if (damageTiming + LAST_DAMAGE_TTL_FOR_BOUNTY >= System.currentTimeMillis()) {
             // Last damager is still able to get bounty and golds
 
             val killingSpree = killingSpree[dyingPlayer] ?: 0u
             val killingSpreeType = KillingSpreeType.fromKillingSpreeSize(killingSpree)
 
-            val goldEarned = when(killingSpreeType) {
+            val goldEarned = when (killingSpreeType) {
                 KillingSpreeType.NONE -> 1
                 else -> ((killingSpree.toInt() + 1) / 2)
             }
@@ -182,16 +180,15 @@ class GameManager(val main: Main) : Listener {
     enum class KillingSpreeType {
         NONE, // < 3
         MEDIUM, // 3+
-        HIGH; // 5+
+        HIGH, // 5+
+        ;
 
         companion object {
-            fun fromKillingSpreeSize(killCount: UInt) : KillingSpreeType {
-                return when(killCount) {
-                    in UInt.MIN_VALUE..<3u -> NONE
-                    in 3u..< 5u -> MEDIUM
-                    in 5u..UInt.MAX_VALUE -> HIGH
-                    else -> throw ArithmeticException("This value does not exist")
-                }
+            fun fromKillingSpreeSize(killCount: UInt): KillingSpreeType = when (killCount) {
+                in UInt.MIN_VALUE..<3u -> NONE
+                in 3u..<5u -> MEDIUM
+                in 5u..UInt.MAX_VALUE -> HIGH
+                else -> throw ArithmeticException("This value does not exist")
             }
         }
     }
@@ -199,7 +196,7 @@ class GameManager(val main: Main) : Listener {
     private fun incrementKillingSpree(player: Player) {
         val newValue = (killingSpree[player] ?: 0u) + 1u
         killingSpree[player] = newValue
-        when(KillingSpreeType.fromKillingSpreeSize(newValue)) {
+        when (KillingSpreeType.fromKillingSpreeSize(newValue)) {
             KillingSpreeType.MEDIUM -> Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} est à ${ChatColor.GOLD}$newValue ${ChatColor.YELLOW}éliminations consécutives !")
             KillingSpreeType.HIGH -> Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} est digne du Valhalla${ChatColor.RESET} ! ${ChatColor.GOLD}$newValue ${ChatColor.YELLOW}éliminations consécutives !")
             else -> return
@@ -207,7 +204,7 @@ class GameManager(val main: Main) : Listener {
     }
 
     private fun resetKillingSpree(player: Player) {
-        if(killingSpree[player] in 3u..UInt.MAX_VALUE) {
+        if (killingSpree[player] in 3u..UInt.MAX_VALUE) {
             Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} a été interrompu dans sa série d'éliminations !")
         }
         killingSpree[player] = 0u
