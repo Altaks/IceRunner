@@ -47,7 +47,7 @@ dependencies {
     testImplementation(paper(version = "1.21.8"))
 
     // Testing - MockBukkit
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.89.0")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.97.0")
 
     // Testng - JUnit & Juniper platform
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.0")
