@@ -13,6 +13,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
@@ -108,6 +109,27 @@ class TeamsManager(val main: Main) : Listener {
         if (!this.main.gameManager.hasGameStarted()) {
             // make the player quit their team
             event.player.scoreboard.getEntryTeam(event.player.name)?.removeEntry(event.player.name)
+        }
+    }
+
+    @EventHandler
+    fun onPlayerSendChatMessage(event: AsyncPlayerChatEvent) {
+        if (this.main.gameManager.hasGameStarted()) {
+            if (!event.message.startsWith("!")) {
+                event.isCancelled = true
+                sendMessageToPlayerTeam(event.player, event.message)
+            } else {
+                event.message = event.message.substring(1)
+            }
+        }
+    }
+
+    fun sendMessageToPlayerTeam(player: Player, message: String) {
+        val playerTeam = getPlayerGameTeam(player)
+        val minecraftTeam = teamToGameTeamMapping.inverse()[playerTeam] ?: throw IllegalStateException("This team is not mapped to a Minecraft team")
+        for (teamEntry in minecraftTeam.entries) {
+            val player = Bukkit.getPlayer(teamEntry) ?: continue
+            player.sendMessage("${playerTeam.chatColor}[Equipe] ${player.displayName} \u00BB${ChatColor.RESET} $message")
         }
     }
 

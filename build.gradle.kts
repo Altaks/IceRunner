@@ -61,17 +61,18 @@ spigot {
             permissionMessage = "You do not have permission!"
             usage = "/dev [startGame|endGame]"
         }
+        create("all") {
+            aliases = listOf("chatall")
+            description = "Sends a message to all players during the game"
+            usage = "/all <message>"
+        }
     }
     permissions {
-//        create("test.foo") {
-//            description = "Allows foo command"
-//            defaults = "true"
-//        }
-//        create("test.*") {
-//            description = "Wildcard permission"
-//            defaults = "op"
-//            children = mapOf("test.foo" to true)
-//        }
+        create("dev.*") {
+            description = "Allows for debugging related interactions"
+            defaults = "op"
+            children = mapOf("dev.debug" to true)
+        }
     }
 }
 

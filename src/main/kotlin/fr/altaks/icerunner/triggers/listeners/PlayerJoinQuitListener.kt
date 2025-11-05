@@ -2,10 +2,8 @@ package fr.altaks.icerunner.triggers.listeners
 
 import fr.altaks.icerunner.Main
 import fr.altaks.icerunner.game.GameItems
-import fr.altaks.icerunner.game.TeamsManager
 import fr.altaks.icerunner.utils.TextGradientUtils
 import net.md_5.bungee.api.ChatColor
-import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -32,12 +30,7 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
 
         if (!this.main.gameManager.hasGameStarted() && !this.main.gameManager.isGameStarting()) {
             GameItems.applyWaitingInventoryToPlayer(event.player)
-
-            if (Bukkit.getOnlinePlayers().size >= TeamsManager.PLAYERS_REQUIRED_TO_START_GAME) {
-                this.main.gameManager.triggerStartingGamePhase()
-            } else {
-                Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Il manque ${TeamsManager.PLAYERS_REQUIRED_TO_START_GAME - Bukkit.getOnlinePlayers().size} joueurs pour débuter la partie !")
-            }
+            this.main.gameManager.tryToStartGame()
         }
     }
 

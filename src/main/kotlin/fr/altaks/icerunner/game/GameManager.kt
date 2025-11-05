@@ -40,6 +40,14 @@ class GameManager(val main: Main) : Listener {
 
     private var arrowTask: BukkitTask? = null
 
+    fun tryToStartGame() {
+        if (Bukkit.getOnlinePlayers().size >= TeamsManager.PLAYERS_REQUIRED_TO_START_GAME) {
+            triggerStartingGamePhase()
+        } else {
+            Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Il manque ${TeamsManager.PLAYERS_REQUIRED_TO_START_GAME - Bukkit.getOnlinePlayers().size} joueurs pour débuter la partie !")
+        }
+    }
+
     fun triggerStartingGamePhase() {
         this.gameState = GameState.STARTING
         Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La phase de sélection d'équipes commence !")

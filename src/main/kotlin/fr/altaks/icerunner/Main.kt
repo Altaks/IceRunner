@@ -1,8 +1,10 @@
 package fr.altaks.icerunner
 
+import fr.altaks.icerunner.game.GameItems
 import fr.altaks.icerunner.game.GameManager
 import fr.altaks.icerunner.game.ScoreboardManager
 import fr.altaks.icerunner.game.TeamsManager
+import fr.altaks.icerunner.triggers.commands.AllChatCommand
 import fr.altaks.icerunner.triggers.commands.DevCommand
 import fr.altaks.icerunner.triggers.listeners.ArrowListener
 import fr.altaks.icerunner.triggers.listeners.DevListener
@@ -54,6 +56,7 @@ open class Main : JavaPlugin {
         this.scoreboardManager.initScoreboardUpdating()
 
         registerCommand("dev", DevCommand(this))
+        registerCommand("all", AllChatCommand(this))
 
         // Register event listeners
         listOf(
@@ -66,10 +69,15 @@ open class Main : JavaPlugin {
             gameManager,
         ).forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, this) }
 
-        Bukkit.getOnlinePlayers().forEach { player -> this.scoreboardManager.initPlayerScoreboard(player) }
+        Bukkit.getOnlinePlayers().forEach { player ->
+            this.scoreboardManager.initPlayerScoreboard(player)
+            GameItems.applyWaitingInventoryToPlayer(player)
+        }
 
         // Server list related setup
         prepareServerMotdAndIcon()
+
+        this.gameManager.tryToStartGame()
     }
 
     override fun onDisable() {
