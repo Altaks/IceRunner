@@ -96,7 +96,7 @@ class ShopManager(val main: Main) : Listener {
         Bukkit.getOnlinePlayers().forEach { playerToMoneyMapping[it] = 0u }
     }
 
-    fun getPlayerMoney(player: Player): UInt = playerToMoneyMapping[player] ?: throw IllegalStateException("The player ${player.displayName} is not registered to have any money")
+    fun getPlayerMoney(player: Player): UInt = playerToMoneyMapping[player] ?: 0u
 
     fun hasPlayerEnoughMoney(player: Player, checkedQuantity: UInt): Boolean = getPlayerMoney(player) >= checkedQuantity
 

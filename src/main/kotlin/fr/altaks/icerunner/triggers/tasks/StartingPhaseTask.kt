@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable
 class StartingPhaseTask(val main: Main) : BukkitRunnable() {
 
     companion object {
-        private const val STARTING_PHASE_COUNTDOWN_START_VALUE: Int = 10
+        private const val STARTING_PHASE_COUNTDOWN_START_VALUE: Int = 15
         private const val STARTING_PHASE_COUNTDOWN_END_VALUE: Int = 0
     }
 

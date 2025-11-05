@@ -28,7 +28,7 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
         event.joinMessage = "${ChatColor.GRAY}[${ChatColor.GREEN}+${ChatColor.GRAY}] ${ChatColor.GRAY}${event.player.displayName}"
         event.player.setPlayerListHeaderFooter(PLAYER_LIST_HEADER, PLAYER_LIST_FOOTER)
 
-        if (!this.main.gameManager.hasGameStarted() && !this.main.gameManager.isGameStarting()) {
+        if (!this.main.gameManager.hasGameStarted()) {
             GameItems.applyWaitingInventoryToPlayer(event.player)
             this.main.gameManager.tryToStartGame()
         }

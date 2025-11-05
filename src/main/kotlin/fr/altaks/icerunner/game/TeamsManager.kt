@@ -132,6 +132,16 @@ class TeamsManager(val main: Main) : Listener {
         }
     }
 
+    fun ensureEveryPlayerHasATeam() {
+        Bukkit.getOnlinePlayers().forEach { player -> run {
+            if(this.getMainScoreboard().getEntryTeam(player.name) == null) {
+                val mcTeamToFill = this.getMainScoreboard().teams.minBy { team -> team.entries.size }
+                val gameTeam = teamToGameTeamMapping[mcTeamToFill] ?: throw IllegalStateException("This minecraft team ${mcTeamToFill.displayName} is not linked to a game team")
+                changePlayerTeam(player, gameTeam)
+            }
+        } }
+    }
+
     private fun changePlayerTeam(player: Player, targetTeam: GameTeam) {
         val minecraftTeam = teamToGameTeamMapping.inverse()[targetTeam] ?: throw IllegalStateException("Team ${targetTeam.displayName} is not mapped to a Minecraft team")
         minecraftTeam.addEntry(player.name)

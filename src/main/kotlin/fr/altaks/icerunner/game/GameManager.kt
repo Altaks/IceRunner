@@ -33,7 +33,7 @@ class GameManager(val main: Main) : Listener {
         private val CONGRATS_DECORATION = "${ChatColor.RED}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GOLD}${ChatColor.MAGIC}!"
         private val CONGRATS_DECORATION_REVERSED = "${ChatColor.GOLD}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.RED}${ChatColor.MAGIC}!"
 
-        private val LAST_DAMAGE_TTL_FOR_BOUNTY = 10 * 1000
+        private const val LAST_DAMAGE_TTL_FOR_BOUNTY = 10 * 1000
     }
 
     private var gameState: GameState = GameState.WAITING
@@ -46,13 +46,17 @@ class GameManager(val main: Main) : Listener {
 
     fun tryToStartGame() {
         if (Bukkit.getOnlinePlayers().size >= TeamsManager.PLAYERS_REQUIRED_TO_START_GAME) {
-            triggerStartingGamePhase()
+            if(!this.isGameStarting() && !this.hasGameStarted()) {
+                triggerStartingGamePhase()
+            }
         } else {
             Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Il manque ${TeamsManager.PLAYERS_REQUIRED_TO_START_GAME - Bukkit.getOnlinePlayers().size} joueurs pour débuter la partie !")
         }
     }
 
     fun triggerStartingGamePhase() {
+        if(this.gameState == GameState.STARTING) throw IllegalStateException("The game is already starting")
+
         this.gameState = GameState.STARTING
         Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La phase de sélection d'équipes commence !")
 
@@ -77,6 +81,7 @@ class GameManager(val main: Main) : Listener {
 
         this.main.shopManager.preparePlayerShops()
 
+        this.main.teamsManager.ensureEveryPlayerHasATeam()
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
         this.main.teamsManager.equipPlayersWithTeamEquipments()
 

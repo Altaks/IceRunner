@@ -12,6 +12,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
+import kotlin.math.max
+import kotlin.math.min
 
 class ScoreboardManager(val main: Main) : Listener {
 
@@ -75,7 +77,7 @@ class ScoreboardManager(val main: Main) : Listener {
                 val teamStatusBarState = StatusBarUtils.StatusBarState(
                     WAITING_STATUS_BAR_STATUS_BAR_LENGTH,
                     TeamsManager.PLAYERS_PER_TEAM,
-                    minecraftTeam.entries.size,
+                    min(minecraftTeam.entries.size, TeamsManager.PLAYERS_PER_TEAM),
                 )
                 val teamStatusBarStyle = StatusBarUtils.StatusBarStyle(activeColor = gameTeam.chatColor, baseSymbol = WAITING_TEAM_STATUS_BAR_STYLE_SYMBOL, activeSymbol = WAITING_TEAM_STATUS_BAR_STYLE_SYMBOL)
 
