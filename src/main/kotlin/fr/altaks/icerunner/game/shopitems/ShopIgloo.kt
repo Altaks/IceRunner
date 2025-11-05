@@ -47,6 +47,7 @@ class ShopIgloo : ShopManager.Companion.IShopItem {
         if (event.item != null && event.item!!.hasItemMeta() && event.item!!.itemMeta!!.displayName == ITEM_NAME) {
             event.isCancelled = true
             buildIglooAroundPlayer(event.player)
+            GameItems.decrementHeldItemAmount(event.player)
         }
     }
 

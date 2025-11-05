@@ -57,6 +57,7 @@ class ShopExplosiveSheep(val main: Main) : ShopManager.Companion.IShopItem {
             event.isCancelled = true
             ensureExplosiveSheepTaskIsActive()
             spawnAndShootExplosiveSheep(event.player)
+            GameItems.decrementHeldItemAmount(event.player)
         }
     }
 

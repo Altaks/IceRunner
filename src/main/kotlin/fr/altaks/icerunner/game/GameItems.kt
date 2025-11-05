@@ -9,6 +9,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.LeatherArmorMeta
+import kotlin.math.max
 
 object GameItems {
 
@@ -110,13 +111,26 @@ object GameItems {
         player.inventory.leggings = getTeamColoredLeatherArmorPiece(Material.LEATHER_LEGGINGS, teamColor)
         player.inventory.boots = getTeamColoredLeatherArmorPiece(Material.LEATHER_BOOTS, teamColor)
 
+        // Bow
         player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_BOW_SLOT_INDEX, baseKitBow)
-        player.inventory.addItem(baseKitSnowballs)
+
+        // Snowballs
+        player.inventory.remove(Material.SNOWBALL)
+        player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_SNOWBALLS_SLOT_INDEX, baseKitSnowballs)
+
+        // Arrows
+        player.inventory.remove(Material.ARROW)
         player.inventory.addItem(baseKitArrows)
+
+        // Shop
         player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_SHOP_SYMBOL_SLOT_INDEX, shopSymbolItem(playerMoney))
     }
 
     fun updateShopSymbolInPlayerInventory(player: Player, playerMoney: UInt) {
         player.inventory.setItem(PLAYER_INVENTORY_HOTBAR_SHOP_SYMBOL_SLOT_INDEX, shopSymbolItem(playerMoney))
+    }
+
+    fun decrementHeldItemAmount(player: Player) {
+        player.inventory.itemInMainHand.amount = max(0, player.inventory.itemInMainHand.amount - 1)
     }
 }

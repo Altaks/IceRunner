@@ -1,6 +1,7 @@
 package fr.altaks.icerunner.game.shopitems
 
 import fr.altaks.icerunner.Main
+import fr.altaks.icerunner.game.GameItems
 import fr.altaks.icerunner.game.GameItems.loreDelimitation
 import fr.altaks.icerunner.game.ShopManager
 import fr.altaks.icerunner.utils.ItemComparator
@@ -50,6 +51,7 @@ class ShopFireball(val main: Main) : ShopManager.Companion.IShopItem {
             event.isCancelled = true
             ensureFireballTaskIsActive()
             spawnAndShootFireball(event.player)
+            GameItems.decrementHeldItemAmount(event.player)
         }
     }
 

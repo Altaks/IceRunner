@@ -53,6 +53,7 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
         if (event.item != null && ItemComparator.compare(event.item, item())) {
             event.isCancelled = true
             triggerLastJudgement(event.player)
+            GameItems.decrementHeldItemAmount(event.player)
         }
     }
 
