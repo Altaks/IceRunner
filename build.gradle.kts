@@ -1,5 +1,5 @@
 import io.github.klahap.dotenv.DotEnvBuilder
-import io.typst.spigradle.lombok
+import io.typst.spigradle.jitpack
 import io.typst.spigradle.spigot.Load
 import io.typst.spigradle.spigot.paper
 import io.typst.spigradle.spigot.papermc
@@ -13,6 +13,7 @@ plugins {
     id("io.typst.spigradle") version "3.1.2"
     id("io.github.klahap.dotenv") version "1.1.3"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
+    id("org.jetbrains.dokka") version "2.0.0"
 }
 
 group = "fr.altaks"
@@ -21,23 +22,34 @@ version = "1.0.0"
 tasks.compileJava.get().options.encoding = "UTF-8"
 
 repositories {
-    mavenCentral()
+    // Main GDKs repositories
     spigotmc()
     papermc()
+
+    // Secondary libs repositories
+    mavenCentral()
+    jitpack()
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8")) // Maybe you need to apply the plugin 'shadowJar' for shading 'kotlin-stdlib'.
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.0")
-    implementation("fr.mrmicky:fastboard:2.1.5")
-    implementation(lombok())
+    // Kotlin support
+    implementation(kotlin("stdlib-jdk8"))
 
+    // FastBoard & FastInv to easily manage scoreboard and inventories
+    implementation("fr.mrmicky:fastboard:2.1.5")
+    implementation("fr.mrmicky:fastinv:3.1.2")
+
+    // SpigotMC
     compileOnly(spigot(version = "1.21.8"))
 
-    testImplementation(paper(version = "1.21.8"))
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.89.0")
+    // Testing - Kotlin & PaperMC
     testImplementation(kotlin("stdlib-jdk8"))
+    testImplementation(paper(version = "1.21.8"))
 
+    // Testing - MockBukkit
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.89.0")
+
+    // Testng - JUnit & Juniper platform
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -49,6 +61,7 @@ idea {
     }
 }
 
+// Spigot `plugin.yml` configuration
 spigot {
     authors = listOf("Altaks")
     apiVersion = "1.21"
@@ -75,6 +88,7 @@ spigot {
     }
 }
 
+// Load environment variables from the directory dotenv file if it exists. File template being `.env.template`
 val envVars =
     DotEnvBuilder.dotEnv {
         addFileIfExists("$rootDir/.env")
@@ -85,11 +99,18 @@ tasks.jar {
 }
 
 tasks.shadowJar {
+
+    // Libraries relocations
     relocate("fr.mrmicky.fastboard", "$group.fastboard")
+    relocate("fr.mrmicky.fastinv", "$group.fastinv")
+
     destinationDirectory.set(File(envVars.getOrDefault("PLUGINS_DIRECTORY", "$rootDir/artifacts")))
+
+    // Remove the annoying "-all" suffix.
     archiveClassifier = ""
 }
 
+// Allow to include every non-spigot-directly-related-resource within the JAR resources
 tasks.processResources {
     from("src/main/resources")
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -97,6 +118,7 @@ tasks.processResources {
     into("build/resources/main")
 }
 
+// Custom config for testing
 tasks.named<Test>("test") {
     useJUnitPlatform()
 
@@ -106,7 +128,8 @@ tasks.named<Test>("test") {
         events("passed")
     }
 }
-/*
+
+/* Removed kotlin compiler details
 tasks.named<KotlinJvmCompile>("compileKotlin") {
     compilerOptions {
         freeCompilerArgs.addAll("-Xno-call-assertions", "-Xno-receiver-assertions", "-Xno-param-assertions")

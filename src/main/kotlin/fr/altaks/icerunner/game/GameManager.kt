@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -63,8 +64,10 @@ class GameManager(val main: Main) : Listener {
                 "${Main.MAIN_PREFIX} ${ChatColor.YELLOW}${ChatColor.GOLD}Bonne partie et bonne chance à tous !\n",
         )
 
+        this.main.shopManager.preparePlayerShops()
+
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
-        this.main.teamsManager.equipPlayersWithTeamArmor()
+        this.main.teamsManager.equipPlayersWithTeamEquipments()
 
         // Resetting player stats
         Bukkit.getOnlinePlayers().forEach { player ->
@@ -102,36 +105,16 @@ class GameManager(val main: Main) : Listener {
     }
 
     @EventHandler
+    fun onPlayerDies(event: PlayerDeathEvent) {
+        respawnPlayer(event.entity)
+    }
+
+    @EventHandler
     fun onPlayerFallsIntoTheVoid(event: EntityDamageEvent) {
         if (event.cause != EntityDamageEvent.DamageCause.VOID) return
         if (event.entity is Player) {
-            val player = event.entity as Player
-
-            when (this.gameState) {
-                GameState.PLAYING -> {
-                    // Cancel the event first
-                    event.isCancelled = true
-
-                    val playerTeam = this.main.teamsManager.getPlayerGameTeam(player)
-
-                    // Teleport them to their base
-                    val respawnPoint = playerTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
-                    player.teleport(respawnPoint)
-
-                    player.exp = 0.0F
-                    player.level = 0
-
-                    player.activePotionEffects.forEach { effect -> player.removePotionEffect(effect.type) }
-                    player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, INFINITE_POTION_EFFECT_DURATION, JUMP_BOOST_AMPLIFIER))
-
-                    // Reapply inventory to player
-                    GameItems.applyPlayingInventoryToPlayer(player, playerTeam.armorColor)
-                }
-                else -> {
-                    event.isCancelled = true
-                    player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
-                }
-            }
+            event.isCancelled = true
+            respawnPlayer(event.entity as Player)
         }
     }
 
@@ -151,5 +134,30 @@ class GameManager(val main: Main) : Listener {
     fun onPlayerDropsItem(event: PlayerDropItemEvent) {
         // No matter the game state, no one should be able to drop items
         event.isCancelled = true
+    }
+
+    fun respawnPlayer(player: Player) {
+        when (this.gameState) {
+            GameState.PLAYING -> {
+                // Cancel the event first
+                val playerTeam = this.main.teamsManager.getPlayerGameTeam(player)
+
+                // Teleport them to their base
+                val respawnPoint = playerTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
+                player.teleport(respawnPoint)
+
+                player.exp = 0.0F
+                player.level = 0
+
+                player.activePotionEffects.forEach { effect -> player.removePotionEffect(effect.type) }
+                player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, INFINITE_POTION_EFFECT_DURATION, JUMP_BOOST_AMPLIFIER))
+
+                // Reapply inventory to player
+                GameItems.applyPlayingInventoryToPlayer(player, playerTeam.armorColor, this.main.shopManager.getPlayerMoney(player))
+            }
+            else -> {
+                player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
+            }
+        }
     }
 }

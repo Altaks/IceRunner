@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -340,25 +342,13 @@ public class ItemFactory {
                 .addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
-    /**
-     * Sets the enchantments of the built item
-     *
-     * @param enchants The enchantments to set
-     * @return the {@link ItemFactory} instance
-     */
-    public ItemFactory setEnchants(Map<Enchantment, Integer> enchants) {
-        for (Enchantment enchant : this.customItemStack.getEnchantments().keySet()) {
-            this.customItemStack.removeEnchantment(enchant);
-        }
-        for (Map.Entry<Enchantment, Integer> enchantEntry : enchants.entrySet()) {
-            this.customItemStack.addUnsafeEnchantment(
-                    enchantEntry.getKey(), enchantEntry.getValue());
-        }
+    public ItemFactory setUnbreakable(boolean unbreakable) {
+        this.customItemMeta.setUnbreakable(unbreakable);
         return this;
     }
 
-    public ItemFactory setUnbreakable(boolean unbreakable) {
-        this.customItemMeta.setUnbreakable(unbreakable);
+    public ItemFactory addAttributeModifier(Attribute attribute, AttributeModifier modifier) {
+        this.customItemMeta.addAttributeModifier(attribute, modifier);
         return this;
     }
 }

@@ -58,7 +58,7 @@ class BifrostTask : BukkitRunnable() {
                                     Material.AIR -> Material.ICE
                                     Material.ICE -> Material.PACKED_ICE
                                     Material.PACKED_ICE -> Material.BLUE_ICE
-                                    else -> position.block.type
+                                    else -> return@run
                                 }
 
                                 block.setType(newType, false)
