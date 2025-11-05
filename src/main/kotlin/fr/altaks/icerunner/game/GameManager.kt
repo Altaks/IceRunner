@@ -8,8 +8,11 @@ import fr.altaks.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
+import org.bukkit.damage.DamageSource
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
@@ -27,10 +30,12 @@ class GameManager(val main: Main) : Listener {
         private const val EVERY_SECOND = EVERY_TICK * 20L
 
         private const val INFINITE_POTION_EFFECT_DURATION = 1_000_000
-        private const val JUMP_BOOST_AMPLIFIER = 1; // 2 blocks high
+        private const val JUMP_BOOST_AMPLIFIER = 1 // 2 blocks high
 
         private val CONGRATS_DECORATION = "${ChatColor.RED}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GOLD}${ChatColor.MAGIC}!"
         private val CONGRATS_DECORATION_REVERSED = "${ChatColor.GOLD}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.RED}${ChatColor.MAGIC}!"
+
+        private val LAST_DAMAGE_TTL_FOR_BOUNTY = 10 * 1000
     }
 
     private var gameState: GameState = GameState.WAITING
@@ -138,16 +143,87 @@ class GameManager(val main: Main) : Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    fun onPlayerDamagesOtherPlayer(event: EntityDamageEvent) {
+        if(event.entity !is Player) return
+        if(event.damageSource.causingEntity !is Player) return
+        lastDamager[event.entity as Player] = Pair(event.damageSource.causingEntity as Player, System.currentTimeMillis())
+    }
+
     @EventHandler
     fun onPlayerDropsItem(event: PlayerDropItemEvent) {
         // No matter the game state, no one should be able to drop items
         event.isCancelled = true
     }
 
+    private val killingSpree = HashMap<Player, UInt>()
+    private val lastDamager = HashMap<Player, Pair<Player, Long>>()
+
+    // Ran when a player dies
+    private fun tryMakeLastDamagerEarnGolds(dyingPlayer: Player) {
+        val (lastDamager, damageTiming) = lastDamager[dyingPlayer] ?: return
+
+        if(damageTiming + LAST_DAMAGE_TTL_FOR_BOUNTY >= System.currentTimeMillis()) {
+            // Last damager is still able to get bounty and golds
+
+            val killingSpree = killingSpree[dyingPlayer] ?: 0u
+            val killingSpreeType = KillingSpreeType.fromKillingSpreeSize(killingSpree)
+
+            val goldEarned = when(killingSpreeType) {
+                KillingSpreeType.NONE -> 1
+                else -> ((killingSpree.toInt() + 1) / 2)
+            }
+
+            this.main.shopManager.addPlayerMoney(lastDamager, goldEarned.toUInt())
+            incrementKillingSpree(lastDamager)
+        }
+    }
+
+    enum class KillingSpreeType {
+        NONE, // < 3
+        MEDIUM, // 3+
+        HIGH; // 5+
+
+        companion object {
+            fun fromKillingSpreeSize(killCount: UInt) : KillingSpreeType {
+                return when(killCount) {
+                    in UInt.MIN_VALUE..<3u -> NONE
+                    in 3u..< 5u -> MEDIUM
+                    in 5u..UInt.MAX_VALUE -> HIGH
+                    else -> throw ArithmeticException("This value does not exist")
+                }
+            }
+        }
+    }
+
+    private fun incrementKillingSpree(player: Player) {
+        val newValue = (killingSpree[player] ?: 0u) + 1u
+        killingSpree[player] = newValue
+        when(KillingSpreeType.fromKillingSpreeSize(newValue)) {
+            KillingSpreeType.MEDIUM -> Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} est à ${ChatColor.GOLD}$newValue ${ChatColor.YELLOW}éliminations consécutives !")
+            KillingSpreeType.HIGH -> Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} est digne du Valhalla${ChatColor.RESET} ! ${ChatColor.GOLD}$newValue ${ChatColor.YELLOW}éliminations consécutives !")
+            else -> return
+        }
+    }
+
+    private fun resetKillingSpree(player: Player) {
+        if(killingSpree[player] in 3u..UInt.MAX_VALUE) {
+            Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} a été interrompu dans sa série d'éliminations !")
+        }
+        killingSpree[player] = 0u
+    }
+
+    private fun removeFromLastDamagerRegistry(dyingPlayer: Player) {
+        lastDamager.remove(dyingPlayer)
+    }
+
     fun respawnPlayer(player: Player) {
         when (this.gameState) {
             GameState.PLAYING -> {
-                // Cancel the event first
+                tryMakeLastDamagerEarnGolds(player) // Give golds to last damager
+                removeFromLastDamagerRegistry(player) // Avoid last damage entry to be kept
+                resetKillingSpree(player) // Reset player killing spree
+
                 val playerTeam = this.main.teamsManager.getPlayerGameTeam(player)
 
                 // Teleport them to their base
