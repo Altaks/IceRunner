@@ -196,7 +196,17 @@ class TeamsManager(val main: Main) : Listener {
                     }
                 }
 
-                val dominantTeam = teamToAmountOfPlayers.maxBy { (_, amount) -> amount }.key; // TODO : change this team selection algorithm
+                val dominantTeam = determineDominantTeamFromVisitorCounts(teamToAmountOfPlayers)
+                if(dominantTeam == null) {
+                    this.main.worldManager.updateIslandGlassWithTeamColor(island, null)
+                    when (island) {
+                        WorldManager.WorldIslands.CENTER -> this.gameScoringState.centerIslandDominatedBy = null
+                        WorldManager.WorldIslands.GREEN -> this.gameScoringState.greenIslandDominatedBy = null
+                        WorldManager.WorldIslands.YELLOW -> this.gameScoringState.yellowIslandDominatedBy = null
+                    }
+                    return@iteration
+                }
+
                 val gameTeam = teamToGameTeamMapping[dominantTeam] ?: throw IllegalStateException("This team is not registered as a GameTeam")
 
                 // Update the island with the dominant team color
@@ -218,6 +228,24 @@ class TeamsManager(val main: Main) : Listener {
                 }
             }
         }
+    }
+
+    private fun determineDominantTeamFromVisitorCounts(teamToVisitorsMapping: MutableMap<Team, Int>): Team? {
+        // If there are no team -> no team
+        // If there's one team -> the first team
+        // If there's more, then the amount of players of one team has to be strictly higher than other teams to dominate
+
+        val visitorsArray = teamToVisitorsMapping.toList()
+        if(visitorsArray.size > 1) {
+            val sortedByVisitorDescending = visitorsArray.sortedByDescending { (_, membersOnIsland) -> membersOnIsland }
+
+            return if(sortedByVisitorDescending[0].second > sortedByVisitorDescending[1].second ) {
+                sortedByVisitorDescending[0].first
+            } else {
+                null
+            }
+        }
+        return visitorsArray.firstOrNull()?.first
     }
 
     private fun updateTeamScore(team: GameTeam, delta: Int) {
