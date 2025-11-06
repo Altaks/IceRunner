@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.UUID
-import kotlin.math.max
 import kotlin.math.min
 
 class ScoreboardManager(val main: Main) : Listener {
@@ -66,10 +65,12 @@ class ScoreboardManager(val main: Main) : Listener {
             if (!main.gameManager.hasGameStarted()) {
                 this.main.scoreboardManager.playerScoreboards.entries.forEach { (_, scoreboard) -> updateWaitingScoreboard(scoreboard) }
             } else {
-                this.main.scoreboardManager.playerScoreboards.entries.forEach { (uuid, scoreboard) -> run {
-                    val player = Bukkit.getPlayer(uuid) ?: return@run
-                    updatePlayingScoreboard(player, scoreboard, this.main.teamsManager.getGameScoringState())
-                } }
+                this.main.scoreboardManager.playerScoreboards.entries.forEach { (uuid, scoreboard) ->
+                    run {
+                        val player = Bukkit.getPlayer(uuid) ?: return@run
+                        updatePlayingScoreboard(player, scoreboard, this.main.teamsManager.getGameScoringState())
+                    }
+                }
             }
         }
 

@@ -47,7 +47,7 @@ class GameManager(val main: Main) : Listener {
 
     fun tryToStartGame() {
         if (Bukkit.getOnlinePlayers().size >= TeamsManager.PLAYERS_REQUIRED_TO_START_GAME) {
-            if(!this.isGameStarting() && !this.hasGameStarted()) {
+            if (!this.isGameStarting() && !this.hasGameStarted()) {
                 triggerStartingGamePhase()
             }
         } else {
@@ -56,7 +56,7 @@ class GameManager(val main: Main) : Listener {
     }
 
     fun triggerStartingGamePhase() {
-        if(this.gameState == GameState.STARTING) throw IllegalStateException("The game is already starting")
+        if (this.gameState == GameState.STARTING) throw IllegalStateException("The game is already starting")
 
         this.gameState = GameState.STARTING
         Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La phase de sélection d'équipes commence !")

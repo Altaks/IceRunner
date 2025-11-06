@@ -133,13 +133,15 @@ class TeamsManager(val main: Main) : Listener {
     }
 
     fun ensureEveryPlayerHasATeam() {
-        Bukkit.getOnlinePlayers().forEach { player -> run {
-            if(this.getMainScoreboard().getEntryTeam(player.name) == null) {
-                val mcTeamToFill = this.getMainScoreboard().teams.minBy { team -> team.entries.size }
-                val gameTeam = teamToGameTeamMapping[mcTeamToFill] ?: throw IllegalStateException("This minecraft team ${mcTeamToFill.displayName} is not linked to a game team")
-                changePlayerTeam(player, gameTeam)
+        Bukkit.getOnlinePlayers().forEach { player ->
+            run {
+                if (this.getMainScoreboard().getEntryTeam(player.name) == null) {
+                    val mcTeamToFill = this.getMainScoreboard().teams.minBy { team -> team.entries.size }
+                    val gameTeam = teamToGameTeamMapping[mcTeamToFill] ?: throw IllegalStateException("This minecraft team ${mcTeamToFill.displayName} is not linked to a game team")
+                    changePlayerTeam(player, gameTeam)
+                }
             }
-        } }
+        }
     }
 
     private fun changePlayerTeam(player: Player, targetTeam: GameTeam) {
@@ -197,7 +199,7 @@ class TeamsManager(val main: Main) : Listener {
                 }
 
                 val dominantTeam = determineDominantTeamFromVisitorCounts(teamToAmountOfPlayers)
-                if(dominantTeam == null) {
+                if (dominantTeam == null) {
                     this.main.worldManager.updateIslandGlassWithTeamColor(island, null)
                     when (island) {
                         WorldManager.WorldIslands.CENTER -> this.gameScoringState.centerIslandDominatedBy = null
@@ -236,10 +238,10 @@ class TeamsManager(val main: Main) : Listener {
         // If there's more, then the amount of players of one team has to be strictly higher than other teams to dominate
 
         val visitorsArray = teamToVisitorsMapping.toList()
-        if(visitorsArray.size > 1) {
+        if (visitorsArray.size > 1) {
             val sortedByVisitorDescending = visitorsArray.sortedByDescending { (_, membersOnIsland) -> membersOnIsland }
 
-            return if(sortedByVisitorDescending[0].second > sortedByVisitorDescending[1].second ) {
+            return if (sortedByVisitorDescending[0].second > sortedByVisitorDescending[1].second) {
                 sortedByVisitorDescending[0].first
             } else {
                 null
