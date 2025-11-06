@@ -89,6 +89,8 @@ class WorldManager(val main: Main) {
         gameWorld.setGameRule(GameRule<Boolean>.DO_WEATHER_CYCLE, false)
         gameWorld.setGameRule(GameRule<Boolean>.DO_FIRE_TICK, false)
         gameWorld.setGameRule(GameRule<Boolean>.KEEP_INVENTORY, true)
+        gameWorld.setGameRule(GameRule<Boolean>.SHOW_DEATH_MESSAGES, false)
+        gameWorld.setGameRule(GameRule<Boolean>.ANNOUNCE_ADVANCEMENTS, false)
 
         gameWorld.clearWeatherDuration = Int.MAX_VALUE
         gameWorld.time = NOON_TIME_TICKS
