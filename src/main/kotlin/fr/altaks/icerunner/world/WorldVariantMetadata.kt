@@ -68,6 +68,7 @@ data class WorldVariantMetadata(
             val file = File(folder.absolutePath + File.separator + METADATA_FILE_NAME)
             val yaml: FileConfiguration = YamlConfiguration.loadConfiguration(file)
 
+            @Suppress("UNCHECKED_CAST")
             return WorldVariantMetadata(
                 mapCenterCoordinates = yaml.getLocation(MAP_CENTER_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $MAP_CENTER_COORDINATES_PATH path in map variant metadata"),
                 mapCenterGlassCoordinates = (yaml.getList(MAP_CENTER_GLASS_BLOCKS_COORDINATES_PATH) ?: throw IllegalStateException("Unable to read $MAP_CENTER_GLASS_BLOCKS_COORDINATES_PATH path in map variant metadata")) as List<Location>,
