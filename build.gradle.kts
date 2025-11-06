@@ -5,6 +5,9 @@ import io.typst.spigradle.spigot.paper
 import io.typst.spigradle.spigot.papermc
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
+import org.jetbrains.dokka.gradle.DokkaTask
+import java.net.URI
+import java.net.URL
 
 plugins {
     id("idea")
@@ -128,6 +131,14 @@ tasks.named<Test>("test") {
     testLogging {
         events("passed")
     }
+}
+
+tasks.withType<DokkaTask>().configureEach {
+    moduleVersion.set(project.version.toString())
+    failOnWarning.set(true)
+    suppressObviousFunctions.set(true)
+    suppressInheritedMembers.set(false)
+    offlineMode.set(false)
 }
 
 /* Removed kotlin compiler details

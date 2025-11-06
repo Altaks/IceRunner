@@ -44,8 +44,8 @@ jobs:
           architecture: x64
           cache: gradle
 
-      - name: Run the Gradle test script
-        run: "./gradlew dokkaHtml"
+      - name: Run the Gradle doc build script
+        run: "./gradlew dokkaGeneratePublicationHtml"
 
       - name: Archive generated fat JAR file
         uses: actions/upload-artifact@v5
@@ -70,7 +70,7 @@ jobs:
           architecture: x64
           cache: gradle
 
-      - name: Run the Gradle test script
+      - name: Run the Gradle Fat JAR build script
         run: "./gradlew shadowJar"
 
       - name: Archive generated fat JAR file
