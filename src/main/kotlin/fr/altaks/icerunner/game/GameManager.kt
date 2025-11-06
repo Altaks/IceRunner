@@ -123,6 +123,7 @@ class GameManager(val main: Main) : Listener {
 
     @EventHandler
     fun onPlayerDies(event: PlayerDeathEvent) {
+        event.deathMessage = null
         respawnPlayer(event.entity)
     }
 
