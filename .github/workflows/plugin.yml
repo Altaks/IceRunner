@@ -50,7 +50,7 @@ jobs:
       - name: Archive generated fat JAR file
         uses: actions/upload-artifact@v5
         with:
-          name: IceRunner-Docs-$GITHUB_SHA
+          name: 'IceRunner-Docs-$GITHUB_SHA'
           path: build/dokka/html/
 
   # Running the plugin's tests
@@ -76,5 +76,5 @@ jobs:
       - name: Archive generated fat JAR file
         uses: actions/upload-artifact@v5
         with:
-          name: IceRunner-Build-$GITHUB_SHA
+          name: 'IceRunner-Build-$GITHUB_SHA'
           path: artifacts/**
