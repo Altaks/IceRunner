@@ -12,6 +12,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
+import java.util.UUID
+import kotlin.math.min
 
 class ScoreboardManager(val main: Main) : Listener {
 
@@ -35,7 +37,7 @@ class ScoreboardManager(val main: Main) : Listener {
         fun spaceFilledScore(score: Int) = "${" ".repeat(3 - score.length())}$score"
     }
 
-    val playerScoreboards: HashMap<Player, FastBoard> = HashMap()
+    val playerScoreboards: HashMap<UUID, FastBoard> = HashMap()
 
     @EventHandler
     fun onPlayerJoins(event: PlayerJoinEvent) = initPlayerScoreboard(event.player)
@@ -46,12 +48,12 @@ class ScoreboardManager(val main: Main) : Listener {
     fun initPlayerScoreboard(player: Player) {
         val board = FastBoard(player)
         board.updateTitle(Main.GAME_NAME)
-        playerScoreboards[player] = board
+        playerScoreboards[player.uniqueId] = board
     }
 
     fun unloadPlayerScoreboard(player: Player) {
-        playerScoreboards[player]?.delete()
-        playerScoreboards.remove(player)
+        playerScoreboards[player.uniqueId]?.delete()
+        playerScoreboards.remove(player.uniqueId)
     }
 
     fun initScoreboardUpdating() {
@@ -63,7 +65,12 @@ class ScoreboardManager(val main: Main) : Listener {
             if (!main.gameManager.hasGameStarted()) {
                 this.main.scoreboardManager.playerScoreboards.entries.forEach { (_, scoreboard) -> updateWaitingScoreboard(scoreboard) }
             } else {
-                this.main.scoreboardManager.playerScoreboards.entries.forEach { (player, scoreboard) -> updatePlayingScoreboard(player, scoreboard, this.main.teamsManager.getGameScoringState()) }
+                this.main.scoreboardManager.playerScoreboards.entries.forEach { (uuid, scoreboard) ->
+                    run {
+                        val player = Bukkit.getPlayer(uuid) ?: return@run
+                        updatePlayingScoreboard(player, scoreboard, this.main.teamsManager.getGameScoringState())
+                    }
+                }
             }
         }
 
@@ -75,7 +82,7 @@ class ScoreboardManager(val main: Main) : Listener {
                 val teamStatusBarState = StatusBarUtils.StatusBarState(
                     WAITING_STATUS_BAR_STATUS_BAR_LENGTH,
                     TeamsManager.PLAYERS_PER_TEAM,
-                    minecraftTeam.entries.size,
+                    min(minecraftTeam.entries.size, TeamsManager.PLAYERS_PER_TEAM),
                 )
                 val teamStatusBarStyle = StatusBarUtils.StatusBarStyle(activeColor = gameTeam.chatColor, baseSymbol = WAITING_TEAM_STATUS_BAR_STYLE_SYMBOL, activeSymbol = WAITING_TEAM_STATUS_BAR_STYLE_SYMBOL)
 

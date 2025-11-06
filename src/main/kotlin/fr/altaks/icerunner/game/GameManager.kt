@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitTask
+import java.util.UUID
 
 class GameManager(val main: Main) : Listener {
 
@@ -33,7 +34,7 @@ class GameManager(val main: Main) : Listener {
         private val CONGRATS_DECORATION = "${ChatColor.RED}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GOLD}${ChatColor.MAGIC}!"
         private val CONGRATS_DECORATION_REVERSED = "${ChatColor.GOLD}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.RED}${ChatColor.MAGIC}!"
 
-        private val LAST_DAMAGE_TTL_FOR_BOUNTY = 10 * 1000
+        private const val LAST_DAMAGE_TTL_FOR_BOUNTY = 10 * 1000
     }
 
     private var gameState: GameState = GameState.WAITING
@@ -46,13 +47,17 @@ class GameManager(val main: Main) : Listener {
 
     fun tryToStartGame() {
         if (Bukkit.getOnlinePlayers().size >= TeamsManager.PLAYERS_REQUIRED_TO_START_GAME) {
-            triggerStartingGamePhase()
+            if (!this.isGameStarting() && !this.hasGameStarted()) {
+                triggerStartingGamePhase()
+            }
         } else {
             Bukkit.broadcastMessage("${Main.MAIN_PREFIX} Il manque ${TeamsManager.PLAYERS_REQUIRED_TO_START_GAME - Bukkit.getOnlinePlayers().size} joueurs pour débuter la partie !")
         }
     }
 
     fun triggerStartingGamePhase() {
+        if (this.gameState == GameState.STARTING) throw IllegalStateException("The game is already starting")
+
         this.gameState = GameState.STARTING
         Bukkit.broadcastMessage("${Main.MAIN_PREFIX}${ChatColor.LIGHT_PURPLE} La phase de sélection d'équipes commence !")
 
@@ -77,6 +82,7 @@ class GameManager(val main: Main) : Listener {
 
         this.main.shopManager.preparePlayerShops()
 
+        this.main.teamsManager.ensureEveryPlayerHasATeam()
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
         this.main.teamsManager.equipPlayersWithTeamEquipments()
 
@@ -117,6 +123,7 @@ class GameManager(val main: Main) : Listener {
 
     @EventHandler
     fun onPlayerDies(event: PlayerDeathEvent) {
+        event.deathMessage = null
         respawnPlayer(event.entity)
     }
 
@@ -145,7 +152,7 @@ class GameManager(val main: Main) : Listener {
     fun onPlayerDamagesOtherPlayer(event: EntityDamageEvent) {
         if (event.entity !is Player) return
         if (event.damageSource.causingEntity !is Player) return
-        lastDamager[event.entity as Player] = Pair(event.damageSource.causingEntity as Player, System.currentTimeMillis())
+        lastDamager[event.entity.uniqueId] = Pair(event.damageSource.causingEntity!!.uniqueId, System.currentTimeMillis())
     }
 
     @EventHandler
@@ -154,17 +161,18 @@ class GameManager(val main: Main) : Listener {
         event.isCancelled = true
     }
 
-    private val killingSpree = HashMap<Player, UInt>()
-    private val lastDamager = HashMap<Player, Pair<Player, Long>>()
+    private val killingSpree = HashMap<UUID, UInt>()
+    private val lastDamager = HashMap<UUID, Pair<UUID, Long>>()
 
     // Ran when a player dies
     private fun tryMakeLastDamagerEarnGolds(dyingPlayer: Player) {
-        val (lastDamager, damageTiming) = lastDamager[dyingPlayer] ?: return
+        val (lastDamagerUUID, damageTiming) = lastDamager[dyingPlayer.uniqueId] ?: return
+        val lastDamager = Bukkit.getPlayer(lastDamagerUUID) ?: return
 
         if (damageTiming + LAST_DAMAGE_TTL_FOR_BOUNTY >= System.currentTimeMillis()) {
             // Last damager is still able to get bounty and golds
 
-            val killingSpree = killingSpree[dyingPlayer] ?: 0u
+            val killingSpree = killingSpree[dyingPlayer.uniqueId] ?: 0u
             val killingSpreeType = KillingSpreeType.fromKillingSpreeSize(killingSpree)
 
             val goldEarned = when (killingSpreeType) {
@@ -194,8 +202,8 @@ class GameManager(val main: Main) : Listener {
     }
 
     private fun incrementKillingSpree(player: Player) {
-        val newValue = (killingSpree[player] ?: 0u) + 1u
-        killingSpree[player] = newValue
+        val newValue = (killingSpree[player.uniqueId] ?: 0u) + 1u
+        killingSpree[player.uniqueId] = newValue
         when (KillingSpreeType.fromKillingSpreeSize(newValue)) {
             KillingSpreeType.MEDIUM -> Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} est à ${ChatColor.GOLD}$newValue ${ChatColor.YELLOW}éliminations consécutives !")
             KillingSpreeType.HIGH -> Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} est digne du Valhalla${ChatColor.RESET} ! ${ChatColor.GOLD}$newValue ${ChatColor.YELLOW}éliminations consécutives !")
@@ -204,14 +212,14 @@ class GameManager(val main: Main) : Listener {
     }
 
     private fun resetKillingSpree(player: Player) {
-        if (killingSpree[player] in 3u..UInt.MAX_VALUE) {
+        if (killingSpree[player.uniqueId] in 3u..UInt.MAX_VALUE) {
             Bukkit.broadcastMessage("${Main.MAIN_PREFIX} ${player.displayName}${ChatColor.YELLOW} a été interrompu dans sa série d'éliminations !")
         }
-        killingSpree[player] = 0u
+        killingSpree[player.uniqueId] = 0u
     }
 
     private fun removeFromLastDamagerRegistry(dyingPlayer: Player) {
-        lastDamager.remove(dyingPlayer)
+        lastDamager.remove(dyingPlayer.uniqueId)
     }
 
     fun respawnPlayer(player: Player) {

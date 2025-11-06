@@ -22,6 +22,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
+import java.util.UUID
+import kotlin.collections.forEach
 import kotlin.math.min
 
 class ShopManager(val main: Main) : Listener {
@@ -86,32 +88,32 @@ class ShopManager(val main: Main) : Listener {
     }
 
     private var globalShopInventory: ShopInventory? = null
-    private val playerToMoneyMapping = HashMap<Player, UInt>()
+    private val playerToMoneyMapping = HashMap<UUID, UInt>()
 
     fun initShop() {
         FastInvManager.register(this.main)
     }
 
     fun preparePlayerShops() {
-        Bukkit.getOnlinePlayers().forEach { playerToMoneyMapping[it] = 0u }
+        Bukkit.getOnlinePlayers().forEach { playerToMoneyMapping[it.uniqueId] = 0u }
     }
 
-    fun getPlayerMoney(player: Player): UInt = playerToMoneyMapping[player] ?: throw IllegalStateException("The player ${player.displayName} is not registered to have any money")
+    fun getPlayerMoney(player: Player): UInt = playerToMoneyMapping[player.uniqueId] ?: 0u
 
     fun hasPlayerEnoughMoney(player: Player, checkedQuantity: UInt): Boolean = getPlayerMoney(player) >= checkedQuantity
 
     fun addPlayerMoney(player: Player, quantityToReduce: UInt) {
-        playerToMoneyMapping[player] = min(MAX_PLAYER_MONEY, getPlayerMoney(player) + quantityToReduce)
+        playerToMoneyMapping[player.uniqueId] = min(MAX_PLAYER_MONEY, getPlayerMoney(player) + quantityToReduce)
         GameItems.updateShopSymbolInPlayerInventory(player, getPlayerMoney(player))
     }
 
     fun reducePlayerMoney(player: Player, quantityToReduce: UInt) {
-        playerToMoneyMapping[player] = getPlayerMoney(player) - quantityToReduce
+        playerToMoneyMapping[player.uniqueId] = getPlayerMoney(player) - quantityToReduce
         GameItems.updateShopSymbolInPlayerInventory(player, getPlayerMoney(player))
     }
 
     fun setPlayerMoney(player: Player, amount: UInt) {
-        playerToMoneyMapping[player] = amount
+        playerToMoneyMapping[player.uniqueId] = amount
         GameItems.updateShopSymbolInPlayerInventory(player, getPlayerMoney(player))
     }
 
