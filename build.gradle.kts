@@ -6,8 +6,6 @@ import io.typst.spigradle.spigot.papermc
 import io.typst.spigradle.spigot.spigot
 import io.typst.spigradle.spigot.spigotmc
 import org.jetbrains.dokka.gradle.DokkaTask
-import java.net.URI
-import java.net.URL
 
 plugins {
     id("idea")
