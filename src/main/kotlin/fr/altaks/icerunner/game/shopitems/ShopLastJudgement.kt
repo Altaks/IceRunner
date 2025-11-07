@@ -5,10 +5,13 @@ import fr.altaks.icerunner.game.GameItems
 import fr.altaks.icerunner.game.ShopManager
 import fr.altaks.icerunner.utils.ItemComparator
 import fr.altaks.icerunner.utils.ItemFactory
+import fr.altaks.icerunner.world.WorldManager
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.World
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -16,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.NumberConversions
+import java.util.UUID
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -52,14 +56,22 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
     fun onPlayerUsesItem(event: PlayerInteractEvent) {
         if (event.item != null && ItemComparator.compare(event.item, item())) {
             event.isCancelled = true
+            if(activeLastJudgement.isEmpty()) {
+                event.player.world.time = WorldManager.MIDNIGHT_TIME_TICKS
+            }
             triggerLastJudgement(event.player)
             GameItems.decrementHeldItemAmount(event.player)
         }
     }
 
-    private fun triggerLastJudgement(player: Player) = LastJudgementTask(player, main).runTaskTimer(this.main, 0, 5L)
+    private val activeLastJudgement = mutableListOf<UUID>()
 
-    private class LastJudgementTask(val player: Player, val main: Main) : BukkitRunnable() {
+    private fun triggerLastJudgement(player: Player) {
+        activeLastJudgement.add(player.uniqueId)
+        LastJudgementTask(player.uniqueId, player.world, main, this.activeLastJudgement).runTaskTimer(this.main, 0, 5L)
+    }
+
+    private class LastJudgementTask(val playerUUID: UUID, val world: World, val main: Main, val activeJudgements: MutableList<UUID>) : BukkitRunnable() {
 
         companion object {
             private const val HELIX_HEIGHT = 0.8 // default : 0.5
@@ -73,6 +85,13 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
         var phi = 0.0
 
         override fun run() {
+            if(!Bukkit.getOfflinePlayer(playerUUID).isOnline) {
+                resetTimeToDayIfLastActiveLastJudgement(world)
+                this.cancel()
+            }
+
+            val player = Bukkit.getPlayer(playerUUID) ?: throw IllegalStateException("Couldn't get player on LastJudgement task, however player is online !");
+
             phi += Math.PI / 8
 
             var x: Double
@@ -90,26 +109,28 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
                     z = HELIX_RADIUS * (3 * Math.PI - theta) * HELIX_RADIUS * sin(theta + phi + i * Math.PI)
 
                     val particleSpawnLocation = player.location.add(x, 5.0 - y, z)
-                    particleSpawnLocation.world?.spawnParticle(
-                        if (i % 2 == 0) {
-                            Particle.SOUL_FIRE_FLAME
-                        } else {
-                            Particle.FLAME
-                        },
-                        particleSpawnLocation.x,
-                        particleSpawnLocation.y,
-                        particleSpawnLocation.z,
-                        PARTICLE_AMOUNT,
-                        PARTICLE_LOCATION_DELTA,
-                        PARTICLE_LOCATION_DELTA,
-                        PARTICLE_LOCATION_DELTA,
-                        PARTICLE_SPEED,
-                    )
+                    particleSpawnLocation.world
+                        ?.spawnParticle(
+                            if (i % 2 == 0) {
+                                Particle.SOUL_FIRE_FLAME
+                            } else {
+                                Particle.FLAME
+                            },
+                            particleSpawnLocation.x,
+                            particleSpawnLocation.y,
+                            particleSpawnLocation.z,
+                            PARTICLE_AMOUNT,
+                            PARTICLE_LOCATION_DELTA,
+                            PARTICLE_LOCATION_DELTA,
+                            PARTICLE_LOCATION_DELTA,
+                            PARTICLE_SPEED,
+                        )
                 }
             }
 
             if (phi > 10 * Math.PI) {
-                wipePlayersAndIceBridges()
+                wipePlayersAndIceBridges(player, world)
+                resetTimeToDayIfLastActiveLastJudgement(world)
                 this.cancel()
             }
 
@@ -117,7 +138,12 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
             player.location.world?.spawnParticle(Particle.SOUL_FIRE_FLAME, player.location, 250, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), 0.0)
         }
 
-        fun wipePlayersAndIceBridges() {
+        override fun cancel() {
+            activeJudgements.remove(playerUUID)
+            super.cancel()
+        }
+
+        fun wipePlayersAndIceBridges(player: Player, world: World) {
             for (x in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {
                 for (y in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {
                     for (z in -EXPLOSION_EFFECT_RADIUS..EXPLOSION_EFFECT_RADIUS) {
@@ -134,13 +160,19 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
                 }
             }
 
-            player.world.playSound(player.location, Sound.ENTITY_GENERIC_EXPLODE, 50f, 1f)
-            player.world.spawnParticle(Particle.EXPLOSION, player.location, 50, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), 0.1)
+            world.playSound(player.location, Sound.ENTITY_GENERIC_EXPLODE, 50f, 1f)
+            world.spawnParticle(Particle.EXPLOSION, player.location, 50, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), 0.1)
 
-            player.world
+            world
                 .getNearbyEntities(player.location, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble())
                 .filter { entity -> entity.type == EntityType.PLAYER }
                 .forEach { entity -> this.main.gameManager.respawnPlayer(entity as Player) }
+        }
+
+        fun resetTimeToDayIfLastActiveLastJudgement(world: World) {
+            if(activeJudgements.size <= 1) {
+                world.time = WorldManager.NOON_TIME_TICKS
+            }
         }
     }
 }

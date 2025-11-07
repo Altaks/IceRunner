@@ -4,8 +4,11 @@ import fr.altaks.icerunner.utils.ItemFactory
 import org.bukkit.ChatColor
 import org.bukkit.Color
 import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.LeatherArmorMeta
@@ -71,6 +74,12 @@ object GameItems {
         .addUnsafeEnchantment(Enchantment.KNOCKBACK, 1)
         .setUnbreakable(true)
         .addItemFlags(ItemFlag.HIDE_UNBREAKABLE)
+        .addAttributeModifier(Attribute.ATTACK_SPEED, AttributeModifier(
+            Attribute.ATTACK_SPEED.keyOrThrow,
+            1024.0,
+            AttributeModifier.Operation.ADD_NUMBER,
+            EquipmentSlotGroup.MAINHAND,
+        ))
         .build()
 
     fun shopSymbolItem(playerMoney: UInt): ItemStack {

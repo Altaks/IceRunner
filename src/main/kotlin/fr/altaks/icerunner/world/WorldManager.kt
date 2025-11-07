@@ -28,7 +28,8 @@ class WorldManager(val main: Main) {
         private const val DEFAULT_WORLD_VARIANT_PATH = "worlds/variants/ice"
 
         // Some world configuration constants
-        private const val NOON_TIME_TICKS = 6000L
+        const val NOON_TIME_TICKS = 6000L
+        const val MIDNIGHT_TIME_TICKS = 18000L
 
         private const val MAIN_ISLAND_POPULATION_SCAN_RADIUS = 3.0
         private const val SECONDARY_ISLAND_POPULATION_SCAN_RADIUS = 2.0
