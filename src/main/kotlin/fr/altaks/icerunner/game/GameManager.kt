@@ -97,9 +97,9 @@ class GameManager(val main: Main) : Listener {
         }
 
         // Just for testing purposes
-        this.bifrostTask = BifrostTask().runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
+        this.bifrostTask = BifrostTask(main).runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
         this.arrowTask = ArrowTask().runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
-        this.playingPhaseTask = PlayingPhaseTask(this.main).runTaskTimer(this.main, 0, 20)
+        this.playingPhaseTask = PlayingPhaseTask(this.main).runTaskTimer(this.main, NO_TASK_DELAY, EVERY_SECOND)
     }
 
     fun isGameStarting(): Boolean = this.gameState == GameState.STARTING

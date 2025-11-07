@@ -127,4 +127,8 @@ class WorldManager(val main: Main) {
             WorldIslands.YELLOW -> loadedWorldMetadata?.yellowIslandGlassCoordinates?.forEach { loc -> loc.block.type = material }
         }
     }
+
+    fun getIslandsCentersCoordinates(): List<Location> {
+        return listOf(loadedWorldMetadata!!.mapCenterCoordinates, loadedWorldMetadata!!.yellowIslandCenterCoordinates, loadedWorldMetadata!!.greenIslandCenterCoordinates, loadedWorldMetadata!!.redTeamSpawnCoordinates, loadedWorldMetadata!!.blueTeamSpawnCoordinates)
+    }
 }
