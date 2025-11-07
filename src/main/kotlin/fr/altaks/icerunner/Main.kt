@@ -22,7 +22,9 @@ import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.bukkit.util.CachedServerIcon
+import java.awt.image.BufferedImage
 import java.io.File
+import javax.imageio.ImageIO
 
 open class Main : JavaPlugin {
 
@@ -106,10 +108,7 @@ open class Main : JavaPlugin {
                 "      ${ChatColor.YELLOW}Un ${ChatColor.GOLD}KOTH${ChatColor.YELLOW}, des ${TextGradientUtils.generateGradient("glissades", "#FFFFFF", "#59FDF8")}${ChatColor.YELLOW} et des ${TextGradientUtils.generateGradient("explosions", "ED524F", "EDA14F")} ${ChatColor.YELLOW}!",
         )
 
-        val gameIconFile = File(dataFolder.path + File.separator + EXTERNAL_GAME_ICON_PATH)
-        if (!gameIconFile.exists()) {
-            FileUtils.copyResourceDir(INTERNAL_GAME_ICON_PATH, dataFolder.path + File.separator + EXTERNAL_GAME_ICON_PATH)
-        }
-        this.serverCachedIcon = Bukkit.loadServerIcon(File(dataFolder.path + File.separator + EXTERNAL_GAME_ICON_PATH))
+        val iconImage = FileUtils.readResource(INTERNAL_GAME_ICON_PATH) ?: throw IllegalArgumentException("Couldn't load server icon");
+        this.serverCachedIcon = Bukkit.loadServerIcon(ImageIO.read(iconImage))
     }
 }

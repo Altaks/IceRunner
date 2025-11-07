@@ -1,9 +1,12 @@
 package fr.altaks.icerunner.utils
 
+import java.awt.image.BufferedImage
 import java.io.File
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import javax.imageio.ImageIO
 import kotlin.io.path.deleteRecursively
 import kotlin.jvm.java
 
@@ -53,6 +56,10 @@ class FileUtils {
                     Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING)
                 }
             }
+        }
+
+        fun readResource(resourcePath: String): InputStream? {
+            return FileUtils::class.java.classLoader.getResourceAsStream(resourcePath)
         }
 
         fun deleteDirIfExists(dirPath: String) {
