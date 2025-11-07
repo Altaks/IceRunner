@@ -119,7 +119,7 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
                             ).forEach { block ->
                                 run {
                                     // If there are some players near the block, don't place it
-                                    if(isNearAPlayer(block.location) || isNearAnIsland(block.location)) {
+                                    if (isNearAPlayer(block.location) || isNearAnIsland(block.location)) {
                                         return@run
                                     }
 
@@ -138,12 +138,8 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
             }
         }
 
-        private fun isNearAPlayer(location: Location): Boolean {
-            return location.world?.getNearbyEntities(location, PLAYER_PROTECTION_RADIUS, PLAYER_PROTECTION_RADIUS, PLAYER_PROTECTION_RADIUS) { entity -> entity.type == EntityType.PLAYER }?.isNotEmpty() ?: false
-        }
+        private fun isNearAPlayer(location: Location): Boolean = location.world?.getNearbyEntities(location, PLAYER_PROTECTION_RADIUS, PLAYER_PROTECTION_RADIUS, PLAYER_PROTECTION_RADIUS) { entity -> entity.type == EntityType.PLAYER }?.isNotEmpty() ?: false
 
-        private fun isNearAnIsland(location: Location): Boolean {
-            return this.main.worldManager.getIslandsCentersCoordinates().any { center -> center.distanceSquared(location) <= NumberConversions.square(ISLAND_PROTECTION_RADIUS)}
-        }
+        private fun isNearAnIsland(location: Location): Boolean = this.main.worldManager.getIslandsCentersCoordinates().any { center -> center.distanceSquared(location) <= NumberConversions.square(ISLAND_PROTECTION_RADIUS) }
     }
 }

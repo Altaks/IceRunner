@@ -56,7 +56,7 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
     fun onPlayerUsesItem(event: PlayerInteractEvent) {
         if (event.item != null && ItemComparator.compare(event.item, item())) {
             event.isCancelled = true
-            if(activeLastJudgement.isEmpty()) {
+            if (activeLastJudgement.isEmpty()) {
                 event.player.world.time = WorldManager.MIDNIGHT_TIME_TICKS
             }
             triggerLastJudgement(event.player)
@@ -85,12 +85,12 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
         var phi = 0.0
 
         override fun run() {
-            if(!Bukkit.getOfflinePlayer(playerUUID).isOnline) {
+            if (!Bukkit.getOfflinePlayer(playerUUID).isOnline) {
                 resetTimeToDayIfLastActiveLastJudgement(world)
                 this.cancel()
             }
 
-            val player = Bukkit.getPlayer(playerUUID) ?: throw IllegalStateException("Couldn't get player on LastJudgement task, however player is online !");
+            val player = Bukkit.getPlayer(playerUUID) ?: throw IllegalStateException("Couldn't get player on LastJudgement task, however player is online !")
 
             phi += Math.PI / 8
 
@@ -170,7 +170,7 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
         }
 
         fun resetTimeToDayIfLastActiveLastJudgement(world: World) {
-            if(activeJudgements.size <= 1) {
+            if (activeJudgements.size <= 1) {
                 world.time = WorldManager.NOON_TIME_TICKS
             }
         }

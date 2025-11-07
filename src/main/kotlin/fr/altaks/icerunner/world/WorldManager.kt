@@ -129,7 +129,5 @@ class WorldManager(val main: Main) {
         }
     }
 
-    fun getIslandsCentersCoordinates(): List<Location> {
-        return listOf(loadedWorldMetadata!!.mapCenterCoordinates, loadedWorldMetadata!!.yellowIslandCenterCoordinates, loadedWorldMetadata!!.greenIslandCenterCoordinates, loadedWorldMetadata!!.redTeamSpawnCoordinates, loadedWorldMetadata!!.blueTeamSpawnCoordinates)
-    }
+    fun getIslandsCentersCoordinates(): List<Location> = listOf(loadedWorldMetadata!!.mapCenterCoordinates, loadedWorldMetadata!!.yellowIslandCenterCoordinates, loadedWorldMetadata!!.greenIslandCenterCoordinates, loadedWorldMetadata!!.redTeamSpawnCoordinates, loadedWorldMetadata!!.blueTeamSpawnCoordinates)
 }

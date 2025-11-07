@@ -74,12 +74,15 @@ object GameItems {
         .addUnsafeEnchantment(Enchantment.KNOCKBACK, 1)
         .setUnbreakable(true)
         .addItemFlags(ItemFlag.HIDE_UNBREAKABLE)
-        .addAttributeModifier(Attribute.ATTACK_SPEED, AttributeModifier(
-            Attribute.ATTACK_SPEED.keyOrThrow,
-            1024.0,
-            AttributeModifier.Operation.ADD_NUMBER,
-            EquipmentSlotGroup.MAINHAND,
-        ))
+        .addAttributeModifier(
+            Attribute.ATTACK_SPEED,
+            AttributeModifier(
+                Attribute.ATTACK_SPEED.keyOrThrow,
+                1024.0,
+                AttributeModifier.Operation.ADD_NUMBER,
+                EquipmentSlotGroup.MAINHAND,
+            ),
+        )
         .build()
 
     fun shopSymbolItem(playerMoney: UInt): ItemStack {
