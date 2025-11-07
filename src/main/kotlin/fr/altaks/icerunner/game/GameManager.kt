@@ -228,6 +228,7 @@ class GameManager(val main: Main) : Listener {
                 tryMakeLastDamagerEarnGolds(player) // Give golds to last damager
                 removeFromLastDamagerRegistry(player) // Avoid last damage entry to be kept
                 resetKillingSpree(player) // Reset player killing spree
+                this.main.shopManager.resetPlayerLastJudgementTaskIfActive(player) // Reset Last judgement if active
 
                 val playerTeam = this.main.teamsManager.getPlayerGameTeam(player)
 

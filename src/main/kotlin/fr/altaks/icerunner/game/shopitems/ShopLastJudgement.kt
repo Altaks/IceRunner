@@ -18,8 +18,10 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.NumberConversions
 import java.util.UUID
+import kotlin.collections.set
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -64,14 +66,26 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
         }
     }
 
-    private val activeLastJudgement = mutableListOf<UUID>()
+    private val activeLastJudgement = HashMap<UUID, BukkitTask>()
+    private fun getActiveLastJudgements(): HashMap<UUID, BukkitTask> = this.activeLastJudgement
 
     private fun triggerLastJudgement(player: Player) {
-        activeLastJudgement.add(player.uniqueId)
-        LastJudgementTask(player.uniqueId, player.world, main, this.activeLastJudgement).runTaskTimer(this.main, 0, 5L)
+        activeLastJudgement[player.uniqueId] = LastJudgementTask(player.uniqueId, player.world, main, this).runTaskTimer(this.main, 0, 5L)
     }
 
-    private class LastJudgementTask(val playerUUID: UUID, val world: World, val main: Main, val activeJudgements: MutableList<UUID>) : BukkitRunnable() {
+    fun cancelLastJudgement(player: Player) {
+        activeLastJudgement[player.uniqueId]?.cancel()
+        resetTimeToDayIfLastActiveLastJudgement(player.world)
+        getActiveLastJudgements().remove(player.uniqueId)
+    }
+
+    fun resetTimeToDayIfLastActiveLastJudgement(world: World) {
+        if (this.getActiveLastJudgements().size <= 1) {
+            world.time = WorldManager.NOON_TIME_TICKS
+        }
+    }
+
+    private class LastJudgementTask(val playerUUID: UUID, val world: World, val main: Main, val handler: ShopLastJudgement) : BukkitRunnable() {
 
         companion object {
             private const val HELIX_HEIGHT = 0.8 // default : 0.5
@@ -85,12 +99,10 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
         var phi = 0.0
 
         override fun run() {
-            if (!Bukkit.getOfflinePlayer(playerUUID).isOnline) {
-                resetTimeToDayIfLastActiveLastJudgement(world)
+            val player = Bukkit.getPlayer(playerUUID) ?: run {
                 this.cancel()
+                return
             }
-
-            val player = Bukkit.getPlayer(playerUUID) ?: throw IllegalStateException("Couldn't get player on LastJudgement task, however player is online !")
 
             phi += Math.PI / 8
 
@@ -130,8 +142,8 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
 
             if (phi > 10 * Math.PI) {
                 wipePlayersAndIceBridges(player, world)
-                resetTimeToDayIfLastActiveLastJudgement(world)
                 this.cancel()
+                return
             }
 
             player.location.world?.spawnParticle(Particle.FLAME, player.location, 250, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), 0.0)
@@ -139,7 +151,8 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
         }
 
         override fun cancel() {
-            activeJudgements.remove(playerUUID)
+            handler.resetTimeToDayIfLastActiveLastJudgement(world)
+            handler.getActiveLastJudgements().remove(playerUUID)
             super.cancel()
         }
 
@@ -167,12 +180,6 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
                 .getNearbyEntities(player.location, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble())
                 .filter { entity -> entity.type == EntityType.PLAYER }
                 .forEach { entity -> this.main.gameManager.respawnPlayer(entity as Player) }
-        }
-
-        fun resetTimeToDayIfLastActiveLastJudgement(world: World) {
-            if (activeJudgements.size <= 1) {
-                world.time = WorldManager.NOON_TIME_TICKS
-            }
         }
     }
 }
