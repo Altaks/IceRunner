@@ -43,12 +43,15 @@ class ShopManager(val main: Main) : Listener {
         private val MAX_PLAYER_MONEY = Material.GOLD_NUGGET.maxStackSize.toUInt()
     }
 
+    val itemToShopItemInstanceMapping = HashMap<Material, IShopItem>()
+
     private class ShopInventory : FastInv {
         val main: Main
-        val itemToShopItemInstanceMapping = HashMap<Material, IShopItem>()
+        val shopManager: ShopManager
 
-        constructor(main: Main) : super(SHOP_SIZE, SHOP_NAME) {
+        constructor(main: Main, shopManager: ShopManager) : super(SHOP_SIZE, SHOP_NAME) {
             this.main = main
+            this.shopManager = shopManager
 
             listOf(
                 ShopArrows(),
@@ -63,7 +66,7 @@ class ShopManager(val main: Main) : Listener {
             ).forEach { handler ->
                 run {
                     setItem(handler.position(), handler.item())
-                    itemToShopItemInstanceMapping[handler.item().type] = handler
+                    shopManager.itemToShopItemInstanceMapping[handler.item().type] = handler
                     Bukkit.getPluginManager().registerEvents(handler, main)
                 }
             }
@@ -72,11 +75,11 @@ class ShopManager(val main: Main) : Listener {
         override fun onClick(event: InventoryClickEvent) {
             event.isCancelled = true
 
-            val shopItem = itemToShopItemInstanceMapping[event.currentItem?.type] ?: return
+            val shopItem = shopManager.itemToShopItemInstanceMapping[event.currentItem?.type] ?: return
             val player = event.whoClicked as Player
 
-            if (this.main.shopManager.hasPlayerEnoughMoney(player, shopItem.cost())) {
-                this.main.shopManager.reducePlayerMoney(player, shopItem.cost())
+            if (shopManager.hasPlayerEnoughMoney(player, shopItem.cost())) {
+                shopManager.reducePlayerMoney(player, shopItem.cost())
                 player.inventory.addItem(shopItem.item())
             } else {
                 event.whoClicked.sendMessage(
@@ -121,9 +124,13 @@ class ShopManager(val main: Main) : Listener {
     fun onPlayerOpensShop(event: PlayerInteractEvent) {
         if (event.hasItem() && ItemComparator.compare(event.item!!, SHOP_SYMBOL_DEFAULT)) {
             if (this.globalShopInventory == null) {
-                this.globalShopInventory = ShopInventory(this.main)
+                this.globalShopInventory = ShopInventory(this.main, this)
             }
             this.globalShopInventory?.open(event.player)
         }
+    }
+
+    fun resetPlayerLastJudgementTaskIfActive(player: Player) {
+        this.itemToShopItemInstanceMapping.filter { (_, handler) -> handler is ShopLastJudgement }.forEach { (_, handler) -> (handler as ShopLastJudgement).cancelLastJudgement(player) }
     }
 }

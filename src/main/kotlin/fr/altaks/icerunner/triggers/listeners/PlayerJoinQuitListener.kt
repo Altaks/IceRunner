@@ -31,15 +31,16 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
         if (!this.main.gameManager.hasGameStarted()) {
             GameItems.applyWaitingInventoryToPlayer(event.player)
             this.main.gameManager.tryToStartGame()
+        } else {
+            // Teleport back to team spawn
+            val team = this.main.teamsManager.getPlayerGameTeam(event.player)
+            val respawnPoint = team.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
+            event.player.teleport(respawnPoint)
         }
     }
 
     @EventHandler
     fun onPlayerQuitsServer(event: PlayerQuitEvent) {
         event.quitMessage = "${ChatColor.GRAY}[${ChatColor.RED}-${ChatColor.GRAY}] ${ChatColor.GRAY}${event.player.displayName}"
-
-        if (this.main.gameManager.isGameStarting()) {
-            throw NotImplementedError("Fallback to waiting mode is not implemented yet !")
-        }
     }
 }
