@@ -1,12 +1,21 @@
 package fr.altaks.icerunner.triggers.tasks
 
+import fr.altaks.icerunner.Main
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.EntityType
 import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.util.NumberConversions
 
-class BifrostTask : BukkitRunnable() {
+class BifrostTask(val main: Main) : BukkitRunnable() {
+
+    companion object {
+        private const val ISLAND_PROTECTION_RADIUS = 4.0
+        private const val PLAYER_PROTECTION_RADIUS = 2.0
+    }
+
     override fun run() {
         // Get snowball of the main world
         Bukkit.getWorlds().forEach { world ->
@@ -28,8 +37,10 @@ class BifrostTask : BukkitRunnable() {
 
                         // apply vector to position
                         position = position.add(velocity)
-                        if (velocity.y > 0.0) {
-                            position = position.add(0.0, -2.0, 0.0)
+                        position = if (velocity.y > 0.0) {
+                            position.add(0.0, -1.0, 0.0)
+                        } else {
+                            position.add(0.0, +1.0, 0.0)
                         }
 
                         // list of 4 blocks anchored in the base location
@@ -45,13 +56,7 @@ class BifrostTask : BukkitRunnable() {
                         ).forEach { block ->
                             run {
                                 // If there are some players near the block, don't place it
-                                block.world.getNearbyEntities(position, 1.0, 1.0, 1.0) { entity -> entity.type == EntityType.PLAYER }
-                                    .isEmpty()
-                                    .let {
-                                        if (!it) {
-                                            return
-                                        }
-                                    }
+                                if (isNearAPlayer(block.location) || isNearAnIsland(block.location)) return@run
 
                                 // Replace Materials by match
                                 val newType = when (block.type) {
@@ -68,4 +73,8 @@ class BifrostTask : BukkitRunnable() {
                 }
         }
     }
+
+    private fun isNearAPlayer(location: Location): Boolean = location.world?.getNearbyEntities(location, PLAYER_PROTECTION_RADIUS, PLAYER_PROTECTION_RADIUS, PLAYER_PROTECTION_RADIUS) { entity -> entity.type == EntityType.PLAYER }?.isNotEmpty() ?: false
+
+    private fun isNearAnIsland(location: Location): Boolean = this.main.worldManager.getIslandsCentersCoordinates().any { center -> center.distanceSquared(location) <= NumberConversions.square(ISLAND_PROTECTION_RADIUS) }
 }

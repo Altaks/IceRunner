@@ -8,6 +8,7 @@ import fr.altaks.icerunner.utils.ItemComparator
 import fr.altaks.icerunner.utils.ItemFactory
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.EntityType
@@ -19,12 +20,15 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
+import org.bukkit.util.NumberConversions
 import java.util.UUID
 
 class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
 
     companion object {
         private const val YETI_SNEEZE_TTL = 2500; // 2.5 seconds
+        private const val ISLAND_PROTECTION_RADIUS = 4.0
+        private const val PLAYER_PROTECTION_RADIUS = 2.0
     }
 
     override fun cost(): UInt = 5u
@@ -84,11 +88,11 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
 
     private fun ensureFireballTaskIsActive() {
         if (fireBallTask == null) {
-            this.fireBallTask = YetiSneeze(this).runTaskTimer(this.main, 0, 1L)
+            this.fireBallTask = YetiSneeze(this, main).runTaskTimer(this.main, 0, 1L)
         }
     }
 
-    private class YetiSneeze(val bridgeHandler: ShopReinforcedBridge) : BukkitRunnable() {
+    private class YetiSneeze(val bridgeHandler: ShopReinforcedBridge, val main: Main) : BukkitRunnable() {
         override fun run() {
             Bukkit.getWorlds().forEach { world ->
                 world
@@ -115,13 +119,9 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
                             ).forEach { block ->
                                 run {
                                     // If there are some players near the block, don't place it
-                                    block.world.getNearbyEntities(position, 1.0, 1.0, 1.0) { entity -> entity.type == EntityType.PLAYER }
-                                        .isEmpty()
-                                        .let {
-                                            if (!it) {
-                                                return
-                                            }
-                                        }
+                                    if (isNearAPlayer(block.location) || isNearAnIsland(block.location)) {
+                                        return@run
+                                    }
 
                                     // Replace Materials by match
                                     val newType = when (block.type) {
@@ -137,5 +137,9 @@ class ShopReinforcedBridge(val main: Main) : ShopManager.Companion.IShopItem {
                     }
             }
         }
+
+        private fun isNearAPlayer(location: Location): Boolean = location.world?.getNearbyEntities(location, PLAYER_PROTECTION_RADIUS, PLAYER_PROTECTION_RADIUS, PLAYER_PROTECTION_RADIUS) { entity -> entity.type == EntityType.PLAYER }?.isNotEmpty() ?: false
+
+        private fun isNearAnIsland(location: Location): Boolean = this.main.worldManager.getIslandsCentersCoordinates().any { center -> center.distanceSquared(location) <= NumberConversions.square(ISLAND_PROTECTION_RADIUS) }
     }
 }

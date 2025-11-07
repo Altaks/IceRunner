@@ -1,6 +1,7 @@
 package fr.altaks.icerunner.utils
 
 import java.io.File
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -54,6 +55,8 @@ class FileUtils {
                 }
             }
         }
+
+        fun readResource(resourcePath: String): InputStream? = FileUtils::class.java.classLoader.getResourceAsStream(resourcePath)
 
         fun deleteDirIfExists(dirPath: String) {
             File(dirPath).deleteRecursively()
