@@ -88,6 +88,7 @@ class WorldManager(val main: Main) {
 
         gameWorld.setGameRule(GameRule<Boolean>.KEEP_INVENTORY, true)
 
+        gameWorld.pvp = false
         gameWorld.setGameRule(GameRule<Boolean>.DO_DAYLIGHT_CYCLE, false)
         gameWorld.setGameRule(GameRule<Boolean>.DO_WEATHER_CYCLE, false)
         gameWorld.setGameRule(GameRule<Boolean>.DO_FIRE_TICK, false)
@@ -97,6 +98,11 @@ class WorldManager(val main: Main) {
 
         gameWorld.clearWeatherDuration = Int.MAX_VALUE
         gameWorld.time = NOON_TIME_TICKS
+    }
+
+    fun allowPVP() {
+        val gameWorld = Bukkit.getWorld(ICE_RUNNER_WORLD_NAME) ?: throw IllegalStateException("World $ICE_RUNNER_WORLD_NAME not found")
+        gameWorld.pvp = true
     }
 
     fun teleportPlayersToGameWorld() {

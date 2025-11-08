@@ -90,6 +90,8 @@ class GameManager(val main: Main) : Listener {
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
         this.main.teamsManager.equipPlayersWithTeamEquipments()
 
+        this.main.worldManager.allowPVP()
+
         // Resetting player stats
         Bukkit.getOnlinePlayers().forEach { player ->
             player.gameMode = GameMode.SURVIVAL
@@ -246,6 +248,8 @@ class GameManager(val main: Main) : Listener {
                 removeFromLastDamagerRegistry(player) // Avoid last damage entry to be kept
                 resetKillingSpree(player) // Reset player killing spree
                 this.main.shopManager.resetPlayerLastJudgementTaskIfActive(player) // Reset Last judgement if active
+
+                Bukkit.broadcastMessage("${ChatColor.GRAY}${player.displayName} a été éliminé !")
 
                 val playerTeam = this.main.teamsManager.getPlayerGameTeam(player)
 
