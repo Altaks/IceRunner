@@ -4,6 +4,7 @@ import fr.altaks.icerunner.Main
 import fr.altaks.icerunner.triggers.tasks.ArrowTask
 import fr.altaks.icerunner.triggers.tasks.BifrostTask
 import fr.altaks.icerunner.triggers.tasks.PlayingPhaseTask
+import fr.altaks.icerunner.triggers.tasks.RestockTask
 import fr.altaks.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -29,7 +30,8 @@ class GameManager(val main: Main) : Listener {
     companion object {
         private const val NO_TASK_DELAY = 0L
         private const val EVERY_TICK = 1L
-        private const val EVERY_SECOND = EVERY_TICK * 20L
+        private const val EVERY_SECOND = 20L * EVERY_TICK
+        private const val EVERY_TEN_SECONDS = 10L * EVERY_SECOND
 
         private const val INFINITE_POTION_EFFECT_DURATION = 1_000_000
         private const val JUMP_BOOST_AMPLIFIER = 1 // 2 blocks high
@@ -44,9 +46,10 @@ class GameManager(val main: Main) : Listener {
     private var gameState: GameState = GameState.WAITING
 
     private var startingPhaseTask: BukkitTask? = null
-    private var bifrostTask: BukkitTask? = null
     private var playingPhaseTask: BukkitTask? = null
 
+    private var bifrostTask: BukkitTask? = null
+    private var restockTask: BukkitTask? = null
     private var arrowTask: BukkitTask? = null
 
     fun tryToStartGame() {
@@ -102,7 +105,7 @@ class GameManager(val main: Main) : Listener {
             player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, INFINITE_POTION_EFFECT_DURATION, JUMP_BOOST_AMPLIFIER))
         }
 
-        // Just for testing purposes
+        this.restockTask = RestockTask(main).runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TEN_SECONDS)
         this.bifrostTask = BifrostTask(main).runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
         this.arrowTask = ArrowTask().runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
         this.playingPhaseTask = PlayingPhaseTask(this.main).runTaskTimer(this.main, NO_TASK_DELAY, EVERY_SECOND)
@@ -111,6 +114,7 @@ class GameManager(val main: Main) : Listener {
     fun isGameStarting(): Boolean = this.gameState == GameState.STARTING
     fun hasGameStarted(): Boolean = this.gameState > GameState.STARTING
     fun isGameFinished(): Boolean = this.gameState >= GameState.FINISHED
+    fun isGamePlaying(): Boolean = this.gameState == GameState.PLAYING
 
     fun triggerFinishedGamePhase(winningTeam: TeamsManager.GameTeam) {
         this.gameState = GameState.FINISHED

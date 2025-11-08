@@ -30,6 +30,7 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
 
         if (!this.main.gameManager.hasGameStarted()) {
             GameItems.applyWaitingInventoryToPlayer(event.player)
+            event.player.health = 20.0
             event.player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
             this.main.gameManager.tryToStartGame()
         } else {

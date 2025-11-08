@@ -40,7 +40,7 @@ object GameItems {
     private const val PLAYER_INVENTORY_HOTBAR_ARROWS_TEAM_SLOT_INDEX = 7
     private const val PLAYER_INVENTORY_HOTBAR_SHOP_SYMBOL_SLOT_INDEX = 8
 
-    val baseKitArrows: ItemStack = ItemFactory(Material.ARROW, 8)
+    val baseKitArrows: ItemStack = ItemFactory(Material.ARROW, 12)
         .setDisplayName("${ChatColor.AQUA}\uD83D\uDCA5 Flèche explosive")
         .setLore(
             "${ChatColor.GRAY}$loreDelimitation",
