@@ -16,6 +16,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -125,7 +126,9 @@ class GameManager(val main: Main) : Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    fun onPlayerDies(event: EntityDamageEvent) {
+    fun onPlayerTakesLethalDamage(event: EntityDamageEvent) {
+        if (event.cause == EntityDamageEvent.DamageCause.VOID) return
+        if (event.cause == EntityDamageEvent.DamageCause.FALL) return
         if (event.entity is Player && event.finalDamage >= (event.entity as Player).health) {
             event.isCancelled = true
             respawnPlayer(event.entity as Player)

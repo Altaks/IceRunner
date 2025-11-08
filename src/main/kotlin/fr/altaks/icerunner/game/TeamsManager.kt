@@ -123,12 +123,12 @@ class TeamsManager(val main: Main) : Listener {
         }
     }
 
-    fun sendMessageToPlayerTeam(player: Player, message: String) {
-        val playerTeam = getPlayerGameTeam(player)
+    fun sendMessageToPlayerTeam(sender: Player, message: String) {
+        val playerTeam = getPlayerGameTeam(sender)
         val minecraftTeam = teamToGameTeamMapping.inverse()[playerTeam] ?: throw IllegalStateException("This team is not mapped to a Minecraft team")
         for (teamEntry in minecraftTeam.entries) {
             val player = Bukkit.getPlayer(teamEntry) ?: continue
-            player.sendMessage("${playerTeam.chatColor}[Equipe] ${player.displayName} \u00BB${ChatColor.RESET} $message")
+            player.sendMessage("${playerTeam.chatColor}[Equipe] ${sender.displayName} \u00BB${ChatColor.RESET} $message")
         }
     }
 
@@ -255,16 +255,17 @@ class TeamsManager(val main: Main) : Listener {
         this.main.pluginLogger.info("Team ${team.displayName} gains $delta points !")
         val newTeamScore = this.teamToScoreMapping[team]!! + delta
 
+        when (team) {
+            redTeam -> this.gameScoringState.redTeamScore = newTeamScore
+            blueTeam -> this.gameScoringState.blueTeamScore = newTeamScore
+            else -> throw IllegalStateException("This team is not supported by the game scoring state data")
+        }
+
         if (newTeamScore >= POINTS_TO_ACHIEVE_VICTORY) {
             this.main.pluginLogger.info("Game is finished : ${team.displayName} has won !")
             this.main.gameManager.triggerFinishedGamePhase(team)
         } else {
             this.teamToScoreMapping[team] = this.teamToScoreMapping[team]!! + delta
-            when (team) {
-                redTeam -> this.gameScoringState.redTeamScore = newTeamScore
-                blueTeam -> this.gameScoringState.blueTeamScore = newTeamScore
-                else -> throw IllegalStateException("This team is not supported by the game scoring state data")
-            }
         }
     }
 
