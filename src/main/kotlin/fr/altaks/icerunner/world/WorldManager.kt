@@ -92,6 +92,7 @@ class WorldManager(val main: Main) {
         gameWorld.setGameRule(GameRule<Boolean>.KEEP_INVENTORY, true)
         gameWorld.setGameRule(GameRule<Boolean>.SHOW_DEATH_MESSAGES, false)
         gameWorld.setGameRule(GameRule<Boolean>.ANNOUNCE_ADVANCEMENTS, false)
+        gameWorld.setGameRule(GameRule<Boolean>.NATURAL_REGENERATION, false)
 
         gameWorld.clearWeatherDuration = Int.MAX_VALUE
         gameWorld.time = NOON_TIME_TICKS

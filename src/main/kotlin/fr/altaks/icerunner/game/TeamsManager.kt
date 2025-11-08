@@ -164,6 +164,7 @@ class TeamsManager(val main: Main) : Listener {
             val gameTeam = getPlayerGameTeam(player)
             val respawnPoint = gameTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
 
+            player.respawnLocation = respawnPoint
             player.setRespawnLocation(respawnPoint, true)
             player.teleport(respawnPoint)
         }

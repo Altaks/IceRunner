@@ -4,6 +4,7 @@ import io.typst.spigradle.spigot.Load
 import io.typst.spigradle.spigot.paper
 import io.typst.spigradle.spigot.papermc
 import io.typst.spigradle.spigot.spigot
+import io.typst.spigradle.spigot.spigotAll
 import io.typst.spigradle.spigot.spigotmc
 import org.jetbrains.dokka.gradle.DokkaTask
 
