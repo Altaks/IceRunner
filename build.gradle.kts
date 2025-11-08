@@ -1,10 +1,10 @@
 import io.github.klahap.dotenv.DotEnvBuilder
 import io.typst.spigradle.jitpack
 import io.typst.spigradle.spigot.Load
+import io.typst.spigradle.spigot.codemc
 import io.typst.spigradle.spigot.paper
 import io.typst.spigradle.spigot.papermc
 import io.typst.spigradle.spigot.spigot
-import io.typst.spigradle.spigot.spigotAll
 import io.typst.spigradle.spigot.spigotmc
 import org.jetbrains.dokka.gradle.DokkaTask
 
@@ -29,6 +29,8 @@ repositories {
     papermc()
 
     // Secondary libs repositories
+    codemc()
+    mavenLocal()
     mavenCentral()
     jitpack()
 }

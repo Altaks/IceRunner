@@ -4,6 +4,7 @@ package fr.altaks.icerunner.utils;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -12,7 +13,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.ToolComponent;
 
 /**
  * A factory for creating {@link ItemStack} instances, empowered by the {@link ItemStack}
@@ -350,13 +350,6 @@ public class ItemFactory {
 
     public ItemFactory addAttributeModifier(Attribute attribute, AttributeModifier modifier) {
         this.customItemMeta.addAttributeModifier(attribute, modifier);
-        return this;
-    }
-
-    public ItemFactory allowToBreakMaterials(Material... materials) {
-        for(Material material : materials) {
-
-        }
         return this;
     }
 }

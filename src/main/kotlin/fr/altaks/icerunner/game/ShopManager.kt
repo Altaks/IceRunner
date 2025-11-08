@@ -41,6 +41,8 @@ class ShopManager(val main: Main) : Listener {
 
         private val SHOP_SYMBOL_DEFAULT = GameItems.shopSymbolItem(0u)
         private val MAX_PLAYER_MONEY = Material.GOLD_NUGGET.maxStackSize.toUInt()
+
+        private val UNMOVABLE_MATERIALS = listOf(Material.BOW, Material.GOLD_NUGGET)
     }
 
     val itemToShopItemInstanceMapping = HashMap<Material, IShopItem>()
@@ -132,5 +134,18 @@ class ShopManager(val main: Main) : Listener {
 
     fun resetPlayerLastJudgementTaskIfActive(player: Player) {
         this.itemToShopItemInstanceMapping.filter { (_, handler) -> handler is ShopLastJudgement }.forEach { (_, handler) -> (handler as ShopLastJudgement).cancelLastJudgement(player) }
+    }
+
+    @EventHandler
+    fun onPlayerMovesItemInInv(event: InventoryClickEvent) {
+        if (event.currentItem != null) {
+            if (ItemComparator.compare(GameItems.baseKitBow, event.currentItem) || ItemComparator.compare(SHOP_SYMBOL_DEFAULT, event.currentItem)) {
+                event.isCancelled = true
+            }
+        } else if (event.cursor != null) {
+            if (ItemComparator.compare(GameItems.baseKitBow, event.cursor) || ItemComparator.compare(SHOP_SYMBOL_DEFAULT, event.cursor)) {
+                event.isCancelled = true
+            }
+        }
     }
 }

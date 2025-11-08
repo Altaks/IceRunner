@@ -46,8 +46,8 @@ class TeamsManager(val main: Main) : Listener {
 
         const val PLAYERS_REQUIRED_TO_START_GAME = PLAYERS_PER_TEAM * AMOUNT_OF_TEAMS
 
-        private val redTeam = GameTeam("RedTeam", "Equipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) { meta -> meta.redTeamSpawnCoordinates } // "B02E26"
-        private val blueTeam = GameTeam("BlueTeam", "Equipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) { meta -> meta.blueTeamSpawnCoordinates } // "3AB3DA"
+        private val redTeam = GameTeam("RedTeam", "Equipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) { meta -> meta.redTeamSpawnCoordinates.clone().add(0.0, 1.0, 0.0) } // "B02E26"
+        private val blueTeam = GameTeam("BlueTeam", "Equipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) { meta -> meta.blueTeamSpawnCoordinates.clone().add(0.0, 1.0, 0.0) } // "3AB3DA"
 
         private val teams: List<GameTeam> = listOf(redTeam, blueTeam)
 

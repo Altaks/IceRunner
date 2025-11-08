@@ -8,17 +8,19 @@ import fr.altaks.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
-import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitTask
+import org.bukkit.util.Vector
 import java.util.UUID
 
 class GameManager(val main: Main) : Listener {
@@ -35,6 +37,7 @@ class GameManager(val main: Main) : Listener {
         private val CONGRATS_DECORATION_REVERSED = "${ChatColor.GOLD}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.RED}${ChatColor.MAGIC}!"
 
         private const val LAST_DAMAGE_TTL_FOR_BOUNTY = 10 * 1000
+        private val BLOCKS_PLAYERS_CAN_BREAK = listOf<Material>(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE)
     }
 
     private var gameState: GameState = GameState.WAITING
@@ -88,7 +91,7 @@ class GameManager(val main: Main) : Listener {
 
         // Resetting player stats
         Bukkit.getOnlinePlayers().forEach { player ->
-            player.gameMode = GameMode.ADVENTURE
+            player.gameMode = GameMode.SURVIVAL
             player.exp = 0.0F
             player.level = 0
             player.foodLevel = 20
@@ -112,7 +115,7 @@ class GameManager(val main: Main) : Listener {
 
         // Resetting player stats
         Bukkit.getOnlinePlayers().forEach { player ->
-            player.gameMode = GameMode.CREATIVE
+            player.gameMode = GameMode.SPECTATOR
             player.exp = 0.0F
             player.level = 0
             player.foodLevel = 20
@@ -121,10 +124,12 @@ class GameManager(val main: Main) : Listener {
         }
     }
 
-    @EventHandler
-    fun onPlayerDies(event: PlayerDeathEvent) {
-        event.deathMessage = null
-        respawnPlayer(event.entity)
+    @EventHandler(priority = EventPriority.LOWEST)
+    fun onPlayerDies(event: EntityDamageEvent) {
+        if (event.entity is Player && event.finalDamage >= (event.entity as Player).health) {
+            event.isCancelled = true
+            respawnPlayer(event.entity as Player)
+        }
     }
 
     @EventHandler
@@ -159,6 +164,15 @@ class GameManager(val main: Main) : Listener {
     fun onPlayerDropsItem(event: PlayerDropItemEvent) {
         // No matter the game state, no one should be able to drop items
         event.isCancelled = true
+    }
+
+    @EventHandler
+    fun onPlayerBreaksBlock(event: BlockBreakEvent) {
+        if (!BLOCKS_PLAYERS_CAN_BREAK.contains(event.block.type)) {
+            event.isCancelled = true
+        } else {
+            event.block.type = Material.AIR
+        }
     }
 
     private val killingSpree = HashMap<UUID, UInt>()
@@ -236,8 +250,10 @@ class GameManager(val main: Main) : Listener {
                 val respawnPoint = playerTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
                 player.teleport(respawnPoint)
 
+                player.health = 20.0
                 player.exp = 0.0F
                 player.level = 0
+                player.velocity = Vector(0.0, 0.0, 0.0)
 
                 player.activePotionEffects.forEach { effect -> player.removePotionEffect(effect.type) }
                 player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, INFINITE_POTION_EFFECT_DURATION, JUMP_BOOST_AMPLIFIER))
