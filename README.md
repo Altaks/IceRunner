@@ -39,3 +39,5 @@ This project is licensed under the [MIT License (MIT)](./LICENSE)
 ## Contribution
 
 This project is open to contributions for external developers/maintainers
+
+![Alt](https://repobeats.axiom.co/api/embed/519dc8bf1ced48fd8b77be5ad321a8c811b75ccd.svg "Repobeats analytics image")
