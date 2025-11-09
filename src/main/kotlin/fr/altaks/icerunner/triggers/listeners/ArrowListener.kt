@@ -5,6 +5,7 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -27,10 +28,14 @@ class ArrowListener(val main: Main) : Listener {
                     for (y in -EXPLOSION_RADIUS..EXPLOSION_RADIUS) {
                         for (z in -EXPLOSION_RADIUS..EXPLOSION_RADIUS) {
                             // scanned block position
-                            val position = event.hitBlock?.location?.add(x.toDouble(), y.toDouble(), z.toDouble()) ?: continue
+                            val position =
+                                event.hitBlock?.location?.add(x.toDouble(), y.toDouble(), z.toDouble()) ?: continue
 
                             // if the scanned block is in the sphere of radius EXPLOSION_RADIUS
-                            if (position.distanceSquared(event.hitBlock?.location!!) <= NumberConversions.square(EXPLOSION_RADIUS.toDouble())) {
+                            if (position.distanceSquared(event.hitBlock?.location!!) <= NumberConversions.square(
+                                    EXPLOSION_RADIUS.toDouble()
+                                )
+                            ) {
                                 // Apply block replacing
                                 val newType = when (position.block.type) {
                                     Material.ICE -> Material.AIR
@@ -45,7 +50,23 @@ class ArrowListener(val main: Main) : Listener {
                     }
                 }
 
-                val explosionCenter = event.hitBlock?.location ?: throw IllegalStateException("Hit block does not have a Location")
+                if(event.entity.shooter is Player) {
+                    val shootingPlayer = event.entity.shooter as Player
+
+                    event.hitBlock?.world?.getNearbyEntities(
+                        event.hitBlock!!.location,
+                        EXPLOSION_RADIUS.toDouble(),
+                        EXPLOSION_RADIUS.toDouble(),
+                        EXPLOSION_RADIUS.toDouble()
+                    ) { entity -> entity.type == EntityType.PLAYER }
+                    ?.filter { entity -> !entity.equals(shootingPlayer) }
+                    ?.forEach { hitPlayer ->
+                        (hitPlayer as Player).damage(8.0, shootingPlayer)
+                    }
+                }
+
+                val explosionCenter =
+                    event.hitBlock?.location ?: throw IllegalStateException("Hit block does not have a Location")
                 event.hitBlock?.world?.playSound(explosionCenter, Sound.ENTITY_WIND_CHARGE_WIND_BURST, 50f, 1f)
                 event.hitBlock?.world?.spawnParticle(Particle.GUST_EMITTER_LARGE, explosionCenter, 1)
             }
