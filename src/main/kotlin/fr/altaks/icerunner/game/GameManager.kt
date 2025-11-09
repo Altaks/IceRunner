@@ -10,6 +10,7 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -132,41 +133,39 @@ class GameManager(val main: Main) : Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    fun onPlayerTakesLethalDamage(event: EntityDamageEvent) {
-        if (event.cause == EntityDamageEvent.DamageCause.VOID) return
-        if (event.cause == EntityDamageEvent.DamageCause.FALL) return
-        if (event.entity is Player && event.finalDamage >= (event.entity as Player).health) {
-            event.isCancelled = true
-            respawnPlayer(event.entity as Player)
-        }
-    }
+    fun onPlayerTakesDamage(event: EntityDamageEvent) {
 
-    @EventHandler
-    fun onPlayerFallsIntoTheVoid(event: EntityDamageEvent) {
-        if (event.cause != EntityDamageEvent.DamageCause.VOID) return
-        if (event.entity is Player) {
+        // If this is fall damage, cancel damage
+        if (event.cause == EntityDamageEvent.DamageCause.FALL){
             event.isCancelled = true
-            respawnPlayer(event.entity as Player)
+            return
+        }
+
+        // If victim entity is a Player
+        if (event.entity is Player) {
+
+            // If causing entity is a Player, update last damager registry
+            if(event.damageSource.causingEntity is Player) {
+                lastDamager[event.entity.uniqueId] = Pair(event.damageSource.causingEntity!!.uniqueId, System.currentTimeMillis())
+            }
+
+            // Handle respawn-triggering conditions
+            if(
+                event.cause == EntityDamageEvent.DamageCause.VOID || // If damage is void damage
+                event.finalDamage >= (event.entity as Player).health // Or damage is lethal, then respawn player
+            ) {
+                event.isCancelled = true
+                if(event.damageSource.directEntity?.type == EntityType.ARROW) event.damageSource.directEntity?.remove()
+
+                respawnPlayer(event.entity as Player)
+                return
+            }
         }
     }
 
     @EventHandler
     fun onPlayerHungerChanges(event: FoodLevelChangeEvent) {
         event.isCancelled = true
-    }
-
-    @EventHandler
-    fun onEntityTakesFallDamage(event: EntityDamageEvent) {
-        if (event.cause == EntityDamageEvent.DamageCause.FALL) {
-            event.isCancelled = true
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    fun onPlayerDamagesOtherPlayer(event: EntityDamageEvent) {
-        if (event.entity !is Player) return
-        if (event.damageSource.causingEntity !is Player) return
-        lastDamager[event.entity.uniqueId] = Pair(event.damageSource.causingEntity!!.uniqueId, System.currentTimeMillis())
     }
 
     @EventHandler
@@ -199,8 +198,8 @@ class GameManager(val main: Main) : Listener {
             val killingSpreeType = KillingSpreeType.fromKillingSpreeSize(killingSpree)
 
             val goldEarned = when (killingSpreeType) {
-                KillingSpreeType.NONE -> 1
-                else -> ((killingSpree.toInt() + 1) / 2)
+                KillingSpreeType.NONE -> 2
+                else -> killingSpree.toInt() / 2 + 3
             }
 
             this.main.shopManager.addPlayerMoney(lastDamager, goldEarned.toUInt())
