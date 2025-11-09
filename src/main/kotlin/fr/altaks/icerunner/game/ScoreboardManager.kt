@@ -154,7 +154,7 @@ class ScoreboardManager(val main: Main) : Listener {
         }
 
         private fun buildSpectatorScoreboard(player: Player, gameScoringState: TeamsManager.GameScoringState): List<String> {
-            return when(player.spectatorTarget) {
+            return when (player.spectatorTarget) {
                 is Player -> {
                     val spectatedPlayerTeamColor = (player.spectatorTarget as Player).scoreboard.getEntryTeam(player.spectatorTarget!!.name)?.color
                     return when (spectatedPlayerTeamColor) {

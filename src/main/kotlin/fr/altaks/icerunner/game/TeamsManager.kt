@@ -115,7 +115,7 @@ class TeamsManager(val main: Main) : Listener {
     @EventHandler
     fun onPlayerSendChatMessage(event: AsyncPlayerChatEvent) {
         if (this.main.gameManager.hasGameStarted()) {
-            if(event.player.gameMode == GameMode.SPECTATOR) {
+            if (event.player.gameMode == GameMode.SPECTATOR) {
                 event.isCancelled = true
             }
 
@@ -157,9 +157,7 @@ class TeamsManager(val main: Main) : Listener {
 
     fun areEnoughPlayersPerTeam(): Boolean = this.teamToGameTeamMapping.keys.all { team -> team.entries.size >= PLAYERS_PER_TEAM }
 
-    fun playerHasGameTeam(player: Player): Boolean {
-        return this.getMainScoreboard().getEntryTeam(player.name) != null
-    }
+    fun playerHasGameTeam(player: Player): Boolean = this.getMainScoreboard().getEntryTeam(player.name) != null
 
     fun getPlayerGameTeam(player: Player): GameTeam {
         val team: Team = this.getMainScoreboard().getEntryTeam(player.name) ?: throw IllegalStateException("Player ${player.name} has no team !")

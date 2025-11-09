@@ -179,7 +179,7 @@ class ShopLastJudgement(val main: Main) : ShopManager.Companion.IShopItem {
 
             world
                 .getNearbyEntities(player.location, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble())
-                .filter { entity -> entity.type == EntityType.PLAYER && (entity as Player).gameMode != GameMode.SPECTATOR}
+                .filter { entity -> entity.type == EntityType.PLAYER && (entity as Player).gameMode != GameMode.SPECTATOR }
                 .forEach { entity -> this.main.gameManager.respawnPlayer(entity as Player) }
         }
     }

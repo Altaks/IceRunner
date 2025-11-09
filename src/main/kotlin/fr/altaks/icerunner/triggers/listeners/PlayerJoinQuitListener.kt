@@ -34,7 +34,7 @@ class PlayerJoinQuitListener(val main: Main) : Listener {
             event.player.health = 20.0
             event.player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.clone()?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
             this.main.gameManager.tryToStartGame()
-        } else if(this.main.teamsManager.playerHasGameTeam(event.player)){
+        } else if (this.main.teamsManager.playerHasGameTeam(event.player)) {
             // Teleport back to team spawn
             val team = this.main.teamsManager.getPlayerGameTeam(event.player)
             val respawnPoint = team.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
