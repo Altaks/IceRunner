@@ -18,7 +18,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
-import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -134,28 +133,27 @@ class GameManager(val main: Main) : Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerTakesDamage(event: EntityDamageEvent) {
-
         // If this is fall damage, cancel damage
-        if (event.cause == EntityDamageEvent.DamageCause.FALL){
+        if (event.cause == EntityDamageEvent.DamageCause.FALL) {
             event.isCancelled = true
             return
         }
 
         // If victim entity is a Player
         if (event.entity is Player) {
-
             // If causing entity is a Player, update last damager registry
-            if(event.damageSource.causingEntity is Player) {
+            if (event.damageSource.causingEntity is Player) {
                 lastDamager[event.entity.uniqueId] = Pair(event.damageSource.causingEntity!!.uniqueId, System.currentTimeMillis())
             }
 
             // Handle respawn-triggering conditions
-            if(
-                event.cause == EntityDamageEvent.DamageCause.VOID || // If damage is void damage
+            if (
+                event.cause == EntityDamageEvent.DamageCause.VOID ||
+                // If damage is void damage
                 event.finalDamage >= (event.entity as Player).health // Or damage is lethal, then respawn player
             ) {
                 event.isCancelled = true
-                if(event.damageSource.directEntity?.type == EntityType.ARROW) event.damageSource.directEntity?.remove()
+                if (event.damageSource.directEntity?.type == EntityType.ARROW) event.damageSource.directEntity?.remove()
 
                 respawnPlayer(event.entity as Player)
                 return

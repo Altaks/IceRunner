@@ -13,17 +13,21 @@ class RestockTask(val main: Main) : BukkitRunnable() {
     }
 
     override fun run() {
-        if(main.gameManager.isGamePlaying()) {
-            Bukkit.getOnlinePlayers().forEach { player -> run {
-                ITEMS_TO_RESTOCK.forEach { item -> run {
-                    val amountOfSaidItem = player.inventory.filterNotNull().filter { ItemComparator.compare(item, it) }.sumOf { it.amount }
-                    if(amountOfSaidItem < item.amount) {
-                        val toRestockItemStack = item.clone()
-                        toRestockItemStack.amount = 1
-                        player.inventory.addItem(toRestockItemStack)
+        if (main.gameManager.isGamePlaying()) {
+            Bukkit.getOnlinePlayers().forEach { player ->
+                run {
+                    ITEMS_TO_RESTOCK.forEach { item ->
+                        run {
+                            val amountOfSaidItem = player.inventory.filterNotNull().filter { ItemComparator.compare(item, it) }.sumOf { it.amount }
+                            if (amountOfSaidItem < item.amount) {
+                                val toRestockItemStack = item.clone()
+                                toRestockItemStack.amount = 1
+                                player.inventory.addItem(toRestockItemStack)
+                            }
+                        }
                     }
-                } }
-            } }
+                }
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ class ArrowListener(val main: Main) : Listener {
 
                             // if the scanned block is in the sphere of radius EXPLOSION_RADIUS
                             if (position.distanceSquared(event.hitBlock?.location!!) <= NumberConversions.square(
-                                    EXPLOSION_RADIUS.toDouble()
+                                    EXPLOSION_RADIUS.toDouble(),
                                 )
                             ) {
                                 // Apply block replacing
@@ -50,19 +50,19 @@ class ArrowListener(val main: Main) : Listener {
                     }
                 }
 
-                if(event.entity.shooter is Player) {
+                if (event.entity.shooter is Player) {
                     val shootingPlayer = event.entity.shooter as Player
 
                     event.hitBlock?.world?.getNearbyEntities(
                         event.hitBlock!!.location,
                         EXPLOSION_RADIUS.toDouble(),
                         EXPLOSION_RADIUS.toDouble(),
-                        EXPLOSION_RADIUS.toDouble()
+                        EXPLOSION_RADIUS.toDouble(),
                     ) { entity -> entity.type == EntityType.PLAYER }
-                    ?.filter { entity -> !entity.equals(shootingPlayer) }
-                    ?.forEach { hitPlayer ->
-                        (hitPlayer as Player).damage(8.0, shootingPlayer)
-                    }
+                        ?.filter { entity -> !entity.equals(shootingPlayer) }
+                        ?.forEach { hitPlayer ->
+                            (hitPlayer as Player).damage(8.0, shootingPlayer)
+                        }
                 }
 
                 val explosionCenter =
