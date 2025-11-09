@@ -53,6 +53,13 @@ jobs:
           name: 'IceRunner-Docs'
           path: build/dokka/html/
 
+      - name: Publish documentation
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: docs
+          FOLDER: build/dokka/html
+
   # Running the plugin's tests
   build:
     needs: [check]
