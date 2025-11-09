@@ -113,6 +113,7 @@ tasks.shadowJar {
 
     // Remove the annoying "-all" suffix.
     archiveClassifier = ""
+    archiveVersion = ""
 }
 
 // Allow to include every non-spigot-directly-related-resource within the JAR resources
