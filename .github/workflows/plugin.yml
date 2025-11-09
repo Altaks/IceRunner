@@ -1,6 +1,10 @@
 # Refer to https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions
 name: IceRunner Kotlin CI
 
+permissions:
+  id-token: write
+  attestations: write
+
 on:
   push:
     branches: ["main", "dev"]
@@ -83,5 +87,10 @@ jobs:
       - name: Archive generated fat JAR file
         uses: actions/upload-artifact@v5
         with:
-          name: 'IceRunner-Plugin'
-          path: artifacts/**
+          name: 'IceRunner-${{ github.sha }}.jar'
+          path: artifacts/IceRunner.jar
+
+      - name: Attest build provenance of said artifact
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: artifacts/IceRunner.jar
