@@ -8,6 +8,7 @@ import fr.altaks.icerunner.world.WorldVariantMetadata
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Color
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -46,8 +47,8 @@ class TeamsManager(val main: Main) : Listener {
 
         const val PLAYERS_REQUIRED_TO_START_GAME = PLAYERS_PER_TEAM * AMOUNT_OF_TEAMS
 
-        private val redTeam = GameTeam("RedTeam", "Equipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) { meta -> meta.redTeamSpawnCoordinates } // "B02E26"
-        private val blueTeam = GameTeam("BlueTeam", "Equipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) { meta -> meta.blueTeamSpawnCoordinates } // "3AB3DA"
+        private val redTeam = GameTeam("RedTeam", "Equipe rouge", '✦', ChatColor.RED, Color.RED, GameItems.redTeamTag) { meta -> meta.redTeamSpawnCoordinates.clone().add(0.0, 1.0, 0.0) } // "B02E26"
+        private val blueTeam = GameTeam("BlueTeam", "Equipe bleue", '❉', ChatColor.AQUA, Color.AQUA, GameItems.blueTeamTag) { meta -> meta.blueTeamSpawnCoordinates.clone().add(0.0, 1.0, 0.0) } // "3AB3DA"
 
         private val teams: List<GameTeam> = listOf(redTeam, blueTeam)
 
@@ -114,6 +115,10 @@ class TeamsManager(val main: Main) : Listener {
     @EventHandler
     fun onPlayerSendChatMessage(event: AsyncPlayerChatEvent) {
         if (this.main.gameManager.hasGameStarted()) {
+            if (event.player.gameMode == GameMode.SPECTATOR) {
+                event.isCancelled = true
+            }
+
             if (!event.message.startsWith("!")) {
                 event.isCancelled = true
                 sendMessageToPlayerTeam(event.player, event.message)
@@ -123,12 +128,12 @@ class TeamsManager(val main: Main) : Listener {
         }
     }
 
-    fun sendMessageToPlayerTeam(player: Player, message: String) {
-        val playerTeam = getPlayerGameTeam(player)
+    fun sendMessageToPlayerTeam(sender: Player, message: String) {
+        val playerTeam = getPlayerGameTeam(sender)
         val minecraftTeam = teamToGameTeamMapping.inverse()[playerTeam] ?: throw IllegalStateException("This team is not mapped to a Minecraft team")
         for (teamEntry in minecraftTeam.entries) {
             val player = Bukkit.getPlayer(teamEntry) ?: continue
-            player.sendMessage("${playerTeam.chatColor}[Equipe] ${player.displayName} \u00BB${ChatColor.RESET} $message")
+            player.sendMessage("${playerTeam.chatColor}[Equipe] ${sender.displayName} \u00BB${ChatColor.RESET} $message")
         }
     }
 
@@ -152,6 +157,8 @@ class TeamsManager(val main: Main) : Listener {
 
     fun areEnoughPlayersPerTeam(): Boolean = this.teamToGameTeamMapping.keys.all { team -> team.entries.size >= PLAYERS_PER_TEAM }
 
+    fun playerHasGameTeam(player: Player): Boolean = this.getMainScoreboard().getEntryTeam(player.name) != null
+
     fun getPlayerGameTeam(player: Player): GameTeam {
         val team: Team = this.getMainScoreboard().getEntryTeam(player.name) ?: throw IllegalStateException("Player ${player.name} has no team !")
         return this.teamToGameTeamMapping[team] ?: throw IllegalStateException("Team ${team.displayName} is not mapped to a GameTeam!")
@@ -164,6 +171,7 @@ class TeamsManager(val main: Main) : Listener {
             val gameTeam = getPlayerGameTeam(player)
             val respawnPoint = gameTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
 
+            player.respawnLocation = respawnPoint
             player.setRespawnLocation(respawnPoint, true)
             player.teleport(respawnPoint)
         }
@@ -192,7 +200,7 @@ class TeamsManager(val main: Main) : Listener {
                 val teamToAmountOfPlayers = mutableMapOf<Team, Int>()
                 players.forEach { player ->
                     run {
-                        val team = player.scoreboard.getEntryTeam(player.name) ?: throw IllegalStateException("Couldn't get player team")
+                        val team = player.scoreboard.getEntryTeam(player.name) ?: return@run
                         teamToAmountOfPlayers.putIfAbsent(team, 0)
                         teamToAmountOfPlayers[team] = teamToAmountOfPlayers[team]!! + 1
                     }
@@ -254,16 +262,17 @@ class TeamsManager(val main: Main) : Listener {
         this.main.pluginLogger.info("Team ${team.displayName} gains $delta points !")
         val newTeamScore = this.teamToScoreMapping[team]!! + delta
 
+        when (team) {
+            redTeam -> this.gameScoringState.redTeamScore = newTeamScore
+            blueTeam -> this.gameScoringState.blueTeamScore = newTeamScore
+            else -> throw IllegalStateException("This team is not supported by the game scoring state data")
+        }
+
         if (newTeamScore >= POINTS_TO_ACHIEVE_VICTORY) {
             this.main.pluginLogger.info("Game is finished : ${team.displayName} has won !")
             this.main.gameManager.triggerFinishedGamePhase(team)
         } else {
             this.teamToScoreMapping[team] = this.teamToScoreMapping[team]!! + delta
-            when (team) {
-                redTeam -> this.gameScoringState.redTeamScore = newTeamScore
-                blueTeam -> this.gameScoringState.blueTeamScore = newTeamScore
-                else -> throw IllegalStateException("This team is not supported by the game scoring state data")
-            }
         }
     }
 

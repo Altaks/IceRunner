@@ -16,6 +16,7 @@ import fr.altaks.icerunner.utils.TextGradientUtils
 import fr.altaks.icerunner.world.WorldManager
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.command.PluginCommand
 import org.bukkit.command.TabExecutor
 import org.bukkit.plugin.PluginDescriptionFile
@@ -76,6 +77,8 @@ open class Main : JavaPlugin {
 
         Bukkit.getOnlinePlayers().forEach { player ->
             this.scoreboardManager.initPlayerScoreboard(player)
+            player.gameMode = GameMode.SURVIVAL
+            player.teleport(this.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.clone()?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
             GameItems.applyWaitingInventoryToPlayer(player)
         }
 

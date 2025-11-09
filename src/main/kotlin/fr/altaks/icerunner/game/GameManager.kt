@@ -4,21 +4,25 @@ import fr.altaks.icerunner.Main
 import fr.altaks.icerunner.triggers.tasks.ArrowTask
 import fr.altaks.icerunner.triggers.tasks.BifrostTask
 import fr.altaks.icerunner.triggers.tasks.PlayingPhaseTask
+import fr.altaks.icerunner.triggers.tasks.RestockTask
 import fr.altaks.icerunner.triggers.tasks.StartingPhaseTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
+import org.bukkit.Material
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
-import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitTask
+import org.bukkit.util.Vector
 import java.util.UUID
 
 class GameManager(val main: Main) : Listener {
@@ -26,7 +30,8 @@ class GameManager(val main: Main) : Listener {
     companion object {
         private const val NO_TASK_DELAY = 0L
         private const val EVERY_TICK = 1L
-        private const val EVERY_SECOND = EVERY_TICK * 20L
+        private const val EVERY_SECOND = 20L * EVERY_TICK
+        private const val EVERY_TEN_SECONDS = 10L * EVERY_SECOND
 
         private const val INFINITE_POTION_EFFECT_DURATION = 1_000_000
         private const val JUMP_BOOST_AMPLIFIER = 1 // 2 blocks high
@@ -35,14 +40,16 @@ class GameManager(val main: Main) : Listener {
         private val CONGRATS_DECORATION_REVERSED = "${ChatColor.GOLD}${ChatColor.MAGIC}!${ChatColor.LIGHT_PURPLE}${ChatColor.MAGIC}!${ChatColor.GREEN}${ChatColor.MAGIC}!${ChatColor.AQUA}${ChatColor.MAGIC}!${ChatColor.RED}${ChatColor.MAGIC}!"
 
         private const val LAST_DAMAGE_TTL_FOR_BOUNTY = 10 * 1000
+        private val BLOCKS_PLAYERS_CAN_BREAK = listOf<Material>(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE)
     }
 
     private var gameState: GameState = GameState.WAITING
 
     private var startingPhaseTask: BukkitTask? = null
-    private var bifrostTask: BukkitTask? = null
     private var playingPhaseTask: BukkitTask? = null
 
+    private var bifrostTask: BukkitTask? = null
+    private var restockTask: BukkitTask? = null
     private var arrowTask: BukkitTask? = null
 
     fun tryToStartGame() {
@@ -86,9 +93,11 @@ class GameManager(val main: Main) : Listener {
         this.main.teamsManager.teleportPlayersToTheirTeamSpawnAndSetRespawnPoints()
         this.main.teamsManager.equipPlayersWithTeamEquipments()
 
+        this.main.worldManager.allowPVP()
+
         // Resetting player stats
         Bukkit.getOnlinePlayers().forEach { player ->
-            player.gameMode = GameMode.ADVENTURE
+            player.gameMode = GameMode.SURVIVAL
             player.exp = 0.0F
             player.level = 0
             player.foodLevel = 20
@@ -96,7 +105,7 @@ class GameManager(val main: Main) : Listener {
             player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, INFINITE_POTION_EFFECT_DURATION, JUMP_BOOST_AMPLIFIER))
         }
 
-        // Just for testing purposes
+        this.restockTask = RestockTask(main).runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TEN_SECONDS)
         this.bifrostTask = BifrostTask(main).runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
         this.arrowTask = ArrowTask().runTaskTimer(this.main, NO_TASK_DELAY, EVERY_TICK)
         this.playingPhaseTask = PlayingPhaseTask(this.main).runTaskTimer(this.main, NO_TASK_DELAY, EVERY_SECOND)
@@ -105,6 +114,7 @@ class GameManager(val main: Main) : Listener {
     fun isGameStarting(): Boolean = this.gameState == GameState.STARTING
     fun hasGameStarted(): Boolean = this.gameState > GameState.STARTING
     fun isGameFinished(): Boolean = this.gameState >= GameState.FINISHED
+    fun isGamePlaying(): Boolean = this.gameState == GameState.PLAYING
 
     fun triggerFinishedGamePhase(winningTeam: TeamsManager.GameTeam) {
         this.gameState = GameState.FINISHED
@@ -112,7 +122,7 @@ class GameManager(val main: Main) : Listener {
 
         // Resetting player stats
         Bukkit.getOnlinePlayers().forEach { player ->
-            player.gameMode = GameMode.CREATIVE
+            player.gameMode = GameMode.SPECTATOR
             player.exp = 0.0F
             player.level = 0
             player.foodLevel = 20
@@ -121,18 +131,33 @@ class GameManager(val main: Main) : Listener {
         }
     }
 
-    @EventHandler
-    fun onPlayerDies(event: PlayerDeathEvent) {
-        event.deathMessage = null
-        respawnPlayer(event.entity)
-    }
-
-    @EventHandler
-    fun onPlayerFallsIntoTheVoid(event: EntityDamageEvent) {
-        if (event.cause != EntityDamageEvent.DamageCause.VOID) return
-        if (event.entity is Player) {
+    @EventHandler(priority = EventPriority.LOWEST)
+    fun onPlayerTakesDamage(event: EntityDamageEvent) {
+        // If this is fall damage, cancel damage
+        if (event.cause == EntityDamageEvent.DamageCause.FALL) {
             event.isCancelled = true
-            respawnPlayer(event.entity as Player)
+            return
+        }
+
+        // If victim entity is a Player
+        if (event.entity is Player) {
+            // If causing entity is a Player, update last damager registry
+            if (event.damageSource.causingEntity is Player) {
+                lastDamager[event.entity.uniqueId] = Pair(event.damageSource.causingEntity!!.uniqueId, System.currentTimeMillis())
+            }
+
+            // Handle respawn-triggering conditions
+            if (
+                event.cause == EntityDamageEvent.DamageCause.VOID ||
+                // If damage is void damage
+                event.finalDamage >= (event.entity as Player).health // Or damage is lethal, then respawn player
+            ) {
+                event.isCancelled = true
+                if (event.damageSource.directEntity?.type == EntityType.ARROW) event.damageSource.directEntity?.remove()
+
+                respawnPlayer(event.entity as Player)
+                return
+            }
         }
     }
 
@@ -142,23 +167,18 @@ class GameManager(val main: Main) : Listener {
     }
 
     @EventHandler
-    fun onEntityTakesFallDamage(event: EntityDamageEvent) {
-        if (event.cause == EntityDamageEvent.DamageCause.FALL) {
-            event.isCancelled = true
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    fun onPlayerDamagesOtherPlayer(event: EntityDamageEvent) {
-        if (event.entity !is Player) return
-        if (event.damageSource.causingEntity !is Player) return
-        lastDamager[event.entity.uniqueId] = Pair(event.damageSource.causingEntity!!.uniqueId, System.currentTimeMillis())
-    }
-
-    @EventHandler
     fun onPlayerDropsItem(event: PlayerDropItemEvent) {
         // No matter the game state, no one should be able to drop items
         event.isCancelled = true
+    }
+
+    @EventHandler
+    fun onPlayerBreaksBlock(event: BlockBreakEvent) {
+        if (!BLOCKS_PLAYERS_CAN_BREAK.contains(event.block.type)) {
+            event.isCancelled = true
+        } else {
+            event.block.type = Material.AIR
+        }
     }
 
     private val killingSpree = HashMap<UUID, UInt>()
@@ -176,8 +196,8 @@ class GameManager(val main: Main) : Listener {
             val killingSpreeType = KillingSpreeType.fromKillingSpreeSize(killingSpree)
 
             val goldEarned = when (killingSpreeType) {
-                KillingSpreeType.NONE -> 1
-                else -> ((killingSpree.toInt() + 1) / 2)
+                KillingSpreeType.NONE -> 2
+                else -> killingSpree.toInt() / 2 + 3
             }
 
             this.main.shopManager.addPlayerMoney(lastDamager, goldEarned.toUInt())
@@ -230,14 +250,18 @@ class GameManager(val main: Main) : Listener {
                 resetKillingSpree(player) // Reset player killing spree
                 this.main.shopManager.resetPlayerLastJudgementTaskIfActive(player) // Reset Last judgement if active
 
+                Bukkit.broadcastMessage("${ChatColor.GRAY}${player.displayName} a été éliminé !")
+
                 val playerTeam = this.main.teamsManager.getPlayerGameTeam(player)
 
                 // Teleport them to their base
                 val respawnPoint = playerTeam.respawnPoint(this.main.worldManager.loadedWorldMetadata ?: throw IllegalStateException("The loaded world variant metadata should exist"))
                 player.teleport(respawnPoint)
 
+                player.health = 20.0
                 player.exp = 0.0F
                 player.level = 0
+                player.velocity = Vector(0.0, 0.0, 0.0)
 
                 player.activePotionEffects.forEach { effect -> player.removePotionEffect(effect.type) }
                 player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, INFINITE_POTION_EFFECT_DURATION, JUMP_BOOST_AMPLIFIER))
@@ -246,7 +270,7 @@ class GameManager(val main: Main) : Listener {
                 GameItems.applyPlayingInventoryToPlayer(player, playerTeam.armorColor, this.main.shopManager.getPlayerMoney(player))
             }
             else -> {
-                player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
+                player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.clone()?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
             }
         }
     }
