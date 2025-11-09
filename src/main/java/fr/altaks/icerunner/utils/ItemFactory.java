@@ -4,6 +4,7 @@ package fr.altaks.icerunner.utils;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;

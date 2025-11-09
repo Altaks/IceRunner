@@ -7,6 +7,7 @@ import fr.altaks.icerunner.game.ShopManager
 import fr.altaks.icerunner.utils.ItemComparator
 import fr.altaks.icerunner.utils.ItemFactory
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -74,7 +75,7 @@ class ShopKamikaze(val main: Main) : ShopManager.Companion.IShopItem {
 
         player.world
             .getNearbyEntities(player.location, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble())
-            .filter { entity -> entity.type == EntityType.PLAYER }
+            .filter { entity -> entity.type == EntityType.PLAYER && (entity as Player).gameMode != GameMode.SPECTATOR }
             .forEach { entity -> this.main.gameManager.respawnPlayer(entity as Player) }
     }
 }

@@ -37,10 +37,10 @@ class BifrostTask(val main: Main) : BukkitRunnable() {
 
                         // apply vector to position
                         position = position.add(velocity)
-                        position = if (velocity.y > 0.0) {
+                        position = if (velocity.y >= 0.0) {
                             position.add(0.0, -1.0, 0.0)
                         } else {
-                            position.add(0.0, +1.0, 0.0)
+                            position
                         }
 
                         // list of 4 blocks anchored in the base location

@@ -7,6 +7,7 @@ import fr.altaks.icerunner.utils.ItemComparator
 import fr.altaks.icerunner.utils.ItemFactory
 import org.bukkit.ChatColor
 import org.bukkit.DyeColor
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -139,7 +140,7 @@ class ShopExplosiveSheep(val main: Main) : ShopManager.Companion.IShopItem {
 
             location.world
                 ?.getNearbyEntities(location, EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble(), EXPLOSION_EFFECT_RADIUS.toDouble())
-                ?.filter { entity -> entity.type == EntityType.PLAYER }
+                ?.filter { entity -> entity.type == EntityType.PLAYER && (entity as Player).gameMode != GameMode.SPECTATOR }
                 ?.forEach { entity -> this.main.gameManager.respawnPlayer(entity as Player) }
         }
     }
