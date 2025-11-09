@@ -273,7 +273,7 @@ class GameManager(val main: Main) : Listener {
                 GameItems.applyPlayingInventoryToPlayer(player, playerTeam.armorColor, this.main.shopManager.getPlayerMoney(player))
             }
             else -> {
-                player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
+                player.teleport(this.main.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.clone()?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
             }
         }
     }

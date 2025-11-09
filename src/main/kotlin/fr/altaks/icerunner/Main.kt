@@ -78,7 +78,7 @@ open class Main : JavaPlugin {
         Bukkit.getOnlinePlayers().forEach { player ->
             this.scoreboardManager.initPlayerScoreboard(player)
             player.gameMode = GameMode.SURVIVAL
-            player.teleport(this.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
+            player.teleport(this.worldManager.loadedWorldMetadata?.mapCenterCoordinates?.clone()?.add(0.0, 1.5, 0.0) ?: throw IllegalStateException("Unable to acquire map center coordinates"))
             GameItems.applyWaitingInventoryToPlayer(player)
         }
 
