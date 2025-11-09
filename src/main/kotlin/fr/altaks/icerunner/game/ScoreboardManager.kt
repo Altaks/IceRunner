@@ -106,7 +106,7 @@ class ScoreboardManager(val main: Main) : Listener {
             val boardLines = when (playerTeamColor) {
                 ChatColor.RED -> buildRedSideScoreboard(gameScoringState)
                 ChatColor.AQUA -> buildBlueSideScoreboard(gameScoringState)
-                else -> throw IllegalStateException("This team is null / not supported")
+                else -> buildSpectatorScoreboard(player, gameScoringState)
             }
             scoreboard.updateLines(boardLines)
         }
@@ -151,6 +151,20 @@ class ScoreboardManager(val main: Main) : Listener {
                 "   ${ChatColor.RED}✦ ${spaceFilledScore(gameScoringState.redTeamScore)}${ChatColor.RESET}/360",
                 "",
             )
+        }
+
+        private fun buildSpectatorScoreboard(player: Player, gameScoringState: TeamsManager.GameScoringState): List<String> {
+            return when(player.spectatorTarget) {
+                is Player -> {
+                    val spectatedPlayerTeamColor = (player.spectatorTarget as Player).scoreboard.getEntryTeam(player.spectatorTarget!!.name)?.color
+                    return when (spectatedPlayerTeamColor) {
+                        ChatColor.RED -> buildRedSideScoreboard(gameScoringState)
+                        ChatColor.AQUA -> buildBlueSideScoreboard(gameScoringState)
+                        else -> throw IllegalStateException("Couldn't spectate ${player.spectatorTarget?.name} scoreboard !")
+                    }
+                }
+                else -> buildRedSideScoreboard(gameScoringState)
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ import fr.altaks.icerunner.Main
 import fr.altaks.icerunner.utils.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.GameRule
 import org.bukkit.Location
 import org.bukkit.Material
@@ -106,8 +107,7 @@ class WorldManager(val main: Main) {
     }
 
     fun teleportPlayersToGameWorld() {
-        val gameWorld: World = Bukkit.getWorld(ICE_RUNNER_WORLD_NAME) ?: throw IllegalStateException("World $ICE_RUNNER_WORLD_NAME not found!")
-        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(Location(gameWorld, 0.0, 100.5 + 1, 0.0)) }
+        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(loadedWorldMetadata?.mapCenterCoordinates!!.clone().add(0.0, 1.0, 0.0)) }
     }
 
     fun getIslandsVisitors(): Map<WorldIslands, List<Player>> = WorldIslands.entries.associateWith { getNearbyPlayers(loadedWorldMetadata?.mapCenterCoordinates?.world!!, it) }
@@ -116,7 +116,7 @@ class WorldManager(val main: Main) {
         WorldIslands.CENTER -> world.getNearbyEntities(loadedWorldMetadata?.mapCenterCoordinates!!, MAIN_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, MAIN_ISLAND_POPULATION_SCAN_RADIUS)
         WorldIslands.GREEN -> world.getNearbyEntities(loadedWorldMetadata?.greenIslandCenterCoordinates!!, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS)
         WorldIslands.YELLOW -> world.getNearbyEntities(loadedWorldMetadata?.yellowIslandCenterCoordinates!!, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS, Y_AXIS_POPULATION_SCAN_RADIUS, SECONDARY_ISLAND_POPULATION_SCAN_RADIUS)
-    }.filter { entity -> entity.type == EntityType.PLAYER }.map { entity -> entity as Player }.toList()
+    }.filter { entity -> entity.type == EntityType.PLAYER && (entity as Player).gameMode != GameMode.SPECTATOR }.map { entity -> entity as Player }.toList()
 
     fun updateIslandGlassWithTeamColor(island: WorldIslands, dominantTeamColor: ChatColor?) {
         val material = when (dominantTeamColor) {

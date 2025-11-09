@@ -1,6 +1,7 @@
 package fr.altaks.icerunner.triggers.listeners
 
 import fr.altaks.icerunner.Main
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -59,7 +60,7 @@ class ArrowListener(val main: Main) : Listener {
                         EXPLOSION_RADIUS.toDouble(),
                         EXPLOSION_RADIUS.toDouble(),
                     ) { entity -> entity.type == EntityType.PLAYER }
-                        ?.filter { entity -> !entity.equals(shootingPlayer) }
+                        ?.filter { entity -> !entity.equals(shootingPlayer) && (entity as Player).gameMode != GameMode.SPECTATOR }
                         ?.forEach { hitPlayer ->
                             (hitPlayer as Player).damage(8.0, shootingPlayer)
                         }

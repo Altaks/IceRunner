@@ -4,6 +4,8 @@ import fr.altaks.icerunner.Main
 import fr.altaks.icerunner.game.GameItems
 import fr.altaks.icerunner.utils.ItemComparator
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
+import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
 class RestockTask(val main: Main) : BukkitRunnable() {
@@ -14,7 +16,9 @@ class RestockTask(val main: Main) : BukkitRunnable() {
 
     override fun run() {
         if (main.gameManager.isGamePlaying()) {
-            Bukkit.getOnlinePlayers().forEach { player ->
+            Bukkit.getOnlinePlayers()
+                .filter { player -> player.gameMode != GameMode.SPECTATOR }
+                .forEach { player ->
                 run {
                     ITEMS_TO_RESTOCK.forEach { item ->
                         run {

@@ -8,6 +8,7 @@ import fr.altaks.icerunner.world.WorldVariantMetadata
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Color
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -114,6 +115,10 @@ class TeamsManager(val main: Main) : Listener {
     @EventHandler
     fun onPlayerSendChatMessage(event: AsyncPlayerChatEvent) {
         if (this.main.gameManager.hasGameStarted()) {
+            if(event.player.gameMode == GameMode.SPECTATOR) {
+                event.isCancelled = true
+            }
+
             if (!event.message.startsWith("!")) {
                 event.isCancelled = true
                 sendMessageToPlayerTeam(event.player, event.message)
@@ -151,6 +156,10 @@ class TeamsManager(val main: Main) : Listener {
     }
 
     fun areEnoughPlayersPerTeam(): Boolean = this.teamToGameTeamMapping.keys.all { team -> team.entries.size >= PLAYERS_PER_TEAM }
+
+    fun playerHasGameTeam(player: Player): Boolean {
+        return this.getMainScoreboard().getEntryTeam(player.name) != null
+    }
 
     fun getPlayerGameTeam(player: Player): GameTeam {
         val team: Team = this.getMainScoreboard().getEntryTeam(player.name) ?: throw IllegalStateException("Player ${player.name} has no team !")
@@ -193,7 +202,7 @@ class TeamsManager(val main: Main) : Listener {
                 val teamToAmountOfPlayers = mutableMapOf<Team, Int>()
                 players.forEach { player ->
                     run {
-                        val team = player.scoreboard.getEntryTeam(player.name) ?: throw IllegalStateException("Couldn't get player team")
+                        val team = player.scoreboard.getEntryTeam(player.name) ?: return@run
                         teamToAmountOfPlayers.putIfAbsent(team, 0)
                         teamToAmountOfPlayers[team] = teamToAmountOfPlayers[team]!! + 1
                     }
