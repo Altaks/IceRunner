@@ -14,7 +14,7 @@ plugins {
     id("com.gradleup.shadow") version "9.2.2"
     id("io.typst.spigradle") version "3.1.2"
     id("io.github.klahap.dotenv") version "1.1.3"
-    id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
+    id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
     id("org.jetbrains.dokka") version "2.1.0"
 }
 
