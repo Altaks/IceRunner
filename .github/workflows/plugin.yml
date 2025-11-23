@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Copies the repository content
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # Sets up the java version and enables Maven caching strategy
       - name: Set up JDK 21 for x64
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Copies the repository content
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # Sets up the java version and enables Maven caching strategy
       - name: Set up JDK 21 for x64
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Copies the repository content
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # Sets up the java version and enables Maven caching strategy
       - name: Set up JDK 21 for x64
