@@ -12,7 +12,7 @@ plugins {
     id("idea")
     id("org.jetbrains.kotlin.jvm") version "2.2.21"
     id("com.gradleup.shadow") version "9.3.0"
-    id("io.typst.spigradle") version "3.5.2"
+    id("io.typst.spigradle") version "3.7.3"
     id("io.github.klahap.dotenv") version "1.1.3"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
     id("org.jetbrains.dokka") version "2.1.0"
