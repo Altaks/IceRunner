@@ -52,7 +52,7 @@ jobs:
         run: "./gradlew dokkaGeneratePublicationHtml"
 
       - name: Archive generated fat JAR file
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: 'IceRunner-Docs'
           path: build/dokka/html/
@@ -78,7 +78,7 @@ jobs:
         run: "./gradlew shadowJar"
 
       - name: Archive generated fat JAR file
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: 'IceRunner-${{ github.sha }}.jar'
           path: artifacts/IceRunner.jar
