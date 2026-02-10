@@ -10,7 +10,7 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("idea")
-    id("org.jetbrains.kotlin.jvm") version "2.3.0"
+    id("org.jetbrains.kotlin.jvm") version "2.3.10"
     id("com.gradleup.shadow") version "9.3.1"
     id("io.typst.spigradle") version "3.8.0"
     id("io.github.klahap.dotenv") version "1.1.3"
