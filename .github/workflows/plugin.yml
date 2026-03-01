@@ -52,7 +52,7 @@ jobs:
         run: "./gradlew dokkaGeneratePublicationHtml"
 
       - name: Archive generated fat JAR file
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'IceRunner-Docs'
           path: build/dokka/html/
@@ -78,12 +78,12 @@ jobs:
         run: "./gradlew shadowJar"
 
       - name: Archive generated fat JAR file
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'IceRunner-${{ github.sha }}.jar'
           path: artifacts/IceRunner.jar
 
       - name: Attest build provenance of said artifact
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: artifacts/IceRunner.jar
